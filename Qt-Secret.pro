@@ -19,8 +19,12 @@ VERSION = 0.0.0.1
 HEADERS += \
     Qt-RSA/BigInt.hpp \
     Qt-AES/qaesencryption.h \
-    Qt-RSA/qrsaencryption.h
+    Qt-RSA/hexparser.h \
+    Qt-RSA/qrsaencryption.h \
+    Qt-RSA/rsakey.h \
 
 SOURCES += \
+    Qt-RSA/hexparser.cpp \
     Qt-RSA/qrsaencryption.cpp \
-    Qt-AES/qaesencryption.cpp
+    Qt-AES/qaesencryption.cpp \
+    Qt-RSA/rsakey.cpp \
