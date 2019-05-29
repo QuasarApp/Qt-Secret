@@ -17,7 +17,7 @@ DEFINES += Qt-SECRET_LIBRARY
 VERSION = 0.0.0.1
 
 HEADERS += \
-    BigInt/include/BigInt.hpp \
+    Qt-RSA/BigInt.hpp \
     Qt-AES/qaesencryption.h \
     Qt-RSA/qrsaencryption.h
 
