@@ -1,0 +1,6 @@
+[submodule "BigInt"]
+	path = BigInt
+	url = git@github.com:QuasarApp/BigInt.git
+[submodule "Qt-AES"]
+	path = Qt-AES
+	url = git@github.com:QuasarApp/Qt-AES.git
