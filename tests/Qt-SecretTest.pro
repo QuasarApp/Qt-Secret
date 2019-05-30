@@ -8,21 +8,20 @@
 QT -= gui
 CONFIG += c++17
 
-TARGET=Qt-Secret
+TARGET=Qt-SecretTest
 TEMPLATE = app
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-HEADERS += \
-    Qt-AES/qaesencryption.h \
-    qtsecret_global.h \
-    Qt-RSA/hexparser.h \
-    Qt-RSA/qrsaencryption.h \
-    uint256_t/uint256_t.h
+#DEPENDS
+CONFIG(release, debug|release): {
+    DESTDIR="$$PWD/build/release"
+} else {
+    DESTDIR="$$PWD/build/debug"
+}
+
+include($$PWD/../src/Qt-Secret.pri)
 
 SOURCES += \
-    Qt-RSA/hexparser.cpp \
-    Qt-AES/qaesencryption.cpp \
-    Qt-RSA/qrsaencryption.cpp \
     main.cpp
 

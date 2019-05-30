@@ -1,3 +1,6 @@
 [submodule "uint256_t"]
 	path = uint256_t
 	url = git@github.com:QuasarApp/uint256_t.git
+[submodule "src/Qt-AES"]
+	path = src/Qt-AES
+	url = git@github.com:QuasarApp/Qt-AES.git

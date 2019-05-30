@@ -1,7 +1,7 @@
 #include <QByteArray>
-#include "Qt-RSA/qrsaencryption.h"
+#include <qrsaencryption.h>
 
-int main(int argc, char** argv) {
+int main() {
 
 
     QRSAEncryption e;
