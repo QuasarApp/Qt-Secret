@@ -27,3 +27,6 @@ SOURCES += \
     Qt-RSA/hexparser.cpp \
     Qt-AES/qaesencryption.cpp \
     Qt-RSA/qrsaencryption.cpp
+
+RESOURCES += \
+    primenumbers.qrc

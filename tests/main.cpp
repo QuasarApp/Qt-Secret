@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
 
     QByteArray pub, priv;
 
-    e.generatePairKey(pub, priv);
+    e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_256);
 
     return 0;
 }
