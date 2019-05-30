@@ -1,8 +1,8 @@
 #ifndef RSAKEY_H
 #define RSAKEY_H
-#include "BigInt.hpp"
 
 #include <QString>
+#include "../uint256_t/uint256_t.h"
 
 enum class KeyType: short {
     RSA128 = 128,
@@ -15,8 +15,8 @@ enum class KeyType: short {
 class RsaKey
 {
 private:
-    BigInt _exp;
-    BigInt _delimiter;
+    uint256_t _exp;
+//    BigInt _delimiter;
     KeyType _type;
 
 public:

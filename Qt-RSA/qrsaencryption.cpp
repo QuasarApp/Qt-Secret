@@ -1,5 +1,5 @@
 #include "qrsaencryption.h"
-#include "BigInt.hpp"
+//#include "BigInt.hpp"
 
 QRSAEncryption::QRSAEncryption()
 {

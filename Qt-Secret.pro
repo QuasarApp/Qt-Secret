@@ -5,26 +5,27 @@
 # of this license document, but changing it is not allowed.
 #
 
-QT += core
 QT -= gui
 CONFIG += c++17
 
 TARGET=Qt-Secret
 TEMPLATE = lib
 
-DEFINES += Qt-SECRET_LIBRARY
+DEFINES += Qt_SECRET_LIBRARY
+DEFINES += QT_DEPRECATED_WARNINGS
 
 VERSION = 0.0.0.1
 
 HEADERS += \
-    Qt-RSA/BigInt.hpp \
     Qt-AES/qaesencryption.h \
+    qtsecret_global.h \
     Qt-RSA/hexparser.h \
     Qt-RSA/qrsaencryption.h \
     Qt-RSA/rsakey.h \
+    uint256_t/uint256_t.h
 
 SOURCES += \
     Qt-RSA/hexparser.cpp \
-    Qt-RSA/qrsaencryption.cpp \
     Qt-AES/qaesencryption.cpp \
-    Qt-RSA/rsakey.cpp \
+    Qt-RSA/qrsaencryption.cpp \
+    Qt-RSA/rsakey.cpp
