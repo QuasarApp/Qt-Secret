@@ -1,3 +1,6 @@
 [submodule "Qt-AES"]
 	path = Qt-AES
 	url = git@github.com:QuasarApp/Qt-AES.git
+[submodule "uint256_t"]
+	path = uint256_t
+	url = https://github.com/calccrypto/uint256_t.git
