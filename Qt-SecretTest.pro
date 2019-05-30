@@ -9,12 +9,9 @@ QT -= gui
 CONFIG += c++17
 
 TARGET=Qt-Secret
-TEMPLATE = lib
+TEMPLATE = app
 
-DEFINES += Qt_SECRET_LIBRARY
 DEFINES += QT_DEPRECATED_WARNINGS
-
-VERSION = 0.0.0.1
 
 HEADERS += \
     Qt-AES/qaesencryption.h \
@@ -26,4 +23,6 @@ HEADERS += \
 SOURCES += \
     Qt-RSA/hexparser.cpp \
     Qt-AES/qaesencryption.cpp \
-    Qt-RSA/qrsaencryption.cpp
+    Qt-RSA/qrsaencryption.cpp \
+    main.cpp
+

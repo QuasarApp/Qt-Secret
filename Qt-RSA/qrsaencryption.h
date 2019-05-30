@@ -1,18 +1,28 @@
 #ifndef QRSAENCRYPTION_H
 #define QRSAENCRYPTION_H
 
-//#include <QByteArray>
-
-
+#include <QByteArray>
+#include "../uint256_t/uint256_t.h"
 
 class QRSAEncryption
 {
 public:
-    QRSAEncryption();
-//    static QByteArray ExpandKey(QAESEncryption::Aes level, QAESEncryption::Mode mode, const QByteArray &key);
+    enum Rsa {
+        RSA_128 = 128,
+        RSA_256 = 256,
+        RSA_512 = 512
+    };
 
-//    QByteArray encode(const QByteArray &rawText, const QByteArray &key, const QByteArray &iv);
-//    QByteArray decode(const QByteArray &rawText, const QByteArray &key, const QByteArray &iv);
+    enum RsaKeyType {
+        Public,
+        Private
+    };
+
+    QRSAEncryption();
+
+    QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey);
+    QByteArray decode(const QByteArray &rawData, const QByteArray &pubKey);
+    bool generatePairKey(QByteArray &pubKey, QByteArray &privKey, Rsa = RSA_128);
 
 };
 
