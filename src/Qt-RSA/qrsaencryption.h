@@ -2,7 +2,7 @@
 #define QRSAENCRYPTION_H
 
 #include <QByteArray>
-#include "../uint256_t/uint256_t.h"
+#include <uint256_t.h>
 
 class QRSAEncryption
 {
