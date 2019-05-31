@@ -29,6 +29,18 @@ INT pows(const INT &a, const INT &b, const INT &m){
 }
 
 template<class INT>
+INT binpow (INT a, INT n) {
+    INT res = 1;
+    while (n) {
+        if (n & 1)
+            res *= a;
+        a *= a;
+        n >>= 1;
+    }
+    return res;
+}
+
+template<class INT>
 bool gcd(INT a, INT b) {
     INT c;
     while ( a != 0 ) {
@@ -53,10 +65,10 @@ INT randNumber() {
         longDiff = 2;
         minVal = 0x1000000000000000;
 
-    }/* else if (typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
-        longDiff = 8;
-        minVal = "0x1000000000000000000000000000000000000000000000000000000000000000";
-    }*/
+    } else if (typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
+        longDiff = 4;
+        minVal = 0xFFFFFFFFFFFFFFFF;
+    }
 
     INT res = 1;
 
@@ -73,7 +85,6 @@ bool ferma(INT x){
     if(x == 2)
         return true;
 
-
     for(int i = 0; i < 100; i++){
         INT a = (randNumber<INT>() % (x - 2)) + 2;
         if (gcd<INT>(a, x) != 1)
@@ -81,6 +92,7 @@ bool ferma(INT x){
         if( pows(a, x-1, x) != 1)
             return false;
     }
+
     return true;
 }
 
@@ -110,14 +122,72 @@ INT randPrimeNumber(INT no = 0) {
         n = randNumber<INT>();
     };
 
-    while (!ferma(n)) {
-       n++;
+    if (!(n % 2)) {
+        n++;
     }
 
-    return n;
+    INT LN = n;
+    INT RN = n;
+
+    while (true) {
+       if (ferma(LN)) {
+           return LN;
+       }
+
+       RN+=2;
+
+       if (ferma(RN)) {
+           return RN;
+       }
+
+       LN-=2;
+    }
 }
 
+template<class INT>
+unsigned int getBitsSize() {
+    if (typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
+        return QRSAEncryption::Rsa::RSA_64;
+    } else if (typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
+        return QRSAEncryption::Rsa::RSA_128;
 
+    } else if (typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
+        return QRSAEncryption::Rsa::RSA_256;
+    }
+
+    return 0;
+}
+
+template<class INT>
+INT newRandPrimeNumber(INT no = 0) {
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    INT p = 2;
+    INT temp;
+    do {
+
+        unsigned int n = (static_cast<unsigned int>(rand())
+                % (getBitsSize<INT>() - 10)) + 10;
+
+        while (n == no) {
+            n = (static_cast<unsigned int>(rand())
+                    % (getBitsSize<INT>() - 10)) + 10;
+        };
+
+        temp = p << n;
+
+        if (n != no && ferma(temp + 1)) {
+            return temp;
+        }
+
+        if (n != no && ferma(temp - 1)) {
+            return temp;
+        }
+
+    } while (true);
+
+    return p;
+}
 
 template<class INT>
 INT ExtEuclid(INT a, INT b)
@@ -142,15 +212,15 @@ template<class INT>
 bool keyGenerator(QByteArray &pubKey,
                  QByteArray &privKey) {
 
-    INT p = randPrimeNumber<INT>();
-    INT q = randPrimeNumber<INT>(p);
+    INT p = newRandPrimeNumber<INT>();
+    INT q = newRandPrimeNumber<INT>(p);
 
     INT modul = p * q;
     INT eilor = eulerFunc(p, q);
     INT e;
 
     do {
-        e = randPrimeNumber<INT>();
+        e = newRandPrimeNumber<INT>();
 
     } while((gcd<INT>(eilor, e) != 1) || eilor < e);
 
@@ -194,20 +264,22 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QRSAEncryption::Rsa rsa)
 {
     switch (rsa) {
-    case RSA_128: {
+    case RSA_64: {
         if (!keyGenerator<uint64_t>(pubKey, privKey)) {
             return false;
         }
         break;
     }
-    case RSA_256: {
+    case RSA_128: {
         if (!keyGenerator<uint128_t>(pubKey, privKey)) {
             return false;
         }
         break;
     }
-//    case RSA_512: {
-//        using INT = uint256_t;
+//    case RSA_256: {
+//        if (!keyGenerator<uint256_t>(pubKey, privKey)) {
+//            return false;
+//        }
 //        break;
 //    }
     default: return false;

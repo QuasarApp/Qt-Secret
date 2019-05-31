@@ -8,9 +8,9 @@ class QRSAEncryption
 {
 public:
     enum Rsa {
+        RSA_64 = 64,
         RSA_128 = 128,
         RSA_256 = 256,
-        RSA_512 = 512
     };
 
     enum RsaKeyType {
