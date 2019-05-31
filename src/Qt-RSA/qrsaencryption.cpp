@@ -1,5 +1,5 @@
 #include "qrsaencryption.h"
-//#include "BigInt.hpp"
+#include <cmath>
 
 template<class INT>
 INT eulerFunc(const INT &p, const INT &q) {
@@ -81,7 +81,7 @@ INT randNumber() {
 }
 
 template<class INT>
-bool ferma(INT x){
+bool isPrimeFerma(INT x){
     if(x == 2)
         return true;
 
@@ -97,25 +97,6 @@ bool ferma(INT x){
 }
 
 template<class INT>
-bool isPrime(INT n) {
-    if(n < 2)
-        return false;
-
-    if(n == 2)
-        return true;
-
-    if(n % 2 == 0)
-        return false;
-
-    for(INT i = 3; (i * i) <= n; i+=2) {
-        if(n % i == 0 ) return false;
-    }
-
-    return true;
-}
-
-// to du
-template<class INT>
 INT randPrimeNumber(INT no = 0) {
     INT n = randNumber<INT>();
     while (n == no) {
@@ -130,13 +111,13 @@ INT randPrimeNumber(INT no = 0) {
     INT RN = n;
 
     while (true) {
-       if (ferma(LN)) {
+       if (isPrimeFerma(LN)) {
            return LN;
        }
 
        RN+=2;
 
-       if (ferma(RN)) {
+       if (isPrimeFerma(RN)) {
            return RN;
        }
 
@@ -159,11 +140,10 @@ unsigned int getBitsSize() {
 }
 
 template<class INT>
-INT newRandPrimeNumber(INT no = 0) {
+INT fermePrimeNumber(INT no = 0) {
     srand(static_cast<unsigned int>(time(nullptr)));
 
     INT p = 2;
-    INT temp;
     do {
 
         unsigned int n = (static_cast<unsigned int>(rand())
@@ -174,17 +154,9 @@ INT newRandPrimeNumber(INT no = 0) {
                     % (getBitsSize<INT>() - 10)) + 10;
         };
 
-        temp = p << n;
+        p = (INT(2) << n) - 1;
 
-        if (n != no && ferma(temp + 1)) {
-            return temp;
-        }
-
-        if (n != no && ferma(temp - 1)) {
-            return temp;
-        }
-
-    } while (true);
+    } while (isPrimeFerma(p));
 
     return p;
 }
@@ -212,15 +184,15 @@ template<class INT>
 bool keyGenerator(QByteArray &pubKey,
                  QByteArray &privKey) {
 
-    INT p = newRandPrimeNumber<INT>();
-    INT q = newRandPrimeNumber<INT>(p);
+    INT p = fermePrimeNumber<INT>();
+    INT q = fermePrimeNumber<INT>(p);
 
     INT modul = p * q;
     INT eilor = eulerFunc(p, q);
     INT e;
 
     do {
-        e = newRandPrimeNumber<INT>();
+        e = fermePrimeNumber<INT>();
 
     } while((gcd<INT>(eilor, e) != 1) || eilor < e);
 
