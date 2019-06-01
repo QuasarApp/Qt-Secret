@@ -96,6 +96,20 @@ bool isPrimeFerma(INT x){
     return true;
 }
 
+//long binpow (long a, long n, long m) {
+//    long res = 1;
+//    while (n) {
+//        if (n & 1) {
+//            res *= a;
+//            res %= m;
+//        }
+//        a *= (a % m);
+//        a %= m;
+//        n >>= 1;
+//    }
+//    return res % m;
+//}
+
 template<class INT>
 INT toPrime(INT n) {
 
@@ -176,19 +190,20 @@ QByteArray toArray(INT i) {
     return res;
 }
 
+template <class TYPE, class SUBTYPE>
+TYPE unit(const SUBTYPE& left, const SUBTYPE& right) {
+    return TYPE(left, right);
+}
 
 template<class INT>
 INT fromArray(const QByteArray& array) {
     if (array.size() == sizeof (uint64_t) && typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
-        return *(const_cast<INT*>(array.data()));
+        return *(reinterpret_cast<INT*>(const_cast<char*>(array.data())));
     } else if (array.size() == (sizeof (uint64_t) * 2) && typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
-        INT res(fromArray<uint64_t>(array.left(array.size() / 2)), fromArray<uint64_t>(array.right(array.size() / 2)));
-        return res;
-    } else if (array.size() == (sizeof (uint64_t) * 2) && typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
-        INT res(fromArray<uint128_t>(array.left(array.size() / 2)), fromArray<uint128_t>(array.right(array.size() / 2)));
-        return res;
+        return unit<uint128_t, uint64_t>(fromArray<uint64_t>(array.left(array.size() / 2)), fromArray<uint64_t>(array.right(array.size() / 2)));
+    } else if (array.size() == (sizeof (uint64_t) * 4) && typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
+        return unit<uint256_t, uint128_t>(fromArray<uint64_t>(array.left(array.size() / 2)), fromArray<uint64_t>(array.right(array.size() / 2)));
     }
-
     return 0;
 }
 
@@ -225,20 +240,95 @@ bool keyGenerator(QByteArray &pubKey,
     return true;
 }
 
+template <class INT>
+QByteArray encodeBlok(const INT& block, const INT &e, const INT &m) {
+    return toArray(pows(block, e, m));
+}
+
+template <class INT>
+QByteArray decodeBlok(const INT& block, const INT &d, const INT &m) {
+    return toArray(pows(block, d, m));
+}
+
+template<class INT>
+QByteArray encodeArray(const QByteArray &rawData, const QByteArray &pubKey) {
+    int blockSize = (getBitsSize<INT>() / 8);
+    int index = blockSize;
+
+    QByteArray block = rawData.mid(index - blockSize, index);
+
+    INT e = fromArray<INT>(pubKey.mid(0, pubKey.size() / 2));
+    INT m = fromArray<INT>(pubKey.mid(pubKey.size() / 2));
+    QByteArray res;
+    while (block.size()) {
+        QByteArray block = rawData.mid(index - blockSize, index);
+        res.append(encodeBlok(fromArray<INT>(block), e, m));
+        index += blockSize;
+    }
+
+    return res;
+}
+
+
+template<class INT>
+QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
+    int blockSize = (getBitsSize<INT>() / 8);
+    int index = blockSize;
+
+    QByteArray block = rawData.mid(index - blockSize, index);
+
+    INT d = fromArray<INT>(privKey.mid(0, privKey.size() / 2));
+    INT m = fromArray<INT>(privKey.mid(privKey.size() / 2));
+    QByteArray res;
+    while (block.size()) {
+        QByteArray block = rawData.mid(index - blockSize, index);
+        res.append(decodeBlok(fromArray<INT>(block), d, m));
+        index += blockSize;
+    }
+
+    return res;
+}
+
 QRSAEncryption::QRSAEncryption() {
 
 }
 
-QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey)
-{
+QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey) {
 
+    switch (pubKey.size()) {
+    case RSA_64 * 2: {
+        return encodeArray<uint64_t>(rawData, pubKey);
+    }
+
+    case RSA_128 * 2: {
+        return encodeArray<uint128_t>(rawData, pubKey);
+    }
+
+    case RSA_256 * 2: {
+        return encodeArray<uint256_t>(rawData, pubKey);
+    }
+    default: return QByteArray();
+    }
 }
 
-QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey)
-{
 
+QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey) {
+
+    switch (privKey.size()) {
+    case RSA_64 * 2: {
+        return decodeArray<uint64_t>(rawData, privKey);
+    }
+
+    case RSA_128 * 2: {
+        return decodeArray<uint128_t>(rawData, privKey);
+    }
+
+    case RSA_256 * 2: {
+        return decodeArray<uint256_t>(rawData, privKey);
+    }
+    default: return QByteArray();
+    }
 }
-
 
 bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QByteArray &privKey,
