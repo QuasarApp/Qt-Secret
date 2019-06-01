@@ -1,5 +1,7 @@
 #include "qrsaencryption.h"
+#include <QFile>
 #include <cmath>
+#include <QDebug>
 
 template<class INT>
 INT eulerFunc(const INT &p, const INT &q) {
@@ -18,7 +20,7 @@ INT mul(const INT &a, const INT &b, const INT &m){
 }
 
 template<class INT>
-INT pows(const INT &a, const INT &b, const INT &m){
+INT pows(const INT &a, const INT &b, const INT &m) {
     if(b == 0)
         return 1;
     if(b % 2 == 0){
@@ -29,100 +31,23 @@ INT pows(const INT &a, const INT &b, const INT &m){
 }
 
 template<class INT>
-INT binpow (INT a, INT n) {
-    INT res = 1;
-    while (n) {
-        if (n & 1)
-            res *= a;
-        a *= a;
-        n >>= 1;
-    }
-    return res;
-}
-
-template<class INT>
 bool gcd(INT a, INT b) {
     INT c;
     while ( a != 0 ) {
-      c = a;
-      a = b % a;
-      b = c;
+        c = a;
+        a = b % a;
+        b = c;
     }
     return b;
 }
 
 template<class INT>
-INT randNumber() {
-    srand(static_cast<unsigned int>(time(nullptr)));
-
-    int longDiff = 1;
-    INT minVal = 0;
-
-    if (typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
-        longDiff = 1;
-        minVal = 0x10000000;
-    } else if (typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
-        longDiff = 2;
-        minVal = 0x1000000000000000;
-
-    } else if (typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
-        longDiff = 4;
-        minVal = 0xFFFFFFFFFFFFFFFF;
+bool isMutuallyPrime(INT a, INT b) {
+    if ((!(a % 2) && !(b % 2)) || (!(a % 3) && !(b % 3)) || (!(a % 5) && !(b % 5)) || (!(a % 7)  && !(b % 7))) {
+        return false;
     }
 
-    INT res = 1;
-
-    while (longDiff > 0 || minVal > res) {
-        longDiff--;
-        res *= static_cast<unsigned int>(rand());
-    }
-
-    return res;
-}
-
-template<class INT>
-bool isPrimeFerma(INT x){
-    if(x == 2)
-        return true;
-
-    for(int i = 0; i < 100; i++){
-        INT a = (randNumber<INT>() % (x - 2)) + 2;
-        if (gcd<INT>(a, x) != 1)
-            return false;
-        if( pows(a, x-1, x) != 1)
-            return false;
-    }
-
-    return true;
-}
-
-template<class INT>
-INT randPrimeNumber(INT no = 0) {
-    INT n = randNumber<INT>();
-    while (n == no) {
-        n = randNumber<INT>();
-    };
-
-    if (!(n % 2)) {
-        n++;
-    }
-
-    INT LN = n;
-    INT RN = n;
-
-    while (true) {
-       if (isPrimeFerma(LN)) {
-           return LN;
-       }
-
-       RN+=2;
-
-       if (isPrimeFerma(RN)) {
-           return RN;
-       }
-
-       LN-=2;
-    }
+    return gcd(a, b) == 1;
 }
 
 template<class INT>
@@ -140,26 +65,72 @@ unsigned int getBitsSize() {
 }
 
 template<class INT>
-INT fermePrimeNumber(INT no = 0) {
+INT randNumber() {
     srand(static_cast<unsigned int>(time(nullptr)));
 
-    INT p = 2;
-    do {
+    int longDiff = getBitsSize<INT>() / (sizeof (int) * 8);
 
-        unsigned int n = (static_cast<unsigned int>(rand())
-                % (getBitsSize<INT>() - 10)) + 10;
+    INT res = 1;
 
-        while (n == no) {
-            n = (static_cast<unsigned int>(rand())
-                    % (getBitsSize<INT>() - 10)) + 10;
-        };
+    while (longDiff > 0) {
+        longDiff--;
+        res *= static_cast<unsigned int>(rand());
+    }
 
-        p = (INT(2) << n) - 1;
+    return res;
+}
 
-    } while (isPrimeFerma(p));
+template<class INT>
+bool isPrimeFerma(INT x){
+    if(x == 2)
+        return true;
+
+    for(int i = 0; i < 100; i++){
+        INT a = (randNumber<INT>() % (x - 2)) + 2;
+        if (!isMutuallyPrime(a, x))
+            return false;
+        if( pows(a, x-1, x) != 1)
+            return false;
+    }
+
+    return true;
+}
+
+template<class INT>
+INT toPrime(INT n) {
+
+    if (!(n % 2)) {
+        n++;
+    }
+
+    INT LN = n;
+    INT RN = n;
+
+    while (true) {
+        if (isPrimeFerma(LN)) {
+            return LN;
+        }
+
+        RN+=2;
+
+        if (isPrimeFerma(RN)) {
+            return RN;
+        }
+
+        LN-=2;
+    }
+}
+
+template<class INT>
+INT randomPrimeNumber(INT no = 0) {
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    auto p = toPrime(randNumber<INT>() >> (getBitsSize<INT>() / 2));
+    while(p == no) p = toPrime(randNumber<INT>() >> (getBitsSize<INT>() / 2));
 
     return p;
 }
+
 
 template<class INT>
 INT ExtEuclid(INT a, INT b)
@@ -180,43 +151,81 @@ INT ExtEuclid(INT a, INT b)
     return y;
 }
 
+template <class TYPE, class SUBTYPE>
+SUBTYPE getPart(const TYPE& i, bool isLeft) {
+    if (isLeft) {
+        return i.upper();
+    }
+
+    return i.lower();
+}
+
+template<class INT>
+QByteArray toArray(INT i) {
+    QByteArray res;
+    if (typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
+        res.append(reinterpret_cast<char*>(&i), sizeof (i));
+    } else if (typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
+        res.append(toArray(getPart<uint128_t, uint64_t>(i, true)));
+        res.append(toArray(getPart<uint128_t, uint64_t>(i, false)));
+    } else if (typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
+        res.append(toArray(getPart<uint256_t, uint128_t>(i, true)));
+        res.append(toArray(getPart<uint256_t, uint128_t>(i, false)));
+    }
+
+    return res;
+}
+
+
+template<class INT>
+INT fromArray(const QByteArray& array) {
+    if (array.size() == sizeof (uint64_t) && typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
+        return *(const_cast<INT*>(array.data()));
+    } else if (array.size() == (sizeof (uint64_t) * 2) && typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
+        INT res(fromArray<uint64_t>(array.left(array.size() / 2)), fromArray<uint64_t>(array.right(array.size() / 2)));
+        return res;
+    } else if (array.size() == (sizeof (uint64_t) * 2) && typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
+        INT res(fromArray<uint128_t>(array.left(array.size() / 2)), fromArray<uint128_t>(array.right(array.size() / 2)));
+        return res;
+    }
+
+    return 0;
+}
+
 template<class INT>
 bool keyGenerator(QByteArray &pubKey,
-                 QByteArray &privKey) {
+                  QByteArray &privKey) {
 
-    INT p = fermePrimeNumber<INT>();
-    INT q = fermePrimeNumber<INT>(p);
+    INT p = randomPrimeNumber<INT>();
+    INT q = (p * 2) + 1;
 
     INT modul = p * q;
     INT eilor = eulerFunc(p, q);
-    INT e;
+    INT e = randNumber<INT>() % eilor;
+
+    if (!(e % 2)) e--;
 
     do {
-        e = fermePrimeNumber<INT>();
+        e -= 2;
 
-    } while((gcd<INT>(eilor, e) != 1) || eilor < e);
+    } while((!isMutuallyPrime(eilor, e)));
 
     INT d = 0;
 
     d = ExtEuclid(eilor, e);
     while(d < 0) {
-        d = d + eilor;
+        d += eilor;
     }
 
-    if (typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
-       pubKey.append(reinterpret_cast<char*>(&e), sizeof(e));
-       pubKey.append(reinterpret_cast<char*>(&modul), sizeof(modul));
-       privKey.append(reinterpret_cast<char*>(&d), sizeof(d));
-       privKey.append(reinterpret_cast<char*>(&modul), sizeof(modul));
+    pubKey.append(toArray(e));
+    pubKey.append(toArray(modul));
+    privKey.append(toArray(d));
+    privKey.append(toArray(modul));
 
-    }
-
-    return false;
-
+    return true;
 }
 
-QRSAEncryption::QRSAEncryption()
-{
+QRSAEncryption::QRSAEncryption() {
 
 }
 
@@ -235,6 +244,7 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QByteArray &privKey,
                                      QRSAEncryption::Rsa rsa)
 {
+
     switch (rsa) {
     case RSA_64: {
         if (!keyGenerator<uint64_t>(pubKey, privKey)) {
@@ -248,13 +258,15 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
         }
         break;
     }
-//    case RSA_256: {
-//        if (!keyGenerator<uint256_t>(pubKey, privKey)) {
-//            return false;
-//        }
-//        break;
-//    }
-    default: return false;
+    case RSA_256: {
+
+        if (!keyGenerator<uint256_t>(pubKey, privKey)) {
+            return false;
+        }
+        //qDebug() << "RSA_256 not supported. use RSA128 and RSA64";
+        //return false;
+    }
+
     }
 
 

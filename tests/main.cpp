@@ -20,10 +20,10 @@ int main() {
 
     qDebug() << "key generate time RSA_128: " << (QDateTime::currentMSecsSinceEpoch() - t);
 
-//    t = QDateTime::currentMSecsSinceEpoch();
-//    e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_256);
+    t = QDateTime::currentMSecsSinceEpoch();
+    e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_256);
 
-//    qDebug() << "key generate time RSA_256: " << (QDateTime::currentMSecsSinceEpoch() - t);
+    qDebug() << "key generate time RSA_256: " << (QDateTime::currentMSecsSinceEpoch() - t);
 
     return 0;
 }

@@ -2,6 +2,7 @@
 #define QRSAENCRYPTION_H
 
 #include <QByteArray>
+#include <QList>
 #include <uint256_t.h>
 
 class QRSAEncryption
@@ -11,11 +12,6 @@ public:
         RSA_64 = 64,
         RSA_128 = 128,
         RSA_256 = 256,
-    };
-
-    enum RsaKeyType {
-        Public,
-        Private
     };
 
     QRSAEncryption();
