@@ -9,13 +9,11 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS +=  \
-        uint256_t \
         src \
         tests
 
 include($$PWD/test.pri)
 
-uint256_t.file = uint256_t/uint256.pro
 src.file = src/Qt-Secret.pro
 tests.file = tests/Qt-SecretTest.pro
 

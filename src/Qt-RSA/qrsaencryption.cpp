@@ -3,6 +3,9 @@
 #include <cmath>
 #include <QDebug>
 
+typedef unsigned __int128  uint128_t;
+typedef signed __int128  int128_t;
+
 template<class INT>
 INT eulerFunc(const INT &p, const INT &q) {
     return (p - 1) * (q - 1);
@@ -33,29 +36,6 @@ INT pows(const INT &a, const INT &b, const INT &m) {
     }
     return ( mul(pows(a, b - 1, m) , a, m)) % m;
 }
-
-//template<class INT>
-//INT binMul(const INT &a, const INT &b, const INT &m){
-//    if(b == 1)
-//        return a;
-//    if(b % 2 == 0){
-//        INT t = mul(a, b >> 1, m);
-//        return (2 * t) % m;
-//    }
-//    return (mul(a, b - 1, m) + a) % m;
-
-
-//    INT res;
-//    while (b) {
-//        if (b & 1) {
-//            res *= a;
-//            res %= m;
-//        }
-//        a *= (a % m);
-//        a %= m;
-//        b >>= 1;
-//    }
-//}
 
 template<class INT>
 INT binpow (INT a, INT n, INT m) {
@@ -92,16 +72,7 @@ bool isMutuallyPrime(INT a, INT b) {
 
 template<class INT>
 unsigned int getBitsSize() {
-    if (typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
-        return QRSAEncryption::Rsa::RSA_64;
-    } else if (typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
-        return QRSAEncryption::Rsa::RSA_128;
-
-    } else if (typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
-        return QRSAEncryption::Rsa::RSA_256;
-    }
-
-    return 0;
+    return sizeof(INT) * 8;
 }
 
 template<class INT>
@@ -114,7 +85,7 @@ INT randNumber() {
 
     while (longDiff > 0) {
         longDiff--;
-        res *= static_cast<unsigned int>(rand());
+        res *= rand() % std::numeric_limits<int>::max();
     }
 
     return res;
@@ -171,7 +142,6 @@ INT randomPrimeNumber(INT no = 0) {
     return p;
 }
 
-// todo (need -)
 template<class INT>
 INT ExtEuclid(INT a, INT b)
 {
@@ -191,31 +161,11 @@ INT ExtEuclid(INT a, INT b)
     return y;
 }
 
-template <class TYPE, class SUBTYPE>
-SUBTYPE getPart(const TYPE& i, bool isLeft) {
-    if (isLeft) {
-        return i.upper();
-    }
-
-    return i.lower();
-}
 
 template<class INT>
 QByteArray toArray(INT i, short sizeBlok = -1) {
     QByteArray res;
-    if (typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
-        res.append(reinterpret_cast<char*>(&i), sizeof (i));
-    } else if (typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
-        res.append(toArray(getPart<uint128_t, uint64_t>(i, true), sizeBlok));
-        res.append(toArray(getPart<uint128_t, uint64_t>(i, false), sizeBlok));
-    } else if (typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
-        res.append(toArray(getPart<uint256_t, uint128_t>(i, true), sizeBlok));
-        res.append(toArray(getPart<uint256_t, uint128_t>(i, false), sizeBlok));
-    }
-
-//    while (sizeBlok && res.rbegin() != res.rend() && *res.rbegin() == 0) {
-//        res.remove(res.size() - 1 , 1);
-//    }
+    res.append(reinterpret_cast<char*>(&i), sizeof (i));
 
     if (sizeBlok < 0) {
         return res;
@@ -223,20 +173,11 @@ QByteArray toArray(INT i, short sizeBlok = -1) {
     return res.left(sizeBlok);
 }
 
-template <class TYPE, class SUBTYPE>
-TYPE unit(const SUBTYPE& left, const SUBTYPE& right) {
-    return TYPE(left, right);
-}
-
 template<class INT>
 INT fromArray(const QByteArray& array) {
-    if (static_cast<uint32_t>(array.size()) <= sizeof (uint64_t) && typeid (INT).hash_code() == typeid (uint64_t).hash_code()) {
-        return *(reinterpret_cast<INT*>(const_cast<char*>(array.data())));
-    } else if (static_cast<uint32_t>(array.size()) <= (sizeof (uint64_t) * 2) && typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
-        return unit<uint128_t, uint64_t>(fromArray<uint64_t>(array.left(array.size() / 2)), fromArray<uint64_t>(array.right(array.size() / 2)));
-    } else if (static_cast<uint32_t>(array.size()) <= (sizeof (uint64_t) * 4) && typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
-        return unit<uint256_t, uint128_t>(fromArray<uint64_t>(array.left(array.size() / 2)), fromArray<uint64_t>(array.right(array.size() / 2)));
-    }
+
+    return *(reinterpret_cast<INT*>(const_cast<char*>(array.data())));
+
     return 0;
 }
 
@@ -244,13 +185,8 @@ template<class INT>
 bool keyGenerator(QByteArray &pubKey,
                   QByteArray &privKey) {
 
-//    INT p = randomPrimeNumber<INT>();
-//    INT q = (p * 2) + 1;
-
-    INT p = 3557;
-    INT q = 2579;
-
-//    q = (p * 2) + 1;
+    INT p = randomPrimeNumber<INT>();
+    INT q = toPrime((p * 2) + 1);;
 
 
     INT modul = p * q;
@@ -266,10 +202,13 @@ bool keyGenerator(QByteArray &pubKey,
 
     INT d = 0;
 
-    d = ExtEuclid(eilor, e);
-    while(d < 0) {
+    d = ExtEuclid<INT>(eilor , e);
+
+    while(d < 0 ) {
         d += eilor;
     }
+
+
 
     pubKey.append(toArray(e));
     pubKey.append(toArray(modul));
@@ -281,36 +220,17 @@ bool keyGenerator(QByteArray &pubKey,
 
 template< class INT>
 short getBytes(INT i) {
-    return static_cast<short>(std::ceil(log2(i) / 8)) ;
-}
-
-template< class INT>
-short getLongBytes(INT i) {
-    if (typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
-        return getBytes<uint64_t>(i.upper()) + getBytes<uint64_t>(i.lower());
-    } else if (typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
-        return getLongBytes<uint128_t>(i.upper()) + getLongBytes<uint128_t>(i.lower());
-    }
-
-    return 0;
+    return static_cast<short>(std::floor(log2(i) / 8)) ;
 }
 
 template<class INT>
 short getBlockSize(const INT &i) {
-    if (i < 0xFFFFFFFFFFFFFFFF) {
-        return getBytes<uint64_t>(i);
-    } else if (typeid (INT).hash_code() == typeid (uint128_t).hash_code()) {
-        return getLongBytes<uint128_t>(i);
-    } else if (typeid (INT).hash_code() == typeid (uint256_t).hash_code()) {
-        return getLongBytes<uint256_t>(i);
-    }
-
-    return 0;
+    return getBytes<INT>(i);
 }
 
 template <class INT>
 QByteArray encodeBlok(const INT& block, const INT &e, const INT &m) {
-    return toArray(binpow(block, e, m), getBlockSize(m));
+    return toArray(binpow(block, e, m), getBlockSize(m) + 1);
 }
 
 template <class INT>
@@ -327,6 +247,12 @@ QByteArray encodeArray(const QByteArray &rawData, const QByteArray &pubKey) {
     INT e = fromArray<INT>(pubKey.mid(0, pubKey.size() / 2));
     INT m = fromArray<INT>(pubKey.mid(pubKey.size() / 2));
     short blockSize = getBlockSize(m);
+
+    if (!blockSize) {
+        qDebug() << "module of key small! size = 1 byte, 2 byte is minimum";
+        return QByteArray();
+    }
+
     QByteArray res;
 
     while ((block = rawData.mid(index, blockSize)).size()) {
@@ -353,7 +279,7 @@ QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
 
     INT d = fromArray<INT>(privKey.mid(0, privKey.size() / 2));
     INT m = fromArray<INT>(privKey.mid(privKey.size() / 2));
-    short blockSize = getBlockSize(m);
+    short blockSize = getBlockSize(m) + 1;
 
     QByteArray res;
     while ((block = rawData.mid(index, blockSize)).size()) {
@@ -372,16 +298,13 @@ QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &p
 
     switch (pubKey.size()) {
     case RSA_64 / 4: {
-        return encodeArray<uint64_t>(rawData, pubKey);
+        return encodeArray<int64_t>(rawData, pubKey);
     }
 
     case RSA_128 / 4: {
-        return encodeArray<uint128_t>(rawData, pubKey);
+        return encodeArray<int128_t>(rawData, pubKey);
     }
 
-    case RSA_256 / 4: {
-        return encodeArray<uint256_t>(rawData, pubKey);
-    }
     default: return QByteArray();
     }
 }
@@ -391,16 +314,13 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
 
     switch (privKey.size()) {
     case RSA_64 / 4: {
-        return decodeArray<uint64_t>(rawData, privKey);
+        return decodeArray<int64_t>(rawData, privKey);
     }
 
     case RSA_128 / 4: {
-        return decodeArray<uint128_t>(rawData, privKey);
+        return decodeArray<int128_t>(rawData, privKey);
     }
 
-    case RSA_256 / 4: {
-        return decodeArray<uint256_t>(rawData, privKey);
-    }
     default: return QByteArray();
     }
 }
@@ -410,39 +330,20 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QRSAEncryption::Rsa rsa)
 {
 
-    //    int ii = binpow(3, 7, 4);
-    //    int bi = static_cast<int>(pow(3,7)) % 4;
-
-    //    int i = binpow(5, 5, 5);
-    //    int b = static_cast<int>(pow(5, 5)) % 5;
-
-    //    auto m = 25972;
-    //    auto test = binpow<uint64_t>(25972, 3, 9173503);
-    //    auto res = binpow<uint64_t>(test, 6111579, 9173503);
-
-    //    auto tt = m == res;
-
     switch (rsa) {
     case RSA_64: {
-        if (!keyGenerator<uint64_t>(pubKey, privKey)) {
+        if (!keyGenerator<int64_t>(pubKey, privKey)) {
             return false;
         }
         break;
     }
     case RSA_128: {
-        if (!keyGenerator<uint128_t>(pubKey, privKey)) {
+        if (!keyGenerator<int128_t>(pubKey, privKey)) {
             return false;
         }
         break;
     }
-    case RSA_256: {
 
-        if (!keyGenerator<uint256_t>(pubKey, privKey)) {
-            return false;
-        }
-        //qDebug() << "RSA_256 not supported. use RSA128 and RSA64";
-        //return false;
-    }
 
     }
 

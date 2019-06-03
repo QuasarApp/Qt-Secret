@@ -13,7 +13,7 @@ int main() {
     auto t = QDateTime::currentMSecsSinceEpoch();
     e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_64);
 
-    QByteArray message = "testtest";
+    QByteArray message = "L";
 
     auto data = e.encode(message, pub);
 
@@ -25,10 +25,8 @@ int main() {
 
     qDebug() << "key generate time RSA_128: " << (QDateTime::currentMSecsSinceEpoch() - t);
 
-    t = QDateTime::currentMSecsSinceEpoch();
-    e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_256);
+    auto data2 = e.encode(message, pub);
 
-    qDebug() << "key generate time RSA_256: " << (QDateTime::currentMSecsSinceEpoch() - t);
-
+    auto res2 = e.decode(data2, priv);
     return 0;
 }
