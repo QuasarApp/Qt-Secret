@@ -170,15 +170,22 @@ QByteArray toArray(INT i, short sizeBlok = -1) {
     if (sizeBlok < 0) {
         return res;
     }
+
+    while (res.rbegin() != res.rend() && !*res.rbegin()) {
+        res.remove(res.size() -1, 1);
+    }
+
     return res.left(sizeBlok);
 }
 
 template<class INT>
 INT fromArray(const QByteArray& array) {
+    INT res = 0;
 
-    return *(reinterpret_cast<INT*>(const_cast<char*>(array.data())));
-
-    return 0;
+    memcpy(&res, array.data(),
+           static_cast<unsigned int>(std::min(array.size(),
+                                              static_cast<int>(sizeof(INT)))));
+    return res;
 }
 
 template<class INT>
@@ -200,15 +207,11 @@ bool keyGenerator(QByteArray &pubKey,
 
     } while((!isMutuallyPrime(eilor, e)));
 
-    INT d = 0;
-
-    d = ExtEuclid<INT>(eilor , e);
+    INT d = ExtEuclid<INT>(eilor , e);;
 
     while(d < 0 ) {
         d += eilor;
     }
-
-
 
     pubKey.append(toArray(e));
     pubKey.append(toArray(modul));
@@ -239,7 +242,7 @@ QByteArray decodeBlok(const INT& block, const INT &d, const INT &m) {
 }
 
 template<class INT>
-QByteArray encodeArray(const QByteArray &rawData, const QByteArray &pubKey) {
+QByteArray encodeArray(QByteArray rawData, const QByteArray &pubKey) {
     int index = 0;
 
     QByteArray block;
@@ -255,13 +258,9 @@ QByteArray encodeArray(const QByteArray &rawData, const QByteArray &pubKey) {
 
     QByteArray res;
 
+    rawData.append(ENDLINE);
+
     while ((block = rawData.mid(index, blockSize)).size()) {
-
-        auto i = fromArray<INT>(block);
-        QByteArray j = toArray(i, blockSize);
-
-        auto i2 = fromArray<INT>(j);
-        auto j2 = toArray(i2, blockSize);
 
         res.append(encodeBlok(fromArray<INT>(block), e, m));
         index += blockSize;
@@ -286,8 +285,7 @@ QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
         res.append(decodeBlok(fromArray<INT>(block), d, m));
         index += blockSize;
     }
-
-    return res;
+    return res.remove(res.lastIndexOf(ENDLINE), res.size());
 }
 
 QRSAEncryption::QRSAEncryption() {
@@ -325,10 +323,31 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
     }
 }
 
+QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey) {
+    auto msg = encode(rawData, privKey);
+    int size = rawData.size();
+    rawData.insert(0, reinterpret_cast<char*>(&size), sizeof (int));
+    rawData.append(msg);
+
+    return rawData;
+}
+
+bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey) {
+    int mSize = 0;
+    memcpy(&mSize, rawData.left(sizeof (int)), sizeof (int));
+
+    auto message = rawData.mid(sizeof (int), mSize);
+    auto sig = rawData.mid(mSize + static_cast<int>(sizeof (int)));
+
+    return message == decode(sig, pubKey);
+}
+
 bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QByteArray &privKey,
-                                     QRSAEncryption::Rsa rsa)
-{
+                                     QRSAEncryption::Rsa rsa) {
+
+    pubKey.clear();
+    privKey.clear();
 
     switch (rsa) {
     case RSA_64: {
