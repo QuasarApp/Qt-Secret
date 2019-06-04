@@ -8,6 +8,8 @@
 
 class QRSAEncryption
 {
+private:
+    bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey);
 public:
 
     enum Rsa {

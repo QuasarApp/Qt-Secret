@@ -12,18 +12,14 @@ INT eulerFunc(const INT &p, const INT &q) {
 }
 
 template<class INT>
-INT mul(const INT &a, const INT &b, const INT &m) {
-    if (b == 0) {
-        return 0 % m;
+INT mul(INT a, INT b, const INT &m) {
+    INT res = 0;
+    while (a != 0) {
+        if (a & 1) res = (res + b) % m;
+        a >>= 1;
+        b = (b << 1) % m;
     }
-
-    if (b == 1)
-        return a;
-    if (b % 2 == 0){
-        INT t = mul(a, b / 2, m);
-        return (2 * t) % m;
-    }
-    return (mul(a, b - 1, m) + a) % m;
+    return res;
 }
 
 template<class INT>
@@ -171,9 +167,9 @@ QByteArray toArray(INT i, short sizeBlok = -1) {
         return res;
     }
 
-    while (res.rbegin() != res.rend() && !*res.rbegin()) {
-        res.remove(res.size() -1, 1);
-    }
+    //    while (res.rbegin() != res.rend() && !*res.rbegin()) {
+    //        res.remove(res.size() -1, 1);
+    //    }
 
     return res.left(sizeBlok);
 }
@@ -288,6 +284,17 @@ QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
     return res.remove(res.lastIndexOf(ENDLINE), res.size());
 }
 
+bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) {
+    QByteArray tesVal = "Test message of encrypkey";
+    bool result = tesVal == decode(encode(tesVal, pubKey), privKey);
+
+    if (!result) {
+        qWarning() << "(Warning): Testkey Fail, try generate new key pair!";
+    }
+
+    return result;
+}
+
 QRSAEncryption::QRSAEncryption() {
 
 }
@@ -296,11 +303,11 @@ QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &p
 
     switch (pubKey.size()) {
     case RSA_64 / 4: {
-        return encodeArray<int64_t>(rawData, pubKey);
+        return encodeArray<uint64_t>(rawData, pubKey);
     }
 
     case RSA_128 / 4: {
-        return encodeArray<int128_t>(rawData, pubKey);
+        return encodeArray<uint128_t>(rawData, pubKey);
     }
 
     default: return QByteArray();
@@ -312,11 +319,11 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
 
     switch (privKey.size()) {
     case RSA_64 / 4: {
-        return decodeArray<int64_t>(rawData, privKey);
+        return decodeArray<uint64_t>(rawData, privKey);
     }
 
     case RSA_128 / 4: {
-        return decodeArray<int128_t>(rawData, privKey);
+        return decodeArray<uint128_t>(rawData, privKey);
     }
 
     default: return QByteArray();
@@ -346,25 +353,31 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QByteArray &privKey,
                                      QRSAEncryption::Rsa rsa) {
 
-    pubKey.clear();
-    privKey.clear();
+    do {
 
-    switch (rsa) {
-    case RSA_64: {
-        if (!keyGenerator<int64_t>(pubKey, privKey)) {
-            return false;
+        pubKey.clear();
+        privKey.clear();
+
+        switch (rsa) {
+        case RSA_64: {
+
+            if (!keyGenerator<int64_t>(pubKey, privKey)) {
+                return false;
+            }
+
+
+            break;
         }
-        break;
-    }
-    case RSA_128: {
-        if (!keyGenerator<int128_t>(pubKey, privKey)) {
-            return false;
+        case RSA_128: {
+            if (!keyGenerator<int128_t>(pubKey, privKey)) {
+                return false;
+            }
+            break;
         }
-        break;
-    }
 
+        }
 
-    }
+    } while (!testKeyPair(pubKey, privKey));
 
 
     return true;

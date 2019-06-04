@@ -4,11 +4,14 @@
 #include <qdebug.h>
 #include <cmath>
 
+const int testSize = 100;
+
+
 QByteArray randomArray() {
     srand(static_cast<unsigned int>(time(nullptr)));
     QByteArray res;
 
-    int length = rand() % 1024 * 1024;
+    int length = rand() % 124 * 1;
 
     for (int i = 0; i < length; ++i) {
         res.push_back(static_cast<char>(rand() % 0xFF));
@@ -22,8 +25,12 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
     QRSAEncryption e;
 
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < testSize; i++) {
         e.generatePairKey(pub, priv, rsa);
+
+        qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize);
+        qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
+        qInfo() << QString("Public key: %0").arg(QString(pub.toHex()));
 
         if (pub.size() != rsa / 4) {
             qCritical() << "pubKey size wrong RSA" << rsa;
@@ -36,19 +43,23 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
             return false;
         }
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < testSize; i++) {
             auto base = randomArray();
 
-            if ( base != e.decode(e.encode(base, pub), priv)) {
-                qCritical() << "encode decode data error RSA" << rsa;
+            auto encodeData = e.encode(base, pub);
+            auto decodeData = e.decode(encodeData, priv);
+
+            if ( base != decodeData) {
+                qCritical() << "encode/decode data error RSA" << rsa;
                 return false;
             }
 
-            if (!e.checkSignMessage(e.signMessage(base, pub), priv)) {
+            encodeData = e.signMessage(base, priv);
+
+            if (!e.checkSignMessage(encodeData, pub)) {
                 qCritical() << "sig message error RSA" << rsa;
                 return false;
             }
-
         }
     }
 

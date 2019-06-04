@@ -24,7 +24,7 @@ CONFIG(release, debug|release): {
 #include($$PWD/../uint256_t/uint256.pri)
 
 
-VERSION = 0.0.0.1
+VERSION = 0.1.0
 
 HEADERS += \
     Qt-AES/qaesencryption.h \

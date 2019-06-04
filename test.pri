@@ -1,5 +1,5 @@
-unix:exec = $$PWD/Stests/build/release/Qt-SecretTest
-win32:exec = $$PWD/Stests/build/release/Qt-SecretTest.exe
+unix:exec = $$PWD/tests/build/release/Qt-SecretTest,$$PWD/src/Qt-AES/build/release/QAESEncryption
+win32:exec = $$PWD/tests/build/release/Qt-SecretTest.exe,$$PWD/src/Qt-AES/build/release/QAESEncryption.exe
 
 
 contains(QMAKE_HOST.os, Linux):{
@@ -8,12 +8,21 @@ contains(QMAKE_HOST.os, Linux):{
     DEPLOYER=%cqtdeployer%
 }
 
+
 deployTest.commands = $$DEPLOYER -bin $$exec clear -qmake $$QMAKE_QMAKE -targetDir $$PWD/deployTests -libDir $$PWD -recursiveDepth 5
 
-test.depends = deployTest
-unix:test.commands = $$PWD/deployTests/serverTests.sh
-win32:test.commands = $$PWD/deployTests/serverTests.exe
+unix:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.sh
+win32:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.exe
+
+unix:testAES.commands = $$PWD/deployTests/QAESEncryption.sh
+win32:testAES.commands = $$PWD/deployTests/QAESEncryption.exe
+
+test.depends += deployTest
+test.depends += testRSA
+test.depends += testAES
 
 QMAKE_EXTRA_TARGETS += \
     deployTest \
+    testAES \
+    testRSA \
     test
