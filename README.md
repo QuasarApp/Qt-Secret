@@ -81,25 +81,7 @@ Current version use __int128 type, and this type not supported in msvc compilers
 
 ## RSA
 
-Encryption and decryption of messages.
-
-``` cpp
-#include <qrsaencryption.h>
-
-    QByteArray pub, priv;
-    QRSAEncryption e;
-    e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_128); // or QRSAEncryption::Rsa::RSA_64
-    QByteArray msg = "test message";
-
-    auto encodeData = e.encode(msg, pub);
-    auto decodeData = e.decode(encodeData, priv);
-    
-    
-
-```
-
-
-### Encode and decode data.
+### Encryption and decryption of messages.
 
 ``` cpp
 #include <qrsaencryption.h>
