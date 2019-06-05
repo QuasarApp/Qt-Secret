@@ -17,8 +17,8 @@ The current implementation of RSA does not provide reliable long-term protection
 * Signature and verification of the message signature.
 
 ## AES
-Aes implementation was borrowed from [bricke] (https://github.com/bricke/Qt-AES), because it fulfills the goals of this library.
-individual thanks [bricke] (https://github.com/bricke) for implementing the AES encryption class.
+Aes implementation was borrowed from [bricke](https://github.com/bricke/Qt-AES), because it fulfills the goals of this library.
+individual thanks [bricke](https://github.com/bricke) for implementing the AES encryption class.
 
 #### AES Levels
 The class supports all AES key lenghts
