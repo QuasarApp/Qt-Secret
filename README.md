@@ -172,7 +172,7 @@ QString decodedString = QString(encryption.removePadding(decodeText));
 
 ### Example via static invocation
 Static invocation without creating instances, 256 bit key, ECB mode, starting from *QString* text/key
-```
+``` cpp
 #include <QCryptographicHash>
 #include "qaesencryption.h"
 
