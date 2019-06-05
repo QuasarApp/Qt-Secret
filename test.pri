@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2018-2019 QuasarApp.
+# Distributed under the lgplv3 software license, see the accompanying
+# Everyone is permitted to copy and distribute verbatim copies
+# of this license document, but changing it is not allowed.
+#
+
 unix:exec = $$PWD/tests/build/release/Qt-SecretTest,$$PWD/src/Qt-AES/build/release/QAESEncryption
 win32:exec = $$PWD/tests/build/release/Qt-SecretTest.exe,$$PWD/src/Qt-AES/build/release/QAESEncryption.exe
 

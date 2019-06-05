@@ -29,11 +29,9 @@ VERSION = 0.1.0
 HEADERS += \
     Qt-AES/qaesencryption.h \
     qtsecret_global.h \
-    Qt-RSA/hexparser.h \
     Qt-RSA/qrsaencryption.h
 
 SOURCES += \
-    Qt-RSA/hexparser.cpp \
     Qt-AES/qaesencryption.cpp \
     Qt-RSA/qrsaencryption.cpp
 
