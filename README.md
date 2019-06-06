@@ -4,7 +4,7 @@ Simple encryption library supporting RSA and AES algorithms.
 # Futures 
 The Qt-Secret library supports the following algorithms:
 
-## RSA
+### RSA
 The current implementation of RSA does not provide reliable long-term protection; therefore, to provide consistent protection, use the generated keys as session keys.
 #### Supported sizes
  * RSA64 (key size 128bit)
@@ -15,7 +15,7 @@ The current implementation of RSA does not provide reliable long-term protection
 * Encryption and decryption of messages.
 * Signature and verification of the message signature.
 
-## AES
+### AES
 Aes implementation was borrowed from [bricke](https://github.com/bricke/Qt-AES), because it fulfills the goals of this library.
 
 Individual thanks [bricke](https://github.com/bricke) for implementing the AES encryption class.
