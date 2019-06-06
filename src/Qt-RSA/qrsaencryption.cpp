@@ -196,9 +196,7 @@ bool keyGenerator(QByteArray &pubKey,
                   QByteArray &privKey) {
 
     INT p = randomPrimeNumber<INT>();
-    INT q = toPrime((p * 2) + 1);;
-
-
+    INT q = randomPrimeNumber<INT>(p);
     INT modul = p * q;
     INT eilor = eulerFunc(p, q);
     INT e = randNumber<INT>() % eilor;
