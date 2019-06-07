@@ -16,7 +16,7 @@ CONFIG(release, debug|release): {
 }
 unix:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret
 
-win32:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret0
+win32:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret1
 
 #include($$PWD/../uint256_t/uint256.pri)
 
