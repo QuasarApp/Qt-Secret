@@ -8,7 +8,7 @@
 QT -= gui
 CONFIG += c++17
 
-TARGET=Qt-Secret
+TARGET = Qt-Secret
 TEMPLATE = lib
 
 DEFINES += Qt_SECRET_LIBRARY
@@ -23,15 +23,12 @@ CONFIG(release, debug|release): {
 
 #include($$PWD/../uint256_t/uint256.pri)
 
-
 VERSION = 1.0.0
 
-HEADERS += \
-    Qt-AES/qaesencryption.h \
-    qtsecret_global.h \
-    Qt-RSA/qrsaencryption.h
+HEADERS += Qt-AES/qaesencryption.h \
+           qtsecret_global.h \
+           Qt-RSA/qrsaencryption.h
 
-SOURCES += \
-    Qt-AES/qaesencryption.cpp \
-    Qt-RSA/qrsaencryption.cpp
+SOURCES += Qt-AES/qaesencryption.cpp \
+           Qt-RSA/qrsaencryption.cpp
 
