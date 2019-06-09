@@ -363,6 +363,8 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QByteArray &privKey,
                                      QRSAEncryption::Rsa rsa) {
 
+    qDebug() << "from forked" << endl;
+
     do {
 
         pubKey.clear();
