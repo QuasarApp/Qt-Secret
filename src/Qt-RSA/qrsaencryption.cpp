@@ -139,9 +139,11 @@ INT toPrime(INT n) {
 template<class INT>
 INT randomPrimeNumber(INT no = 0) {
     srand(static_cast<unsigned int>(time(nullptr)));
-    auto moveBits = (getBitsSize<INT>() / 2);
-    auto p = toPrime(randNumber<INT>() % (INT(-1) << moveBits >> moveBits));
-    while(p == no) p = toPrime(randNumber<INT>() % (INT(-1) << moveBits >> moveBits));
+
+    auto max = ~((~INT(0)) << ((getBitsSize<INT>() - 1) >> 1));
+
+    auto p = toPrime(randNumber<INT>() % max);
+    while(p == no) p = toPrime(randNumber<INT>() % max);
 
     return p;
 }
@@ -174,10 +176,6 @@ QByteArray toArray(INT i, short sizeBlok = -1) {
     if (sizeBlok < 0) {
         return res;
     }
-
-    //    while (res.rbegin() != res.rend() && !*res.rbegin()) {
-    //        res.remove(res.size() -1, 1);
-    //    }
 
     return res.left(sizeBlok);
 }
