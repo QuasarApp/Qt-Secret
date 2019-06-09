@@ -9,6 +9,7 @@
 #include <QFile>
 #include <cmath>
 #include <QDebug>
+#include <QDateTime>
 
 typedef unsigned __int128  uint128_t;
 typedef signed __int128  int128_t;
@@ -80,7 +81,7 @@ unsigned int getBitsSize() {
 
 template<class INT>
 INT randNumber() {
-    srand(static_cast<unsigned int>(time(nullptr)));
+    srand(QDateTime::currentMSecsSinceEpoch() % std::numeric_limits<int>::max());
 
     int longDiff = getBitsSize<INT>() / (sizeof (int) * 8);
 
@@ -138,9 +139,9 @@ INT toPrime(INT n) {
 template<class INT>
 INT randomPrimeNumber(INT no = 0) {
     srand(static_cast<unsigned int>(time(nullptr)));
-
-    auto p = toPrime(randNumber<INT>() >> (getBitsSize<INT>() / 2));
-    while(p == no) p = toPrime(randNumber<INT>() >> (getBitsSize<INT>() / 2));
+    auto moveBits = (getBitsSize<INT>() / 2);
+    auto p = toPrime(randNumber<INT>() % (INT(-1) << moveBits >> moveBits));
+    while(p == no) p = toPrime(randNumber<INT>() % (INT(-1) << moveBits >> moveBits));
 
     return p;
 }
