@@ -9,7 +9,6 @@
 #include <QFile>
 #include <cmath>
 #include <QDebug>
-#include <QDateTime>
 
 typedef unsigned __int128  uint128_t;
 typedef signed __int128  int128_t;
@@ -81,7 +80,9 @@ unsigned int getBitsSize() {
 
 template<class INT>
 INT randNumber() {
-    srand(QDateTime::currentMSecsSinceEpoch() % std::numeric_limits<int>::max());
+    srand(std::chrono::duration_cast<std::chrono::nanoseconds>
+          (std::chrono::system_clock::now().time_since_epoch()).count()
+          % std::numeric_limits<int>::max());
 
     int longDiff = getBitsSize<INT>() / (sizeof (int) * 8);
 
