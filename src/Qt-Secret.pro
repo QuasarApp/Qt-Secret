@@ -21,7 +21,10 @@ CONFIG(release, debug|release): {
     DESTDIR="$$PWD/build/debug"
 }
 
+<<<<<<< HEAD
 #include($$PWD/../uint256_t/uint256.pri)
+=======
+>>>>>>> 6a1e59163b9fc38c6570217d012be116a10badff
 
 VERSION = 1.0.0
 

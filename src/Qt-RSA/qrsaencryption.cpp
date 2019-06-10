@@ -96,7 +96,9 @@ unsigned int getBitsSize() {
 // случайное число INT
 template<class INT>
 INT randNumber() {
-    srand(QDateTime::currentMSecsSinceEpoch() % std::numeric_limits<int>::max());
+    srand(std::chrono::duration_cast<std::chrono::nanoseconds>
+          (std::chrono::system_clock::now().time_since_epoch()).count()
+          % std::numeric_limits<int>::max());
 
     // сколько int укладывается в INT
     // int longDiff = getBitsSize<INT>() / (sizeof (int) * 8);
@@ -162,14 +164,10 @@ template<class INT>
 INT randomPrimeNumber(INT no = 0) {
     srand(static_cast<unsigned int>(time(nullptr)));
 
-    INT temp1 = (INT(-1) ^ (INT(1) << 62)),
-        temp2 = randNumber<INT>() % temp1;
+    auto max = (~((INT(1)) << (getBitsSize<INT>() - 1))) >> ((getBitsSize<INT>()) >> 1);
 
-    qDebug() << int(temp1 >> 32) << int(temp1);
-
-    auto           p = toPrime<INT>(temp2);
-
-    while(p == no) p = toPrime<INT>(randNumber<INT>() % temp2);
+    auto p = toPrime(randNumber<INT>() % max);
+    while(p == no) p = toPrime(randNumber<INT>() % max);
 
     return p;
 }
@@ -201,10 +199,6 @@ QByteArray toArray(INT i, short sizeBlok = -1) {
     if (sizeBlok < 0) {
         return res;
     }
-
-    //    while (res.rbegin() != res.rend() && !*res.rbegin()) {
-    //        res.remove(res.size() -1, 1);
-    //    }
 
     return res.left(sizeBlok);
 }
