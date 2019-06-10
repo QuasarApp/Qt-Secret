@@ -141,7 +141,7 @@ template<class INT>
 INT randomPrimeNumber(INT no = 0) {
     srand(static_cast<unsigned int>(time(nullptr)));
 
-    auto max = ~((~INT(0)) << ((getBitsSize<INT>() - 1) >> 1));
+    auto max = (~((INT(1)) << (getBitsSize<INT>() - 1))) >> ((getBitsSize<INT>()) >> 1);
 
     auto p = toPrime(randNumber<INT>() % max);
     while(p == no) p = toPrime(randNumber<INT>() % max);
