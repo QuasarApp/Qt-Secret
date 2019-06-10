@@ -101,15 +101,15 @@ INT randNumber() {
           % std::numeric_limits<int>::max());
 
     // сколько int укладывается в INT
-    // int longDiff = getBitsSize<INT>() / (sizeof (int) * 8);
+    int longDiff = getBitsSize<INT>() / (sizeof (int) * 8);
 
     INT res = 1;
-    //0100 0000
-    //1111 1111
 
-    do{
+    while(longDiff > 0){
+        longDiff--;
+
         res *= rand() % std::numeric_limits<int>::max();
-    }while(!(res & (static_cast<INT>(0x1) << (getBitsSize<INT>() - 1))));
+    }
 
     return res;
 }
@@ -162,6 +162,7 @@ INT toPrime(INT n) {
 // случайное простое число, не равное no
 template<class INT>
 INT randomPrimeNumber(INT no = 0) {
+
     srand(static_cast<unsigned int>(time(nullptr)));
 
     auto max = (~((INT(1)) << (getBitsSize<INT>() - 1))) >> ((getBitsSize<INT>()) >> 1);
