@@ -10,25 +10,33 @@
 #include <cmath>
 #include <QDebug>
 
+#include <QDateTime>
+#include <time.h>
+
 typedef unsigned __int128  uint128_t;
 typedef signed __int128  int128_t;
 
+// функция эйлера
 template<class INT>
 INT eulerFunc(const INT &p, const INT &q) {
     return (p - 1) * (q - 1);
 }
 
+// перемножение по моудлю
 template<class INT>
 INT mul(INT a, INT b, const INT &m) {
     INT res = 0;
     while (a != 0) {
-        if (a & 1) res = (res + b) % m;
+        // если a - нечетное
+        if (a & 1)
+            res = (res + b) % m;
         a >>= 1;
         b = (b << 1) % m;
     }
     return res;
 }
 
+// возведение в степень по модулю
 template<class INT>
 INT pows(const INT &a, const INT &b, const INT &m) {
     if(b == 0)
@@ -37,7 +45,7 @@ INT pows(const INT &a, const INT &b, const INT &m) {
         INT t = pows(a, b / 2, m);
         return mul(t , t, m) % m;
     }
-    return ( mul(pows(a, b - 1, m) , a, m)) % m;
+    return ( mul(pows(a, b - 1, m) , a, m) ) % m;
 }
 
 template<class INT>
@@ -53,6 +61,7 @@ INT binpow (INT a, INT n, INT m) {
     return res % m;
 }
 
+// наибольший общий делитель, для взаимно простых == 1
 template<class INT>
 bool gcd(INT a, INT b) {
     INT c;
@@ -64,52 +73,65 @@ bool gcd(INT a, INT b) {
     return b;
 }
 
+// проверка на взаимную простоту
 template<class INT>
 bool isMutuallyPrime(INT a, INT b) {
-    if ((!(a % 2) && !(b % 2)) || (!(a % 3) && !(b % 3)) || (!(a % 5) && !(b % 5)) || (!(a % 7)  && !(b % 7))) {
+    if (        (!(a % 2) && !(b % 2))
+             || (!(a % 3) && !(b % 3))
+             || (!(a % 5) && !(b % 5))
+             || (!(a % 7) && !(b % 7))
+       ) {
         return false;
     }
 
     return gcd(a, b) == 1;
 }
 
+// количество бит в INT
 template<class INT>
 unsigned int getBitsSize() {
     return sizeof(INT) * 8;
 }
 
+// случайное число INT
 template<class INT>
 INT randNumber() {
-    srand(static_cast<unsigned int>(time(nullptr)));
+    srand(QDateTime::currentMSecsSinceEpoch() % std::numeric_limits<int>::max());
 
-    int longDiff = getBitsSize<INT>() / (sizeof (int) * 8);
+    // сколько int укладывается в INT
+    // int longDiff = getBitsSize<INT>() / (sizeof (int) * 8);
 
     INT res = 1;
+    //0100 0000
+    //1111 1111
 
-    while (longDiff > 0) {
-        longDiff--;
+    do{
         res *= rand() % std::numeric_limits<int>::max();
-    }
+    }while(!(res & (static_cast<INT>(0x1) << (getBitsSize<INT>() - 1))));
 
     return res;
 }
 
+// тест ферма
 template<class INT>
 bool isPrimeFerma(INT x){
+
     if(x == 2)
         return true;
 
     for(int i = 0; i < 100; i++){
         INT a = (randNumber<INT>() % (x - 2)) + 2;
+
         if (!isMutuallyPrime(a, x))
             return false;
-        if( pows(a, x-1, x) != 1)
+        if( binpow(a, x-1, x) != 1)
             return false;
     }
 
     return true;
 }
 
+// поиск ближайшего простого числа
 template<class INT>
 INT toPrime(INT n) {
 
@@ -135,12 +157,19 @@ INT toPrime(INT n) {
     }
 }
 
+// случайное простое число, не равное no
 template<class INT>
 INT randomPrimeNumber(INT no = 0) {
     srand(static_cast<unsigned int>(time(nullptr)));
 
-    auto p = toPrime(randNumber<INT>() >> (getBitsSize<INT>() / 2));
-    while(p == no) p = toPrime(randNumber<INT>() >> (getBitsSize<INT>() / 2));
+    INT temp1 = (INT(-1) ^ (INT(1) << 62)),
+        temp2 = randNumber<INT>() % temp1;
+
+    qDebug() << int(temp1 >> 32) << int(temp1);
+
+    auto           p = toPrime<INT>(temp2);
+
+    while(p == no) p = toPrime<INT>(randNumber<INT>() % temp2);
 
     return p;
 }
@@ -163,7 +192,6 @@ INT ExtEuclid(INT a, INT b)
     }
     return y;
 }
-
 
 template<class INT>
 QByteArray toArray(INT i, short sizeBlok = -1) {
@@ -191,6 +219,7 @@ INT fromArray(const QByteArray& array) {
     return res;
 }
 
+// генерация ключей
 template<class INT>
 bool keyGenerator(QByteArray &pubKey,
                   QByteArray &privKey) {
@@ -203,8 +232,10 @@ bool keyGenerator(QByteArray &pubKey,
         p = toPrime((p - 1) / 2);
     }
 
-    INT eilor = eulerFunc(p, q);
+    INT eilor = eulerFunc(p, q); // (p-1)*(q-1)
     INT e = randNumber<INT>() % eilor;
+
+    // d,e: d*e = 1 mod eilor
 
     if (!(e % 2)) e--;
 
@@ -227,11 +258,11 @@ bool keyGenerator(QByteArray &pubKey,
     return true;
 }
 
+// округляет в нижнюю сторону кол-во байт, отводимых под число i
 template< class INT>
 short getBytes(INT i) {
-    return static_cast<short>(std::floor(log2(i) / 8)) ;
+    return static_cast<short>(std::floor(log2(i) / 8));
 }
-
 template<class INT>
 short getBlockSize(const INT &i) {
     return getBytes<INT>(i);
@@ -275,7 +306,6 @@ QByteArray encodeArray(QByteArray rawData, const QByteArray &pubKey) {
     return res;
 }
 
-
 template<class INT>
 QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
     int index = 0;
@@ -294,8 +324,10 @@ QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
     return res.remove(res.lastIndexOf(ENDLINE), res.size());
 }
 
+// проверка ключей
 bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) {
     QByteArray tesVal = "Test message of encrypkey";
+
     bool result = tesVal == decode(encode(tesVal, pubKey), privKey);
 
     if (!result) {
@@ -323,7 +355,6 @@ QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &p
     default: return QByteArray();
     }
 }
-
 
 QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey) {
 
@@ -363,31 +394,36 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QByteArray &privKey,
                                      QRSAEncryption::Rsa rsa) {
 
-    qDebug() << "from forked" << endl;
-
     do {
 
         pubKey.clear();
         privKey.clear();
 
         switch (rsa) {
-        case RSA_64: {
 
-            if (!keyGenerator<int64_t>(pubKey, privKey)) {
-                return false;
+            case RSA_64: {
+
+                qDebug() << "RSA_64";
+
+                if (!keyGenerator<int64_t>(pubKey, privKey)) {
+                    return false;
+                }
+
+                break;
             }
 
+            case RSA_128: {
+                qDebug() << "RSA_128";
 
-            break;
-        }
-        case RSA_128: {
-            if (!keyGenerator<int128_t>(pubKey, privKey)) {
-                return false;
+                if (!keyGenerator<int128_t>(pubKey, privKey)) {
+                    return false;
+                }
+
+                break;
             }
-            break;
         }
 
-        }
+        qDebug() << "ex switch";
 
     } while (!testKeyPair(pubKey, privKey));
 
