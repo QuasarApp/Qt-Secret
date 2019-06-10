@@ -431,4 +431,8 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
     return true;
 }
 
+unsigned int QRSAEncryption::getBytesSize(QRSAEncryption::Rsa rsa) {
+    return rsa / 8;
+}
+
 

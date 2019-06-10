@@ -34,6 +34,8 @@ public:
 
     bool generatePairKey(QByteArray &pubKey, QByteArray &privKey, Rsa = RSA_128);
 
+    static unsigned int getBytesSize(Rsa rsa);
+
 };
 
 #endif // QRSAENCRYPTION_H
