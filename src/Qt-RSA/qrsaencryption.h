@@ -10,6 +10,7 @@
 
 #include <QByteArray>
 #include <QList>
+#include <QCryptographicHash> // to use sha256
 
 #define ENDLINE "#_end_#"
 

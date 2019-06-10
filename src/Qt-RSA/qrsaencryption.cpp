@@ -366,23 +366,37 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
     }
 }
 
+// EDS (electronic digital signature)
 QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey) {
-    auto msg = encode(rawData, privKey);
-    int size = rawData.size();
-    rawData.insert(0, reinterpret_cast<char*>(&size), sizeof (int));
-    rawData.append(msg);
+
+    QByteArray hash = QCryptographicHash::hash(rawData, QCryptographicHash::Sha256);
+
+    QByteArray signature = encode(hash, privKey);
+
+    // signature size insert to 0 pos of message and takes up [sizeof(int)] bytes
+    int signatureSize = signature.size();
+    rawData.insert(0, reinterpret_cast<char*>(&signatureSize), sizeof(int));
+
+    rawData.append(signature);
 
     return rawData;
 }
 
+// check valid EDS
 bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey) {
-    int mSize = 0;
-    memcpy(&mSize, rawData.left(sizeof (int)), sizeof (int));
 
-    auto message = rawData.mid(sizeof (int), mSize);
-    auto sig = rawData.mid(mSize + static_cast<int>(sizeof (int)));
+    int signatureSize{0};
+    memcpy(&signatureSize, rawData.left(sizeof(int)), sizeof(int));
 
-    return message == decode(sig, pubKey);
+    // message, that was recieved from channel
+    QByteArray message = rawData.mid(sizeof(int), rawData.size() - signatureSize - sizeof(int));
+
+    // signature, that was recieved and decrypt from channel
+    QByteArray signature = decode(rawData.mid(rawData.size() - signatureSize),
+                                  pubKey);
+
+    // if decrypt signature == sha256(recived message), then signed message is valid
+    return signature == QCryptographicHash::hash(message, QCryptographicHash::Sha256);
 }
 
 bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
@@ -390,35 +404,25 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QRSAEncryption::Rsa rsa) {
 
     do {
-
         pubKey.clear();
         privKey.clear();
 
         switch (rsa) {
 
             case RSA_64: {
-
-                qDebug() << "RSA_64";
-
                 if (!keyGenerator<int64_t>(pubKey, privKey)) {
                     return false;
                 }
-
                 break;
             }
 
             case RSA_128: {
-                qDebug() << "RSA_128";
-
                 if (!keyGenerator<int128_t>(pubKey, privKey)) {
                     return false;
                 }
-
                 break;
             }
         }
-
-        qDebug() << "ex switch";
 
     } while (!testKeyPair(pubKey, privKey));
 
