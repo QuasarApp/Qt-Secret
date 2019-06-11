@@ -6,9 +6,6 @@
 //#
 
 #include "qrsaencryption.h"
-#include <QFile>
-#include <cmath>
-#include <QDebug>
 
 typedef unsigned __int128  uint128_t;
 typedef signed __int128  int128_t;
@@ -37,7 +34,7 @@ INT pows(const INT &a, const INT &b, const INT &m) {
         INT t = pows(a, b / 2, m);
         return mul(t , t, m) % m;
     }
-    return ( mul(pows(a, b - 1, m) , a, m)) % m;
+    return ( mul(pows(a, b - 1, m), a, m)) % m;
 }
 
 template<class INT>
@@ -66,9 +63,11 @@ bool gcd(INT a, INT b) {
 
 template<class INT>
 bool isMutuallyPrime(INT a, INT b) {
-    if ((!(a % 2) && !(b % 2)) || (!(a % 3) && !(b % 3)) || (!(a % 5) && !(b % 5)) || (!(a % 7)  && !(b % 7))) {
-        return false;
-    }
+    if (        (!(a % 2) && !(b % 2))
+             || (!(a % 3) && !(b % 3))
+             || (!(a % 5) && !(b % 5))
+             || (!(a % 7) && !(b % 7))
+       ) return false;
 
     return gcd(a, b) == 1;
 }
@@ -96,22 +95,25 @@ INT randNumber() {
     return res;
 }
 
+// Ferma test
 template<class INT>
 bool isPrimeFerma(INT x){
-    if(x == 2)
-        return true;
+
+    if(x == 2) return true;
 
     for(int i = 0; i < 100; i++){
         INT a = (randNumber<INT>() % (x - 2)) + 2;
+
         if (!isMutuallyPrime(a, x))
             return false;
-        if( pows(a, x-1, x) != 1)
+        if( binpow(a, x-1, x) != 1)
             return false;
     }
 
     return true;
 }
 
+// return nearest prime number
 template<class INT>
 INT toPrime(INT n) {
 
@@ -123,24 +125,22 @@ INT toPrime(INT n) {
     INT RN = n;
 
     while (true) {
-        if (isPrimeFerma(LN)) {
-            return LN;
-        }
+
+        if (isPrimeFerma(LN)) return LN;
 
         RN+=2;
 
-        if (isPrimeFerma(RN)) {
-            return RN;
-        }
-
+        if (isPrimeFerma(RN)) return RN;
         LN-=2;
     }
 }
 
 template<class INT>
 INT randomPrimeNumber(INT no = 0) {
+
     srand(static_cast<unsigned int>(time(nullptr)));
 
+    // max INT
     auto max = (~((INT(1)) << (getBitsSize<INT>() - 1))) >> ((getBitsSize<INT>()) >> 1);
 
     auto p = toPrime(randNumber<INT>() % max);
@@ -167,7 +167,6 @@ INT ExtEuclid(INT a, INT b)
     }
     return y;
 }
-
 
 template<class INT>
 QByteArray toArray(INT i, short sizeBlok = -1) {
@@ -210,7 +209,6 @@ bool keyGenerator(QByteArray &pubKey,
 
     do {
         e -= 2;
-
     } while((!isMutuallyPrime(eilor, e)));
 
     INT d = ExtEuclid<INT>(eilor , e);;
@@ -229,9 +227,8 @@ bool keyGenerator(QByteArray &pubKey,
 
 template< class INT>
 short getBytes(INT i) {
-    return static_cast<short>(std::floor(log2(i) / 8)) ;
+    return static_cast<short>(std::floor(log2(i) / 8));
 }
-
 template<class INT>
 short getBlockSize(const INT &i) {
     return getBytes<INT>(i);
@@ -275,7 +272,6 @@ QByteArray encodeArray(QByteArray rawData, const QByteArray &pubKey) {
     return res;
 }
 
-
 template<class INT>
 QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
     int index = 0;
@@ -296,11 +292,10 @@ QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
 
 bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) {
     QByteArray tesVal = "Test message of encrypkey";
+
     bool result = tesVal == decode(encode(tesVal, pubKey), privKey);
 
-    if (!result) {
-        qWarning() << "(Warning): Testkey Fail, try generate new key pair!";
-    }
+    if (!result) qWarning() << "(Warning): Testkey Fail, try generate new key pair!";
 
     return result;
 }
@@ -312,51 +307,63 @@ QRSAEncryption::QRSAEncryption() {
 QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey) {
 
     switch (pubKey.size()) {
-    case RSA_64 / 4: {
-        return encodeArray<uint64_t>(rawData, pubKey);
-    }
+        case RSA_64 / 4: {
+            return encodeArray<uint64_t>(rawData, pubKey);
+        }
 
-    case RSA_128 / 4: {
-        return encodeArray<uint128_t>(rawData, pubKey);
-    }
+        case RSA_128 / 4: {
+            return encodeArray<uint128_t>(rawData, pubKey);
+        }
 
-    default: return QByteArray();
+        default: return QByteArray();
     }
 }
-
 
 QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey) {
 
     switch (privKey.size()) {
-    case RSA_64 / 4: {
-        return decodeArray<uint64_t>(rawData, privKey);
-    }
 
-    case RSA_128 / 4: {
-        return decodeArray<uint128_t>(rawData, privKey);
-    }
+        case RSA_64 / 4: {
+            return decodeArray<uint64_t>(rawData, privKey);
+        }
 
-    default: return QByteArray();
+        case RSA_128 / 4: {
+            return decodeArray<uint128_t>(rawData, privKey);
+        }
+        default: return QByteArray();
     }
 }
 
+// EDS (digital signature)
 QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey) {
-    auto msg = encode(rawData, privKey);
-    int size = rawData.size();
-    rawData.insert(0, reinterpret_cast<char*>(&size), sizeof (int));
-    rawData.append(msg);
+
+    QByteArray hash = QCryptographicHash::hash(rawData, QCryptographicHash::Sha256);
+
+    QByteArray signature = encode(hash, privKey);
+
+    rawData.append(SIGN_MARKER + signature.toHex() + SIGN_MARKER);
 
     return rawData;
 }
 
+// check valid EDS
 bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey) {
-    int mSize = 0;
-    memcpy(&mSize, rawData.left(sizeof (int)), sizeof (int));
 
-    auto message = rawData.mid(sizeof (int), mSize);
-    auto sig = rawData.mid(mSize + static_cast<int>(sizeof (int)));
+    // start position of SIGN_MARKER in rawData
+    auto signStartPos = rawData.lastIndexOf(SIGN_MARKER, rawData.length() - signMarkerLength - 1);
 
-    return message == decode(sig, pubKey);
+    // length of signature in rawData
+    auto signLength   = rawData.length() - signStartPos - signMarkerLength * 2;
+
+    // message, that was recieved from channel
+    QByteArray message = rawData.left(signStartPos);
+
+    // hash, that was decrypt from recieved signature
+    QByteArray recievedHash = decode(QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)),
+                                     pubKey);
+
+    // if recievedHash == sha256(recived message), then signed message is valid
+    return recievedHash == QCryptographicHash::hash(message, QCryptographicHash::Sha256);
 }
 
 bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
@@ -364,27 +371,24 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
                                      QRSAEncryption::Rsa rsa) {
 
     do {
-
         pubKey.clear();
         privKey.clear();
 
         switch (rsa) {
-        case RSA_64: {
 
-            if (!keyGenerator<int64_t>(pubKey, privKey)) {
-                return false;
+            case RSA_64: {
+                if (!keyGenerator<int64_t>(pubKey, privKey)) {
+                    return false;
+                }
+                break;
             }
 
-
-            break;
-        }
-        case RSA_128: {
-            if (!keyGenerator<int128_t>(pubKey, privKey)) {
-                return false;
+            case RSA_128: {
+                if (!keyGenerator<int128_t>(pubKey, privKey)) {
+                    return false;
+                }
+                break;
             }
-            break;
-        }
-
         }
 
     } while (!testKeyPair(pubKey, privKey));
@@ -396,5 +400,3 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
 unsigned int QRSAEncryption::getBytesSize(QRSAEncryption::Rsa rsa) {
     return rsa / 8;
 }
-
-

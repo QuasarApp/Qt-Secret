@@ -8,14 +8,12 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS +=  \
-        src \
-        tests \
-        qaesencryption
+SUBDIRS += src \
+           tests \
+           qaesencryption
 
 include($$PWD/test.pri)
 
 src.file = src/Qt-Secret.pro
 tests.file = tests/Qt-SecretTest.pro
 qaesencryption.file = src/Qt-AES/qaesencryption.pro
-
