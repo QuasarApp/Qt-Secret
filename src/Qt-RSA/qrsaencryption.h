@@ -10,14 +10,20 @@
 
 #include <QByteArray>
 #include <QList>
+#include <QFile>
+#include <cmath>
+#include <QDebug>
 #include <QCryptographicHash> // to use sha256
 
 #define ENDLINE "#_end_#"
+#define SIGN_MARKER "-SIGN-"
 
 class QRSAEncryption
 {
+
 private:
     bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey);
+
 public:
 
     enum Rsa {
