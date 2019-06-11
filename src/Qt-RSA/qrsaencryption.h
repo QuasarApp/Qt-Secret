@@ -16,7 +16,9 @@
 #include <QCryptographicHash> // to use sha256
 
 #define ENDLINE "#_end_#"
-#define SIGN_MARKER "-SIGN-"
+
+static const QString SIGN_MARKER = "-SIGN-";
+static const int signMarkerLength = SIGN_MARKER.length();
 
 class QRSAEncryption
 {

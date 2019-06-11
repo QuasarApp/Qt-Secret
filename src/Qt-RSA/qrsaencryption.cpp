@@ -326,19 +326,10 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
         case RSA_64 / 4: {
             return decodeArray<uint64_t>(rawData, privKey);
         }
-<<<<<<< HEAD
 
         case RSA_128 / 4: {
             return decodeArray<uint128_t>(rawData, privKey);
         }
-
-=======
-
-        case RSA_128 / 4: {
-            return decodeArray<uint128_t>(rawData, privKey);
-        }
-
->>>>>>> 3f9ad7c6888202cffa30019e90b186cf988e82a7
         default: return QByteArray();
     }
 }
@@ -358,18 +349,21 @@ QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &pri
 // check valid EDS
 bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey) {
 
-    auto signStartPos = rawData.lastIndexOf(SIGN_MARKER, rawData.length() - QString(SIGN_MARKER).length() - 1),
-         signLength   = rawData.length() - signStartPos - QString(SIGN_MARKER).length() * 2;
+    // start position of SIGN_MARKER in rawData
+    auto signStartPos = rawData.lastIndexOf(SIGN_MARKER, rawData.length() - signMarkerLength - 1);
+
+    // length of signature in rawData
+    auto signLength   = rawData.length() - signStartPos - signMarkerLength * 2;
 
     // message, that was recieved from channel
     QByteArray message = rawData.left(signStartPos);
 
-    // signature, that was recieved and decrypt from channel
-    QByteArray signature = decode(QByteArray::fromHex(rawData.mid(signStartPos + QString(SIGN_MARKER).length(), signLength)),
-                                  pubKey);
+    // hash, that was decrypt from recieved signature
+    QByteArray recievedHash = decode(QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)),
+                                     pubKey);
 
-    // if decrypt signature == sha256(recived message), then signed message is valid
-    return signature == QCryptographicHash::hash(message, QCryptographicHash::Sha256);
+    // if recievedHash == sha256(recived message), then signed message is valid
+    return recievedHash == QCryptographicHash::hash(message, QCryptographicHash::Sha256);
 }
 
 bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
