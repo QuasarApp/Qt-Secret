@@ -326,11 +326,19 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
         case RSA_64 / 4: {
             return decodeArray<uint64_t>(rawData, privKey);
         }
+<<<<<<< HEAD
 
         case RSA_128 / 4: {
             return decodeArray<uint128_t>(rawData, privKey);
         }
 
+=======
+
+        case RSA_128 / 4: {
+            return decodeArray<uint128_t>(rawData, privKey);
+        }
+
+>>>>>>> 3f9ad7c6888202cffa30019e90b186cf988e82a7
         default: return QByteArray();
     }
 }
