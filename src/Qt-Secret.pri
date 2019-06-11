@@ -22,6 +22,3 @@ win32:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret1
 
 INCLUDEPATH += "$$PWD/Qt-RSA"
 INCLUDEPATH += "$$PWD/Qt-AES"
-
-
-

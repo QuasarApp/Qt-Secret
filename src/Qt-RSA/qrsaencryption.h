@@ -10,13 +10,22 @@
 
 #include <QByteArray>
 #include <QList>
+#include <QFile>
+#include <cmath>
+#include <QDebug>
+#include <QCryptographicHash> // to use sha256
 
 #define ENDLINE "#_end_#"
 
+static const QString SIGN_MARKER = "-SIGN-";
+static const int signMarkerLength = SIGN_MARKER.length();
+
 class QRSAEncryption
 {
+
 private:
     bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey);
+
 public:
 
     enum Rsa {
