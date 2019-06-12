@@ -67,6 +67,19 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
                 qCritical() << "sig message error RSA" << rsa;
                 return false;
             }
+            encodeData += "work it";
+
+            if (!e.checkSignMessage(encodeData, pub)) {
+                qCritical() << "sig message error RSA with lst added value" << rsa;
+                return false;
+            }
+
+            encodeData.push_front("not work");
+
+            if (e.checkSignMessage(encodeData, pub)) {
+                qCritical() << "sig message error RSA with fromt added value" << rsa;
+                return false;
+            }
         }
     }
 
