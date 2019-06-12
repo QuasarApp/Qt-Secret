@@ -191,8 +191,7 @@ INT fromArray(const QByteArray& array) {
 }
 
 template<class INT>
-bool keyGenerator(QByteArray &pubKey,
-                  QByteArray &privKey) {
+bool keyGenerator(QByteArray &pubKey, QByteArray &privKey) {
 
     INT p = randomPrimeNumber<INT>();
     INT q = randomPrimeNumber<INT>(p);
@@ -290,91 +289,54 @@ QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
     return res.remove(res.lastIndexOf(ENDLINE), res.size());
 }
 
-bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) {
-    QByteArray tesVal = "Test message of encrypkey";
-
-    bool result = tesVal == decode(encode(tesVal, pubKey), privKey);
-
-    if (!result) qWarning() << "(Warning): Testkey Fail, try generate new key pair!";
-
-    return result;
+QRSAEncryption::QRSAEncryption(Rsa _keyLength)
+{
+    keyLength = _keyLength;
 }
 
-QRSAEncryption::QRSAEncryption() {
-
+unsigned int QRSAEncryption::getBytesSize(QRSAEncryption::Rsa keyLength) {
+    return keyLength / 8;
 }
 
-QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey) {
+// --- static methods ---
+bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey,
+                                     QRSAEncryption::Rsa keyLength) {
 
-    switch (pubKey.size()) {
-        case RSA_64 / 4: {
-            return encodeArray<uint64_t>(rawData, pubKey);
-        }
-
-        case RSA_128 / 4: {
-            return encodeArray<uint128_t>(rawData, pubKey);
-        }
-
-        default: return QByteArray();
-    }
+    return QRSAEncryption(keyLength).generatePairKey(pubKey, privKey);
 }
-
-QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey) {
-
-    switch (privKey.size()) {
-
-        case RSA_64 / 4: {
-            return decodeArray<uint64_t>(rawData, privKey);
-        }
-
-        case RSA_128 / 4: {
-            return decodeArray<uint128_t>(rawData, privKey);
-        }
-        default: return QByteArray();
-    }
+QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey,
+                                 QRSAEncryption::Rsa keyLength)
+{
+    return QRSAEncryption(keyLength).encode(rawData, pubKey);
 }
-
-// EDS (digital signature)
-QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey) {
-
-    QByteArray hash = QCryptographicHash::hash(rawData, QCryptographicHash::Sha256);
-
-    QByteArray signature = encode(hash, privKey);
-
-    rawData.append(SIGN_MARKER + signature.toHex() + SIGN_MARKER);
-
-    return rawData;
+QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey,
+                                  QRSAEncryption::Rsa keyLength)
+{
+    return QRSAEncryption(keyLength).decode(rawData, privKey);
 }
-
-// check valid EDS
-bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey) {
-
-    // start position of SIGN_MARKER in rawData
-    auto signStartPos = rawData.lastIndexOf(SIGN_MARKER, rawData.length() - signMarkerLength - 1);
-
-    // length of signature in rawData
-    auto signLength   = rawData.length() - signStartPos - signMarkerLength * 2;
-
-    // message, that was recieved from channel
-    QByteArray message = rawData.left(signStartPos);
-
-    // hash, that was decrypt from recieved signature
-    QByteArray recievedHash = decode(QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)),
-                                     pubKey);
-
-    // if recievedHash == sha256(recived message), then signed message is valid
-    return recievedHash == QCryptographicHash::hash(message, QCryptographicHash::Sha256);
+QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey,
+                                       Rsa keyLength)
+{
+    return QRSAEncryption(keyLength).signMessage(rawData, privKey);
 }
+bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
+                                      Rsa keyLength)
+{
+    return QRSAEncryption(keyLength).checkSignMessage(rawData, pubKey);
+}
+// --- end of static methods ---
 
-bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
-                                     QByteArray &privKey,
-                                     QRSAEncryption::Rsa rsa) {
+// --- non-static methods ---
+bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey)
+{
+    int cnt{0};
+    bool keyGenRes{false};
 
     do {
         pubKey.clear();
         privKey.clear();
 
-        switch (rsa) {
+        switch (keyLength) {
 
             case RSA_64: {
                 if (!keyGenerator<int64_t>(pubKey, privKey)) {
@@ -391,12 +353,80 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
             }
         }
 
-    } while (!testKeyPair(pubKey, privKey));
+    } while (!(keyGenRes = testKeyPair(pubKey, privKey, keyLength)) && (++cnt < KEY_GEN_LIMIT));
 
+    if(cnt >= KEY_GEN_LIMIT) qWarning() << QString("(Warning): Exceeded limit of key generation (%0)!").arg(KEY_GEN_LIMIT);
 
-    return true;
+    return (keyGenRes && cnt < KEY_GEN_LIMIT);
 }
+QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey) {
 
-unsigned int QRSAEncryption::getBytesSize(QRSAEncryption::Rsa rsa) {
-    return rsa / 8;
+    switch (pubKey.size()) {
+        case RSA_64 / 4: {
+            return encodeArray<uint64_t>(rawData, pubKey);
+        }
+
+        case RSA_128 / 4: {
+            return encodeArray<uint128_t>(rawData, pubKey);
+        }
+
+        default: return QByteArray();
+    }
+}
+QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey) {
+
+    switch (privKey.size()) {
+
+        case RSA_64 / 4: {
+            return decodeArray<uint64_t>(rawData, privKey);
+        }
+
+        case RSA_128 / 4: {
+            return decodeArray<uint128_t>(rawData, privKey);
+        }
+        default: return QByteArray();
+    }
+}
+QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey)
+{
+    QByteArray hash = QCryptographicHash::hash(rawData, HashAlgorithm::Sha256);
+
+    QByteArray signature = QRSAEncryption(keyLength).encode(hash, privKey);
+
+    rawData.append(SIGN_MARKER + signature.toHex() + SIGN_MARKER);
+
+    return rawData;
+}
+bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey)
+{
+    // start position of SIGN_MARKER in rawData
+    auto signStartPos = rawData.lastIndexOf(SIGN_MARKER, rawData.length() - signMarkerLength - 1);
+
+    // length of signature in rawData
+    auto signLength   = rawData.length() - signStartPos - signMarkerLength * 2;
+
+    // message, that was recieved from channel
+    QByteArray message = rawData.left(signStartPos);
+
+    // hash, that was decrypt from recieved signature
+    QByteArray recievedHash = QRSAEncryption(keyLength).decode(
+                              QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)), pubKey);
+
+    // if recievedHash == hashAlgorithm(recived message), then signed message is valid
+    return recievedHash == QCryptographicHash::hash(message, HashAlgorithm::Sha256);
+}
+// --- end of non-static methods ---
+
+bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey,
+                                 QRSAEncryption::Rsa keyLength) {
+
+    QRSAEncryption e(keyLength);
+
+    QByteArray tesVal = "Test message of encrypkey";
+
+    bool result = tesVal == e.decode(e.encode(tesVal, pubKey), privKey);
+
+    if (!result) qWarning() << "(Warning): Testkey Fail, try generate new key pair!";
+
+    return result;
 }

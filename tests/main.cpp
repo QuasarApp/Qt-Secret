@@ -28,12 +28,11 @@ QByteArray randomArray() {
 }
 
 bool testCrypto(QRSAEncryption::Rsa rsa) {
-    QByteArray pub, priv;
-    QRSAEncryption e;
 
+    QByteArray pub, priv;
 
     for (int i = 0; i < testSize; i++) {
-        e.generatePairKey(pub, priv, rsa);
+        QRSAEncryption::generatePairKey(pub, priv, rsa);
 
         qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize);
         qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
@@ -44,7 +43,6 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
             return false;
         }
 
-
         if (priv.size() != rsa / 4) {
             qCritical() << "privKey size wrong RSA" << rsa;
             return false;
@@ -53,17 +51,17 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
         for (int i = 0; i < testSize; i++) {
             auto base = randomArray();
 
-            auto encodeData = e.encode(base, pub);
-            auto decodeData = e.decode(encodeData, priv);
+            auto encodeData = QRSAEncryption(rsa).encode(base, pub);
+            auto decodeData = QRSAEncryption(rsa).decode(encodeData, priv);
 
             if ( base != decodeData) {
                 qCritical() << "encode/decode data error RSA" << rsa;
                 return false;
             }
 
-            encodeData = e.signMessage(base, priv);
+            encodeData = QRSAEncryption(rsa).signMessage(base, priv, rsa);
 
-            if (!e.checkSignMessage(encodeData, pub)) {
+            if (!QRSAEncryption(rsa).checkSignMessage(encodeData, pub, rsa)) {
                 qCritical() << "sig message error RSA" << rsa;
                 return false;
             }

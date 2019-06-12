@@ -16,35 +16,51 @@
 #include <QCryptographicHash> // to use sha256
 
 #define ENDLINE "#_end_#"
+#define KEY_GEN_LIMIT 10
 
 static const QString SIGN_MARKER = "-SIGN-";
 static const int signMarkerLength = SIGN_MARKER.length();
 
+typedef QCryptographicHash::Algorithm HashAlgorithm;
+
 class QRSAEncryption
 {
 
-private:
-    bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey);
-
 public:
-
     enum Rsa {
         RSA_64 = 64,
         RSA_128 = 128
     };
 
-    QRSAEncryption();
+    QRSAEncryption(QRSAEncryption::Rsa _keyLength);
 
+    unsigned int getBytesSize(QRSAEncryption::Rsa keyLength);
+
+// static methods
+    static bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
+                                QRSAEncryption::Rsa);
+    static QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
+                            QRSAEncryption::Rsa keyLength);
+    static QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,
+                              QRSAEncryption::Rsa keyLength);
+    static QByteArray signMessage(QByteArray rawData, const QByteArray &privKey,
+                                  QRSAEncryption::Rsa keyLength);
+    static bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
+                                 QRSAEncryption::Rsa keyLength);
+
+// non-static methods
+    bool generatePairKey(QByteArray &pubKey, QByteArray &privKey);
     QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey);
     QByteArray decode(const QByteArray &rawData, const QByteArray &privKey);
-
     QByteArray signMessage(QByteArray rawData, const QByteArray &privKey);
     bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey);
 
-    bool generatePairKey(QByteArray &pubKey, QByteArray &privKey, Rsa = RSA_128);
+private:
+    bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey,
+                     QRSAEncryption::Rsa keyLength = RSA_64);
 
-    static unsigned int getBytesSize(Rsa rsa);
-
+private:
+    Rsa keyLength;
 };
 
 #endif // QRSAENCRYPTION_H
