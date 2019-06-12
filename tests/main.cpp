@@ -13,7 +13,6 @@
 
 const int testSize = 100;
 
-
 QByteArray randomArray() {
     srand(static_cast<unsigned int>(time(nullptr)));
     QByteArray res;
@@ -28,9 +27,9 @@ QByteArray randomArray() {
 }
 
 bool testCrypto(QRSAEncryption::Rsa rsa) {
+
     QByteArray pub, priv;
     QRSAEncryption e;
-
 
     for (int i = 0; i < testSize; i++) {
         e.generatePairKey(pub, priv, rsa);
@@ -43,7 +42,6 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
             qCritical() << "pubKey size wrong RSA" << rsa;
             return false;
         }
-
 
         if (priv.size() != rsa / 4) {
             qCritical() << "privKey size wrong RSA" << rsa;
@@ -67,9 +65,10 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
                 qCritical() << "sig message error RSA" << rsa;
                 return false;
             }
+
             encodeData += "work it";
 
-            if (!e.checkSignMessage(encodeData, pub)) {
+            if (e.checkSignMessage(encodeData, pub)) {
                 qCritical() << "sig message error RSA with added value to back" << rsa;
                 return false;
             }
@@ -85,7 +84,6 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
 
     return true;
 }
-
 
 int main() {
 
