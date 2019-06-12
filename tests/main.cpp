@@ -32,7 +32,7 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
     QRSAEncryption e;
 
     for (int i = 0; i < testSize; i++) {
-        e.generatePairKeyS(pub, priv, rsa);
+        e.generatePairKey(pub, priv, rsa);
 
         qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize);
         qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
