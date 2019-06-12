@@ -24,6 +24,15 @@ win32:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.exe
 unix:testAES.commands = $$PWD/deployTests/QAESEncryption.sh
 win32:testAES.commands = $$PWD/deployTests/QAESEncryption.exe
 
+contains(QMAKE_HOST.os, Linux):{
+    DEPLOYER=cqtdeployer
+    win32:testAES.commands = wine $$PWD/deployTests/QAESEncryption.exe
+    win32:testRSA.commands = wine $$PWD/deployTests/Qt-SecretTest.exe
+
+} else {
+    DEPLOYER=%cqtdeployer%
+}
+
 test.depends += deployTest
 test.depends += testRSA
 test.depends += testAES
