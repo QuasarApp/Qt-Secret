@@ -32,35 +32,37 @@ public:
         RSA_128 = 128
     };
 
-    QRSAEncryption(QRSAEncryption::Rsa _keyLength);
+    QRSAEncryption();
 
     unsigned int getBytesSize(QRSAEncryption::Rsa keyLength);
 
 // static methods
-    static bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
-                                QRSAEncryption::Rsa);
-    static QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
-                            QRSAEncryption::Rsa keyLength);
-    static QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,
+    static bool generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
+                                 QRSAEncryption::Rsa);
+    static QByteArray encodeS(const QByteArray &rawData, const QByteArray &pubKey,
                               QRSAEncryption::Rsa keyLength);
-    static QByteArray signMessage(QByteArray rawData, const QByteArray &privKey,
-                                  QRSAEncryption::Rsa keyLength);
-    static bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
+    static QByteArray decodeS(const QByteArray &rawData, const QByteArray &privKey,
+                              QRSAEncryption::Rsa keyLength);
+    static QByteArray signMessageS(QByteArray rawData, const QByteArray &privKey,
                                  QRSAEncryption::Rsa keyLength);
+    static bool checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey,
+                                  QRSAEncryption::Rsa keyLength);
 
 // non-static methods
-    bool generatePairKey(QByteArray &pubKey, QByteArray &privKey);
-    QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey);
-    QByteArray decode(const QByteArray &rawData, const QByteArray &privKey);
-    QByteArray signMessage(QByteArray rawData, const QByteArray &privKey);
-    bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey);
+    bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
+                         QRSAEncryption::Rsa keyLength);
+    QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
+                      QRSAEncryption::Rsa keyLength);
+    QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,
+                      QRSAEncryption::Rsa keyLength);
+    QByteArray signMessage(QByteArray rawData, const QByteArray &privKey,
+                           QRSAEncryption::Rsa keyLength);
+    bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
+                          QRSAEncryption::Rsa keyLength);
 
 private:
     bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey,
-                     QRSAEncryption::Rsa keyLength = RSA_64);
-
-private:
-    Rsa keyLength;
+                     QRSAEncryption::Rsa keyLength);
 };
 
 #endif // QRSAENCRYPTION_H

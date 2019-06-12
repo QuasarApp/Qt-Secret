@@ -289,9 +289,8 @@ QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
     return res.remove(res.lastIndexOf(ENDLINE), res.size());
 }
 
-QRSAEncryption::QRSAEncryption(Rsa _keyLength)
+QRSAEncryption::QRSAEncryption()
 {
-    keyLength = _keyLength;
 }
 
 unsigned int QRSAEncryption::getBytesSize(QRSAEncryption::Rsa keyLength) {
@@ -299,35 +298,34 @@ unsigned int QRSAEncryption::getBytesSize(QRSAEncryption::Rsa keyLength) {
 }
 
 // --- static methods ---
-bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey,
-                                     QRSAEncryption::Rsa keyLength) {
+bool QRSAEncryption::generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
+                                      QRSAEncryption::Rsa keyLength) {
 
-    return QRSAEncryption(keyLength).generatePairKey(pubKey, privKey);
+    return QRSAEncryption().generatePairKey(pubKey, privKey, keyLength);
 }
-QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey,
-                                 QRSAEncryption::Rsa keyLength)
-{
-    return QRSAEncryption(keyLength).encode(rawData, pubKey);
-}
-QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey,
+QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &pubKey,
                                   QRSAEncryption::Rsa keyLength)
 {
-    return QRSAEncryption(keyLength).decode(rawData, privKey);
+    return QRSAEncryption().encode(rawData, pubKey, keyLength);
 }
-QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey,
+QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey,
+                                   QRSAEncryption::Rsa keyLength)
+{
+    return QRSAEncryption().decode(rawData, privKey, keyLength);
+}
+QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey,
+                                        Rsa keyLength)
+{
+    return QRSAEncryption().signMessage(rawData, privKey, keyLength);
+}
+bool QRSAEncryption::checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey,
                                        Rsa keyLength)
 {
-    return QRSAEncryption(keyLength).signMessage(rawData, privKey);
-}
-bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
-                                      Rsa keyLength)
-{
-    return QRSAEncryption(keyLength).checkSignMessage(rawData, pubKey);
+    return QRSAEncryption().checkSignMessage(rawData, pubKey, keyLength);
 }
 // --- end of static methods ---
 
-// --- non-static methods ---
-bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey)
+bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, QRSAEncryption::Rsa keyLength)
 {
     int cnt{0};
     bool keyGenRes{false};
@@ -359,7 +357,10 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey)
 
     return (keyGenRes && cnt < KEY_GEN_LIMIT);
 }
-QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey) {
+
+// --- non-static methods ---
+QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey,
+                                  QRSAEncryption::Rsa keyLength) {
 
     switch (pubKey.size()) {
         case RSA_64 / 4: {
@@ -373,7 +374,8 @@ QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &p
         default: return QByteArray();
     }
 }
-QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey) {
+QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey,
+                                  QRSAEncryption::Rsa keyLength) {
 
     switch (privKey.size()) {
 
@@ -387,17 +389,19 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
         default: return QByteArray();
     }
 }
-QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey)
+QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey,
+                                       QRSAEncryption::Rsa keyLength)
 {
     QByteArray hash = QCryptographicHash::hash(rawData, HashAlgorithm::Sha256);
 
-    QByteArray signature = QRSAEncryption(keyLength).encode(hash, privKey);
+    QByteArray signature = QRSAEncryption().encode(hash, privKey, keyLength);
 
     rawData.append(SIGN_MARKER + signature.toHex() + SIGN_MARKER);
 
     return rawData;
 }
-bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey)
+bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
+                                      QRSAEncryption::Rsa keyLength)
 {
     // start position of SIGN_MARKER in rawData
     auto signStartPos = rawData.lastIndexOf(SIGN_MARKER, rawData.length() - signMarkerLength - 1);
@@ -409,8 +413,9 @@ bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArra
     QByteArray message = rawData.left(signStartPos);
 
     // hash, that was decrypt from recieved signature
-    QByteArray recievedHash = QRSAEncryption(keyLength).decode(
-                              QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)), pubKey);
+    QByteArray recievedHash = decode(QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)),
+                                     pubKey,
+                                     keyLength);
 
     // if recievedHash == hashAlgorithm(recived message), then signed message is valid
     return recievedHash == QCryptographicHash::hash(message, HashAlgorithm::Sha256);
@@ -420,11 +425,9 @@ bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArra
 bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey,
                                  QRSAEncryption::Rsa keyLength) {
 
-    QRSAEncryption e(keyLength);
-
     QByteArray tesVal = "Test message of encrypkey";
 
-    bool result = tesVal == e.decode(e.encode(tesVal, pubKey), privKey);
+    bool result = tesVal == decode(encode(tesVal, pubKey, keyLength), privKey, keyLength);
 
     if (!result) qWarning() << "(Warning): Testkey Fail, try generate new key pair!";
 
