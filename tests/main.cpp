@@ -26,57 +26,57 @@ QByteArray randomArray() {
     return res;
 }
 
-bool testCrypto(QRSAEncryption::Rsa keyLength) {
+bool testCrypto(QRSAEncryption::Rsa rsa) {
 
     QByteArray pub, priv;
     QRSAEncryption e;
 
     for (int i = 0; i < testSize; i++) {
-        QRSAEncryption::generatePairKeyS(pub, priv, keyLength);
+        QRSAEncryption::generatePairKeyS(pub, priv, rsa);
 
         qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize);
         qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
         qInfo() << QString("Public key: %0").arg(QString(pub.toHex()));
 
-        if (pub.size() != keyLength / 4) {
-            qCritical() << "pubKey size wrong RSA" << keyLength;
+        if (pub.size() != rsa / 4) {
+            qCritical() << "pubKey size wrong RSA" << rsa;
             return false;
         }
 
-        if (priv.size() != keyLength / 4) {
-            qCritical() << "privKey size wrong RSA" << keyLength;
+        if (priv.size() != rsa / 4) {
+            qCritical() << "privKey size wrong RSA" << rsa;
             return false;
         }
 
         for (int i = 0; i < testSize; i++) {
             auto base = randomArray();
 
-            auto encodeData = e.encode(base, pub, keyLength);
-            auto decodeData = e.decode(encodeData, priv, keyLength);
+            auto encodeData = e.encode(base, pub);
+            auto decodeData = e.decode(encodeData, priv);
 
             if ( base != decodeData) {
-                qCritical() << "encode/decode data error RSA" << keyLength;
+                qCritical() << "encode/decode data error RSA" << rsa;
                 return false;
             }
 
-            encodeData = e.signMessage(base, priv, keyLength);
+            encodeData = e.signMessage(base, priv);
 
-            if (!e.checkSignMessage(encodeData, pub, keyLength)) {
-                qCritical() << "sig message error RSA" << keyLength;
+            if (!e.checkSignMessage(encodeData, pub)) {
+                qCritical() << "sig message error RSA" << rsa;
                 return false;
             }
 
             encodeData += "work it";
 
-            if (e.checkSignMessage(encodeData, pub, keyLength)) {
-                qCritical() << "sig message error RSA with added value to back" << keyLength;
+            if (e.checkSignMessage(encodeData, pub)) {
+                qCritical() << "sig message error RSA with added value to back" << rsa;
                 return false;
             }
 
             encodeData.push_front("not work");
 
-            if (e.checkSignMessage(encodeData, pub, keyLength)) {
-                qCritical() << "sig message error RSA with added value to front" << keyLength;
+            if (e.checkSignMessage(encodeData, pub)) {
+                qCritical() << "sig message error RSA with added value to front" << rsa;
                 return false;
             }
         }

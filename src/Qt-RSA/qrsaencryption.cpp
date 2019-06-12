@@ -303,25 +303,21 @@ bool QRSAEncryption::generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
 
     return QRSAEncryption().generatePairKey(pubKey, privKey, rsa);
 }
-QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &pubKey,
-                                  QRSAEncryption::Rsa rsa)
+QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &pubKey)
 {
-    return QRSAEncryption().encode(rawData, pubKey, rsa);
+    return QRSAEncryption().encode(rawData, pubKey);
 }
-QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey,
-                                   QRSAEncryption::Rsa rsa)
+QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey)
 {
-    return QRSAEncryption().decode(rawData, privKey, rsa);
+    return QRSAEncryption().decode(rawData, privKey);
 }
-QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey,
-                                        Rsa rsa)
+QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey)
 {
-    return QRSAEncryption().signMessage(rawData, privKey, rsa);
+    return QRSAEncryption().signMessage(rawData, privKey);
 }
-bool QRSAEncryption::checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey,
-                                       Rsa rsa)
+bool QRSAEncryption::checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey)
 {
-    return QRSAEncryption().checkSignMessage(rawData, pubKey, rsa);
+    return QRSAEncryption().checkSignMessage(rawData, pubKey);
 }
 // --- end of static methods ---
 
@@ -351,7 +347,7 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, QR
             }
         }
 
-    } while (!(keyGenRes = testKeyPair(pubKey, privKey, rsa)) && (++cnt < KEY_GEN_LIMIT));
+    } while (!(keyGenRes = testKeyPair(pubKey, privKey)) && (++cnt < KEY_GEN_LIMIT));
 
     if(cnt >= KEY_GEN_LIMIT) qWarning() << QString("(Warning): Exceeded limit of key generation (%0)!").arg(KEY_GEN_LIMIT);
 
@@ -359,10 +355,9 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, QR
 }
 
 // --- non-static methods ---
-QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey,
-                                  QRSAEncryption::Rsa rsa) {
+QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey) {
 
-    switch (rsa) {
+    switch (pubKey.size() * 4) {
         case RSA_64: {
             return encodeArray<uint64_t>(rawData, pubKey);
         }
@@ -371,11 +366,12 @@ QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &p
             return encodeArray<uint128_t>(rawData, pubKey);
         }
     }
-}
-QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey,
-                                  QRSAEncryption::Rsa rsa) {
 
-    switch (rsa) {
+    return QByteArray();
+}
+QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey) {
+
+    switch (privKey.size() * 4) {
 
         case RSA_64: {
             return decodeArray<uint64_t>(rawData, privKey);
@@ -385,20 +381,20 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
             return decodeArray<uint128_t>(rawData, privKey);
         }
     }
+
+    return QByteArray();
 }
-QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey,
-                                       QRSAEncryption::Rsa rsa)
+QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey)
 {
     QByteArray hash = QCryptographicHash::hash(rawData, HashAlgorithm::Sha256);
 
-    QByteArray signature = encode(hash, privKey, rsa);
+    QByteArray signature = encode(hash, privKey);
 
     rawData.append(SIGN_MARKER + signature.toHex() + SIGN_MARKER);
 
     return rawData;
 }
-bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
-                                      QRSAEncryption::Rsa rsa)
+bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey)
 {
     // start position of SIGN_MARKER in rawData
     auto signStartPos = rawData.lastIndexOf(SIGN_MARKER, rawData.length() - signMarkerLength - 1);
@@ -411,20 +407,18 @@ bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArra
 
     // hash, that was decrypt from recieved signature
     QByteArray recievedHash = decode(QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)),
-                                     pubKey,
-                                     rsa);
+                                     pubKey);
 
     // if recievedHash == hashAlgorithm(recived message), then signed message is valid
     return recievedHash == QCryptographicHash::hash(message, HashAlgorithm::Sha256);
 }
 // --- end of non-static methods ---
 
-bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey,
-                                 QRSAEncryption::Rsa rsa) {
+bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) {
 
     QByteArray tesVal = "Test message of encrypkey";
 
-    bool result = tesVal == decode(encode(tesVal, pubKey, rsa), privKey, rsa);
+    bool result = tesVal == decode(encode(tesVal, pubKey), privKey);
 
     if (!result) qWarning() << "(Warning): Testkey Fail, try generate new key pair!";
 
