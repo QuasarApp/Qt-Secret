@@ -70,14 +70,14 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
             encodeData += "work it";
 
             if (!e.checkSignMessage(encodeData, pub)) {
-                qCritical() << "sig message error RSA with lst added value" << rsa;
+                qCritical() << "sig message error RSA with added value to back" << rsa;
                 return false;
             }
 
             encodeData.push_front("not work");
 
             if (e.checkSignMessage(encodeData, pub)) {
-                qCritical() << "sig message error RSA with fromt added value" << rsa;
+                qCritical() << "sig message error RSA with added value to front" << rsa;
                 return false;
             }
         }
