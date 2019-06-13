@@ -34,7 +34,7 @@ public:
 
     QRSAEncryption();
 
-    unsigned int getBytesSize(QRSAEncryption::Rsa rsa);
+
 
 // static methods
     static bool generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
@@ -43,6 +43,8 @@ public:
     static QByteArray decodeS(const QByteArray &rawData, const QByteArray &privKey);
     static QByteArray signMessageS(QByteArray rawData, const QByteArray &privKey);
     static bool checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey);
+    static bool isValidRsaKey(const QByteArray& key);
+    static unsigned int getKeyBytesSize(QRSAEncryption::Rsa rsa);
 
 // non-static methods
     bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
@@ -51,6 +53,7 @@ public:
     QByteArray decode(const QByteArray &rawData, const QByteArray &privKey);
     QByteArray signMessage(QByteArray rawData, const QByteArray &privKey);
     bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey);
+
 
 private:
     bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey);
