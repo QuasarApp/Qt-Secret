@@ -292,8 +292,8 @@ QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
 QRSAEncryption::QRSAEncryption() {
 }
 
-unsigned int QRSAEncryption::getBytesSize(QRSAEncryption::Rsa rsa) {
-    return rsa / 8;
+unsigned int QRSAEncryption::getKeyBytesSize(QRSAEncryption::Rsa rsa) {
+    return rsa / 4;
 }
 
 // --- static methods ---
@@ -422,4 +422,8 @@ bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &pri
     if (!result) qWarning() << "(Warning): Testkey Fail, try generate new key pair!";
 
     return result;
+}
+
+bool QRSAEncryption::isValidRsaKey(const QByteArray &key) {
+    return key.size() && key.size() % RSA_64 == 0;
 }
