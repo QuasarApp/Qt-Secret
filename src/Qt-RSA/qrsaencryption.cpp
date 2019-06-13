@@ -393,8 +393,12 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey,
     return true;
 }
 
-unsigned int QRSAEncryption::getBytesSize(QRSAEncryption::Rsa rsa) {
-    return rsa / 8;
+unsigned int QRSAEncryption::getKeyBytesSize(QRSAEncryption::Rsa rsa) {
+    return rsa / 4;
+}
+
+bool QRSAEncryption::isValidRsaKey(const QByteArray &key) {
+    return key.size() && key.size() % RSA_64 == 0;
 }
 
 

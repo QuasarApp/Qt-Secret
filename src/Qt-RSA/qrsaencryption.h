@@ -34,7 +34,9 @@ public:
 
     bool generatePairKey(QByteArray &pubKey, QByteArray &privKey, Rsa = RSA_128);
 
-    static unsigned int getBytesSize(Rsa rsa);
+    static unsigned int getKeyBytesSize(Rsa rsa);
+    static bool isValidRsaKey(const QByteArray& key);
+
 
 };
 
