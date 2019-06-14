@@ -425,5 +425,5 @@ bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &pri
 }
 
 bool QRSAEncryption::isValidRsaKey(const QByteArray &key) {
-    return key.size() && key.size() % RSA_64 == 0;
+    return key.size() && ((static_cast<unsigned int>(key.size()) % getKeyBytesSize(RSA_64)) == 0);
 }
