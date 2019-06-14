@@ -13,6 +13,7 @@ SUBDIRS += src \
            qaesencryption
 
 include($$PWD/test.pri)
+VERSION = 1.1.0
 
 src.file = src/Qt-Secret.pro
 tests.file = tests/Qt-SecretTest.pro
