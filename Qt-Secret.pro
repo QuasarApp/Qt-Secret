@@ -9,6 +9,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += src \
+           src/Qt-SekretCore \
            tests \
            qaesencryption
 
