@@ -1,5 +1,13 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>FirstPage.qml</file>
+        <file>SecondPage.qml</file>
+        <file>ThirdPage.qml</file>
+        <file>images/clear.png</file>
+        <file>images/lineedit-bg.png</file>
+        <file>main.cpp</file>
+        <file>simpleElements/Button.qml</file>
+        <file>simpleElements/InputBox.qml</file>
     </qresource>
 </RCC>
