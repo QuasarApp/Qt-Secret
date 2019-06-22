@@ -1,4 +1,5 @@
 # Qt-Secret
+
 Simple encryption library supporting RSA and AES algorithms.
 
 # Futures 
@@ -149,7 +150,7 @@ QByteArray decodeText = encryption.decode(encodeText, hashKey, hashIV);
 
 QString decodedString = QString(encryption.removePadding(decodeText));
 
-//decodedString == inputStr !!
+//decodedString == inputStr !!! 
 ```
 
 ### Example via static invocation
