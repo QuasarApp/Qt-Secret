@@ -21,7 +21,7 @@ CONFIG(release, debug|release): {
     DESTDIR="$$PWD/build/debug"
 }
 
-VERSION = 1.0.0
+VERSION = 1.1.0
 
 HEADERS += Qt-AES/qaesencryption.h \
            qtsecret_global.h \
