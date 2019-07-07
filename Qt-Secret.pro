@@ -8,13 +8,16 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS += src \
+SUBDIRS += \
+           minigmp \
+           src \
            tests \
            qaesencryption
 
 include($$PWD/test.pri)
 VERSION = 1.1.0
 
+minigmp.file = src/mini-gmp/GMP.pro
 src.file = src/Qt-Secret.pro
 tests.file = tests/Qt-SecretTest.pro
 qaesencryption.file = src/Qt-AES/qaesencryption.pro

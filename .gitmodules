@@ -1,3 +1,6 @@
 [submodule "src/Qt-AES"]
 	path = src/Qt-AES
 	url = https://github.com/QuasarApp/Qt-AES.git
+[submodule "src/mini-gmp"]
+	path = src/mini-gmp
+	url = https://github.com/QuasarApp/mini-gmp.git

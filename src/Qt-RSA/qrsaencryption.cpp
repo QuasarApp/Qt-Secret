@@ -7,6 +7,8 @@
 
 #include "qrsaencryption.h"
 
+#include <bigint.h>
+
 typedef unsigned __int128  uint128_t;
 typedef signed __int128  int128_t;
 
@@ -118,7 +120,7 @@ template<class INT>
 INT toPrime(INT n) {
 
     if (!(n % 2)) {
-        n++;
+        ++n;
     }
 
     INT LN = n;
@@ -204,7 +206,7 @@ bool keyGenerator(QByteArray &pubKey, QByteArray &privKey) {
     INT eilor = eulerFunc(p, q);
     INT e = randNumber<INT>() % eilor;
 
-    if (!(e % 2)) e--;
+    if (!(e % 2)) --e;
 
     do {
         e -= 2;
@@ -344,6 +346,14 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, QR
                 }
                 break;
             }
+            case RSA_256: {
+                if (!keyGenerator<BigInt>(pubKey, privKey)) {
+                    return false;
+                }
+                break;
+            }
+        default:
+            break;
         }
 
     } while (!(keyGenRes = testKeyPair(pubKey, privKey)) && (++cnt < KEY_GEN_LIMIT));
