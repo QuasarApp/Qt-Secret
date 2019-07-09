@@ -14,6 +14,7 @@
 #include <cmath>
 #include <QDebug>
 #include <QCryptographicHash> // to use sha256
+#include "./../qtsecret_global.h"
 
 #define ENDLINE "#_end_#"
 #define KEY_GEN_LIMIT 10
@@ -23,7 +24,7 @@ static const int signMarkerLength = SIGN_MARKER.length();
 
 typedef QCryptographicHash::Algorithm HashAlgorithm;
 
-class QRSAEncryption
+class Qt_SECRETSHARED_EXPORT QRSAEncryption
 {
 
 public:
