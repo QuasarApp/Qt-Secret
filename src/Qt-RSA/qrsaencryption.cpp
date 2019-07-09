@@ -21,7 +21,7 @@ template<class INT>
 INT mul(INT a, INT b, const INT &m) {
     INT res = 0;
     while (a != 0) {
-        if (a & 1) res = (res + b) % m;
+        if ((a & 1) != 0) res = (res + b) % m;
         a >>= 1;
         b = (b << 1) % m;
     }
@@ -42,8 +42,8 @@ INT pows(const INT &a, const INT &b, const INT &m) {
 template<class INT>
 INT binpow (INT a, INT n, INT m) {
     INT res = 1;
-    while (n) {
-        if (n & 1) {
+    while (n != 0) {
+        if ((n & 1) != 0) {
             res = mul(res, a, m);
         }
         a = mul(a, a % m, m);
@@ -60,7 +60,7 @@ bool gcd(INT a, INT b) {
         a = b % a;
         b = c;
     }
-    return b;
+    return b != 0;
 }
 
 template<class INT>
