@@ -8,15 +8,20 @@
 unix:exec = $$PWD/tests/build/release/Qt-SecretTest,$$PWD/src/Qt-AES/build/release/QAESEncryption
 win32:exec = $$PWD/tests/build/release/Qt-SecretTest.exe,$$PWD/src/Qt-AES/build/release/QAESEncryption.exe
 
+QT_DIR = $$[QT_HOST_BINS]
+
+win32:QMAKE_BIN = $$QT_DIR/qmake.exe
 
 contains(QMAKE_HOST.os, Linux):{
     DEPLOYER=cqtdeployer
+    QMAKE_BIN = $$QT_DIR/qmake
+
 } else {
     DEPLOYER=%cqtdeployer%
 }
 
 
-deployTest.commands = $$DEPLOYER -bin $$exec clear -qmake $$QMAKE_QMAKE -targetDir $$PWD/deployTests -libDir $$PWD -recursiveDepth 5
+deployTest.commands = $$DEPLOYER -bin $$exec clear -qmake $$QMAKE_BIN -targetDir $$PWD/deployTests -libDir $$PWD -recursiveDepth 5
 
 unix:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.sh
 win32:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.exe
