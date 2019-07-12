@@ -42,6 +42,8 @@ test.depends += deployTest
 test.depends += testRSA
 test.depends += testAES
 
+test.CONFIG = recursive
+
 QMAKE_EXTRA_TARGETS += \
     deployTest \
     testAES \
