@@ -29,10 +29,10 @@ QByteArray randomArray() {
 bool testCrypto(QRSAEncryption::Rsa rsa) {
 
     QByteArray pub, priv;
-    QRSAEncryption e;
+    QRSAEncryption e(rsa);
 
     for (int i = 0; i < testSize; i++) {
-        e.generatePairKey(pub, priv, rsa);
+        e.generatePairKey(pub, priv);
 
         qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize);
         qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
@@ -87,7 +87,7 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
 
 int main() {
 
-    if(!testCrypto(QRSAEncryption::Rsa::RSA_64)) {
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_2048)) {
         return 1;
     }
 

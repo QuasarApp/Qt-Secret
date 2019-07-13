@@ -16,6 +16,10 @@
 #include <QCryptographicHash> // to use sha256
 #include "./../qtsecret_global.h"
 
+#include <bigint.h>
+
+typedef BigInt INT;
+
 #define ENDLINE "#_end_#"
 #define KEY_GEN_LIMIT 10
 
@@ -26,9 +30,10 @@ typedef QCryptographicHash::Algorithm HashAlgorithm;
 
 class Qt_SECRETSHARED_EXPORT QRSAEncryption
 {
-
 public:
+
     enum Rsa {
+        Invalid = 0,
         RSA_64 = 64,
         RSA_128 = 128,
         RSA_256 = 256,
@@ -37,9 +42,8 @@ public:
         RSA_2048 = 2048
     };
 
-    QRSAEncryption();
 
-
+    QRSAEncryption(Rsa rsa = Rsa::RSA_256);
 
 // static methods
     static bool generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
@@ -52,16 +56,35 @@ public:
     static unsigned int getKeyBytesSize(QRSAEncryption::Rsa rsa);
 
 // non-static methods
-    bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
-                         QRSAEncryption::Rsa rsa);
-    QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey);
+    bool generatePairKey(QByteArray &pubKey, QByteArray &privKey);
+    QByteArray encode(QByteArray rawData, const QByteArray &pubKey);
     QByteArray decode(const QByteArray &rawData, const QByteArray &privKey);
     QByteArray signMessage(QByteArray rawData, const QByteArray &privKey);
     bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey);
 
+    Rsa getRsa() const;
 
 private:
+
+    Rsa _rsa;
+
     bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey);
+    bool isMutuallyPrime(const INT &a, const INT &b);
+    Rsa getBitsSize(const INT& i) const;
+    Rsa getBitsSize(const QByteArray& array) const;
+
+    INT fromArray(const QByteArray& array) const;
+    QByteArray toArray(const INT &i, short sizeBlok = -1);
+    INT randomNumber() const;
+    INT toPrime(INT) const;
+    INT randomPrimeNumber(INT no = 0) const;
+    INT extEuclid(INT a, INT b) const;
+
+    short getBlockSize(INT i) const;
+
+    QByteArray encodeBlok(const INT& block, const INT& e, const INT& m);
+    QByteArray decodeBlok(const INT& block, const INT& d, const INT& m);
+
 };
 
 #endif // QRSAENCRYPTION_H
