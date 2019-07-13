@@ -95,6 +95,38 @@ int main() {
         return 1;
     }
 
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_256)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_512)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_1024)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_2048)) {
+        return 1;
+    }
+
+//    if(!testCrypto(QRSAEncryption::Rsa::RSA_4096)) {
+//        return 1;
+//    }
+
+//    if(!testCrypto(QRSAEncryption::Rsa::RSA_8192)) {
+//        return 1;
+//    }
+
+//    if(!testCrypto(QRSAEncryption::Rsa::RSA_16384)) {
+//        return 1;
+//    }
+
+//    if(!testCrypto(QRSAEncryption::Rsa::RSA_32768)) {
+//        return 1;
+//    }
+
     qInfo() << "Tests passed successfully";
 
     return 0;

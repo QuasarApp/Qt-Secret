@@ -53,13 +53,19 @@ INT QRSAEncryption::fromArray(const QByteArray &array) const {
 
 QByteArray QRSAEncryption::toArray(const INT &i, short sizeBlok) {
     QByteArray res;
-    auto hex = i.getString(16);
     res = QByteArray::fromHex(QByteArray::fromStdString(i.getString(16)));
 
-    QString resHex = res.toHex();
+//    int64_t t;
+//    QByteArray tstArray;
+
+//    tstArray.append((char*)&t, sizeof (t));
 
     if (sizeBlok < 0) {
         return res;
+    }
+
+    while (res.size() < sizeBlok) {
+        res.push_front(char(0));
     }
 
     return res.left(sizeBlok);
@@ -132,15 +138,15 @@ INT QRSAEncryption::extEuclid(INT a, INT b) const {
 }
 
 short QRSAEncryption::getBlockSize(INT i) const {
-    return static_cast<short>(i.sizeBytes());
+    return static_cast<short>(std::floor(i.getString(2).size() / 8));
 }
 
 QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT &m) {
-    return toArray(INT::powm(block, e, m), getBlockSize(m) + 1);
+    return toArray(INT::powm(block, e, m), getBlockSize(m));
 }
 
 QByteArray QRSAEncryption::decodeBlok(const INT &block, const INT &d, const INT &m) {
-    return toArray(INT::powm(block, d, m), getBlockSize(m));
+    return toArray(INT::powm(block, d, m));
 }
 
 QRSAEncryption::QRSAEncryption(Rsa rsa) {
@@ -207,10 +213,10 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
             d += eilor;
         }
 
-        pubKey.append(toArray(e));
-        pubKey.append(toArray(modul));
-        privKey.append(toArray(d));
-        privKey.append(toArray(modul));
+        pubKey.append(toArray(e, _rsa / 8));
+        pubKey.append(toArray(modul, _rsa / 8));
+        privKey.append(toArray(d, _rsa / 8));
+        privKey.append(toArray(modul, _rsa / 8));
 
     } while (!(keyGenRes = testKeyPair(pubKey, privKey)) && (++cnt < KEY_GEN_LIMIT));
 
@@ -264,7 +270,7 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
 
     INT d = fromArray(privKey.mid(0, privKey.size() / 2));
     INT m = fromArray(privKey.mid(privKey.size() / 2));
-    short blockSize = getBlockSize(m) + 1;
+    short blockSize = getBlockSize(m);
 
     QByteArray res;
     while ((block = rawData.mid(index, blockSize)).size()) {
