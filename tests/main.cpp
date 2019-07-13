@@ -87,7 +87,7 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
 
 int main() {
 
-    if(!testCrypto(QRSAEncryption::Rsa::RSA_2048)) {
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_64)) {
         return 1;
     }
 

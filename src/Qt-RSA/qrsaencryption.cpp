@@ -105,7 +105,7 @@ INT QRSAEncryption::randomPrimeNumber(INT no) const {
     srand(static_cast<unsigned int>(time(nullptr)));
 
     // max INT
-    INT max = (INT(1, _rsa) << (_rsa / 2)) - 1;
+    INT max('1', _rsa / 2, 2);
     auto str = max.getString();
 
     auto p = toPrime(randomNumber() % max);
