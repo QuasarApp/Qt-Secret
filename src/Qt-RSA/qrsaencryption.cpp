@@ -8,7 +8,7 @@
 #include "qrsaencryption.h"
 
 #include <QString>
-
+#include <iostream>
 
 
 INT eulerFunc(const INT &p, const INT &q) {
@@ -17,10 +17,10 @@ INT eulerFunc(const INT &p, const INT &q) {
 
 bool QRSAEncryption::isMutuallyPrime(const INT &a, const INT &b) {
     if (        (!(a % 2) && !(b % 2))
-             || (!(a % 3) && !(b % 3))
-             || (!(a % 5) && !(b % 5))
-             || (!(a % 7) && !(b % 7))
-       ) return false;
+                || (!(a % 3) && !(b % 3))
+                || (!(a % 5) && !(b % 5))
+                || (!(a % 7) && !(b % 7))
+                ) return false;
 
     return INT().gcd(a, b) == 1;
 }
@@ -55,10 +55,10 @@ QByteArray QRSAEncryption::toArray(const INT &i, short sizeBlok) {
     QByteArray res;
     res = QByteArray::fromHex(QByteArray::fromStdString(i.getString(16)));
 
-//    int64_t t;
-//    QByteArray tstArray;
+    //    int64_t t;
+    //    QByteArray tstArray;
 
-//    tstArray.append((char*)&t, sizeof (t));
+    //    tstArray.append((char*)&t, sizeof (t));
 
     if (sizeBlok < 0) {
         return res;
@@ -98,11 +98,11 @@ INT QRSAEncryption::toPrime(INT n) const {
 
     while (true) {
 
-        if (LN.isPrime()) return LN;
+        if (LN.isPrime(false)) return LN;
 
         RN+=2;
 
-        if (LN.isPrime()) return RN;
+        if (LN.isPrime(false)) return RN;
         LN-=2;
     }
 }
@@ -138,15 +138,62 @@ INT QRSAEncryption::extEuclid(INT a, INT b) const {
 }
 
 short QRSAEncryption::getBlockSize(INT i) const {
-    return static_cast<short>(std::floor(i.getString(2).size() / 8));
+    return static_cast<short>(std::ceil(static_cast<double>(i.getString(2).size() / 8)));
 }
 
-QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT &m) {
-    return toArray(INT::powm(block, e, m), getBlockSize(m));
+QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT &m, short blockSize) {
+    return toArray(INT::powm(block, e, m), blockSize);
 }
 
 QByteArray QRSAEncryption::decodeBlok(const INT &block, const INT &d, const INT &m) {
     return toArray(INT::powm(block, d, m));
+}
+
+bool QRSAEncryption::debugEncodeDecode(const QByteArray &data, const QByteArray &pubKey, const QByteArray &privKey) {
+
+    if (getBitsSize(pubKey) != _rsa) {
+        return false;
+    }
+
+    int index = 0;
+
+    QByteArray block;
+
+    INT e = fromArray(pubKey.mid(0, pubKey.size() / 2));
+    INT d = fromArray(privKey.mid(0, privKey.size() / 2));
+    INT m = fromArray(pubKey.mid(pubKey.size() / 2));
+    short blockSize = getBlockSize(m);
+
+    if (!blockSize) {
+        qDebug() << "module of key small! size = 1 byte, 2 byte is minimum";
+        return false;
+    }
+
+    QByteArray res;
+
+    QString log;
+
+    while ((block = data.mid(index, blockSize)).size()) {
+
+        auto ValBlock = fromArray(block);
+        auto encodeDataBlock = encodeBlok(ValBlock, e, m, blockSize);
+        auto encodeValBlock = fromArray(encodeDataBlock);
+        auto decodeDataBlock = decodeBlok(encodeValBlock, d, m);
+        auto decodeValBlock = fromArray(decodeDataBlock);
+
+        log.push_back(QString("block: %0 \n encodeDataBlock: %1 \n decodeDataBlock: %2 \n").
+                      arg(QString(block.toHex()), QString(encodeDataBlock.toHex()), QString(decodeDataBlock.toHex())));
+
+        if (block != decodeDataBlock) {
+            log.push_back("Error in last block");
+            std::cout << log.toStdString() << std::endl;
+            return false;
+        }
+
+        index += blockSize;
+    }
+
+    return true;
 }
 
 QRSAEncryption::QRSAEncryption(Rsa rsa) {
@@ -251,7 +298,7 @@ QByteArray QRSAEncryption::encode(QByteArray rawData, const QByteArray &pubKey) 
 
     while ((block = rawData.mid(index, blockSize)).size()) {
 
-        res.append(encodeBlok(fromArray(block), e, m));
+        res.append(encodeBlok(fromArray(block), e, m, blockSize));
         index += blockSize;
     }
 
