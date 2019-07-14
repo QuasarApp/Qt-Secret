@@ -68,7 +68,6 @@ public:
     bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey);
 
     Rsa getRsa() const;
-    bool debugEncodeDecode(const QByteArray &data, const QByteArray &pubKey, const QByteArray &privKey);
 
 private:
 

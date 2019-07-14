@@ -138,7 +138,7 @@ INT QRSAEncryption::extEuclid(INT a, INT b) const {
 }
 
 short QRSAEncryption::getBlockSize(INT i) const {
-    return static_cast<short>(std::ceil(static_cast<double>(i.getString(2).size() / 8)));
+    return static_cast<short>(std::ceil(static_cast<double>(i.getString(2).size()) / 8)) - 1;
 }
 
 QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT &m, short blockSize) {
@@ -147,53 +147,6 @@ QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT 
 
 QByteArray QRSAEncryption::decodeBlok(const INT &block, const INT &d, const INT &m) {
     return toArray(INT::powm(block, d, m));
-}
-
-bool QRSAEncryption::debugEncodeDecode(const QByteArray &data, const QByteArray &pubKey, const QByteArray &privKey) {
-
-    if (getBitsSize(pubKey) != _rsa) {
-        return false;
-    }
-
-    int index = 0;
-
-    QByteArray block;
-
-    INT e = fromArray(pubKey.mid(0, pubKey.size() / 2));
-    INT d = fromArray(privKey.mid(0, privKey.size() / 2));
-    INT m = fromArray(pubKey.mid(pubKey.size() / 2));
-    short blockSize = getBlockSize(m);
-
-    if (!blockSize) {
-        qDebug() << "module of key small! size = 1 byte, 2 byte is minimum";
-        return false;
-    }
-
-    QByteArray res;
-
-    QString log;
-
-    while ((block = data.mid(index, blockSize)).size()) {
-
-        auto ValBlock = fromArray(block);
-        auto encodeDataBlock = encodeBlok(ValBlock, e, m, blockSize);
-        auto encodeValBlock = fromArray(encodeDataBlock);
-        auto decodeDataBlock = decodeBlok(encodeValBlock, d, m);
-        auto decodeValBlock = fromArray(decodeDataBlock);
-
-        log.push_back(QString("block: %0 \n encodeDataBlock: %1 \n decodeDataBlock: %2 \n").
-                      arg(QString(block.toHex()), QString(encodeDataBlock.toHex()), QString(decodeDataBlock.toHex())));
-
-        if (block != decodeDataBlock) {
-            log.push_back("Error in last block");
-            std::cout << log.toStdString() << std::endl;
-            return false;
-        }
-
-        index += blockSize;
-    }
-
-    return true;
 }
 
 QRSAEncryption::QRSAEncryption(Rsa rsa) {
@@ -293,12 +246,11 @@ QByteArray QRSAEncryption::encode(QByteArray rawData, const QByteArray &pubKey) 
     }
 
     QByteArray res;
-
     rawData.append(ENDLINE);
 
     while ((block = rawData.mid(index, blockSize)).size()) {
 
-        res.append(encodeBlok(fromArray(block), e, m, blockSize));
+        res.append(encodeBlok(fromArray(block), e, m, blockSize + 1));
         index += blockSize;
     }
 
@@ -317,7 +269,7 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
 
     INT d = fromArray(privKey.mid(0, privKey.size() / 2));
     INT m = fromArray(privKey.mid(privKey.size() / 2));
-    short blockSize = getBlockSize(m);
+    short blockSize = getBlockSize(m) + 1;
 
     QByteArray res;
     while ((block = rawData.mid(index, blockSize)).size()) {

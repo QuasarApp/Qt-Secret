@@ -28,11 +28,11 @@ QByteArray randomArray(int length = -1) {
     return res;
 }
 
-bool testModule(QRSAEncryption &e ,const QByteArray &pub, const QByteArray &priv) {
-    auto data = randomArray(10 * 1024 * 1024);
+//bool testModule(QRSAEncryption &e ,const QByteArray &pub, const QByteArray &priv) {
+//    auto data = randomArray(10 * 1024 * 1024);
 
-    return  e.debugEncodeDecode(data, pub, priv);
-}
+//    return  e.debugEncodeDecode(data, pub, priv);
+//}
 
 bool testCrypto(QRSAEncryption::Rsa rsa) {
 
@@ -40,12 +40,15 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
     QRSAEncryption e(rsa);
 
     for (int i = 0; i < testSize; i++) {
-        e.generatePairKey(pub, priv);
-
-        if (!testModule(e,pub,priv)) {
-            qCritical() << "long test fail RSA" << rsa;
+        if (!e.generatePairKey(pub, priv)) {
+            qCritical() << "key not generated RSA" << rsa;
             return false;
         }
+
+//        if (!testModule(e,pub,priv)) {
+//            qCritical() << "long test fail RSA" << rsa;
+//            return false;
+//        }
 
         qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize);
         qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
