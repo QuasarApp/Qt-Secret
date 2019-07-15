@@ -20,7 +20,6 @@
 
 typedef BigInt INT;
 
-#define ENDLINE "#_end_#"
 #define KEY_GEN_LIMIT 10
 
 static const QString SIGN_MARKER = "-SIGN-";
@@ -88,7 +87,7 @@ private:
     short getBlockSize(INT i) const;
 
     QByteArray encodeBlok(const INT& block, const INT& e, const INT& m, short blockSize);
-    QByteArray decodeBlok(const INT& block, const INT& d, const INT& m);
+    QByteArray decodeBlok(const INT& block, const INT& d, const INT& m, short blockSize);
 
 
 };
