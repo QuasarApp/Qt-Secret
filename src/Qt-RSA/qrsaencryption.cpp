@@ -243,9 +243,12 @@ QByteArray QRSAEncryption::encode(QByteArray rawData, const QByteArray &pubKey) 
     }
 
     QByteArray res;
-//    rawData.append(ENDLINE);
 
     while ((block = rawData.mid(index, blockSize)).size()) {
+
+        if (index + blockSize > rawData.size()) {
+            //encodeBytes();
+        }
 
         res.append(encodeBlok(fromArray(block), e, m, blockSize + 1));
         index += blockSize;
@@ -264,26 +267,21 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
 
     QByteArray block;
 
-//    INT test1  = 3;
-//    auto arr = toArray(test1, 3);
-
-//    fromArray()
-
-//    QByteArray array(3, char(0)); // test block 0x0 0x0 0x3
-
-
-
-
     INT d = fromArray(privKey.mid(0, privKey.size() / 2));
     INT m = fromArray(privKey.mid(privKey.size() / 2));
     short blockSize = getBlockSize(m) + 1;
 
     QByteArray res;
     while ((block = rawData.mid(index, blockSize)).size()) {
+
+        if (index + blockSize > rawData.size()) {
+            //decodeBytes();
+        }
+
         res.append(decodeBlok(fromArray(block), d, m, blockSize - 1));
         index += blockSize;
     }
-    return res/*res.remove(res.lastIndexOf(ENDLINE), res.size())*/;
+    return res;
 
 }
 QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey) {

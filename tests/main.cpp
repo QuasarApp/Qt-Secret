@@ -11,7 +11,7 @@
 #include <qdebug.h>
 #include <cmath>
 
-const int testSize = 1000;
+const int testSize = 20;
 
 QByteArray randomArray(int length = -1) {
     srand(static_cast<unsigned int>(time(nullptr)));
@@ -28,12 +28,6 @@ QByteArray randomArray(int length = -1) {
     return res;
 }
 
-//bool testModule(QRSAEncryption &e ,const QByteArray &pub, const QByteArray &priv) {
-//    auto data = randomArray(10 * 1024 * 1024);
-
-//    return  e.debugEncodeDecode(data, pub, priv);
-//}
-
 bool testCrypto(QRSAEncryption::Rsa rsa) {
 
     QByteArray pub, priv;
@@ -44,11 +38,6 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
             qCritical() << "key not generated RSA" << rsa;
             return false;
         }
-
-//        if (!testModule(e,pub,priv)) {
-//            qCritical() << "long test fail RSA" << rsa;
-//            return false;
-//        }
 
         qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize);
         qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
@@ -77,24 +66,24 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
 
             encodeData = e.signMessage(base, priv);
 
-//            if (!e.checkSignMessage(encodeData, pub)) {
-//                qCritical() << "sig message error RSA" << rsa;
-//                return false;
-//            }
+            if (!e.checkSignMessage(encodeData, pub)) {
+                qCritical() << "sig message error RSA" << rsa;
+                return false;
+            }
 
-//            encodeData += "work it";
+            encodeData += "work it";
 
-//            if (e.checkSignMessage(encodeData, pub)) {
-//                qCritical() << "sig message error RSA with added value to back" << rsa;
-//                return false;
-//            }
+            if (e.checkSignMessage(encodeData, pub)) {
+                qCritical() << "sig message error RSA with added value to back" << rsa;
+                return false;
+            }
 
-//            encodeData.push_front("not work");
+            encodeData.push_front("not work");
 
-//            if (e.checkSignMessage(encodeData, pub)) {
-//                qCritical() << "sig message error RSA with added value to front" << rsa;
-//                return false;
-//            }
+            if (e.checkSignMessage(encodeData, pub)) {
+                qCritical() << "sig message error RSA with added value to front" << rsa;
+                return false;
+            }
         }
     }
 
