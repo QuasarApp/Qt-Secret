@@ -133,16 +133,17 @@ INT QRSAEncryption::extEuclid(INT a, INT b) const {
 }
 
 short QRSAEncryption::getBlockSize(INT i) const {
-    auto bytesSize = i.getString(2).size();
 
-    return static_cast<short>(std::ceil(static_cast<double>(bytesSize) / 8)) - 1;
+    return static_cast<short>(std::ceil(static_cast<double>(i.getString(2).size()) / 8)) - 1;
 }
 
 QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT &m, short blockSize) {
+
     return toArray(INT::powm(block, e, m), blockSize);
 }
 
 QByteArray QRSAEncryption::decodeBlok(const INT &block, const INT &d, const INT &m, short blockSize) {
+
     return toArray(INT::powm(block, d, m), blockSize);
 }
 
@@ -151,6 +152,7 @@ QRSAEncryption::QRSAEncryption(Rsa rsa) {
 }
 
 unsigned int QRSAEncryption::getKeyBytesSize(QRSAEncryption::Rsa rsa) {
+
     return rsa / 4;
 }
 
@@ -160,22 +162,29 @@ bool QRSAEncryption::generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
 
     return QRSAEncryption(rsa).generatePairKey(pubKey, privKey);
 }
-QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &pubKey) {
 
-    return QRSAEncryption().encode(rawData, pubKey);
-}
-QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey) {
+QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &pubKey,
+                                   Rsa rsa, BlockSize blockSizeMode) {
 
-    return QRSAEncryption().decode(rawData, privKey);
+    return QRSAEncryption(rsa).encode(rawData, pubKey, blockSizeMode);
 }
-QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey) {
 
-    return QRSAEncryption().signMessage(rawData, privKey);
-}
-bool QRSAEncryption::checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey) {
+QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey,
+                                   Rsa rsa, BlockSize blockSizeMode) {
 
-    return QRSAEncryption().checkSignMessage(rawData, pubKey);
+    return QRSAEncryption(rsa).decode(rawData, privKey, blockSizeMode);
 }
+
+QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey, Rsa rsa) {
+
+    return QRSAEncryption(rsa).signMessage(rawData, privKey);
+}
+
+bool QRSAEncryption::checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey, Rsa rsa) {
+
+    return QRSAEncryption(rsa).checkSignMessage(rawData, pubKey);
+}
+
 // --- end of static methods ---
 
 bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
@@ -223,7 +232,7 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
 }
 
 // --- non-static methods ---
-QByteArray QRSAEncryption::encode(QByteArray rawData, const QByteArray &pubKey) {
+QByteArray QRSAEncryption::encode(QByteArray rawData, const QByteArray &pubKey, BlockSize blockSizeMode) {
 
     if (getBitsSize(pubKey) != _rsa) {
         return QByteArray();
@@ -235,29 +244,37 @@ QByteArray QRSAEncryption::encode(QByteArray rawData, const QByteArray &pubKey) 
 
     INT e = fromArray(pubKey.mid(0, pubKey.size() / 2));
     INT m = fromArray(pubKey.mid(pubKey.size() / 2));
-    short blockSize = getBlockSize(m);
 
-    if (!blockSize) {
+    short blockSizeOut = getBlockSize(m) + 1; // BlockSize::OneByte
+    short blockSizeIn = 1; // BlockSize::OneByte
+
+    if (blockSizeMode == BlockSize::Auto) {
+        blockSizeIn = getBlockSize(m);
+    }
+
+    if (!blockSizeIn) {
         qDebug() << "module of key small! size = 1 byte, 2 byte is minimum";
         return QByteArray();
     }
 
     QByteArray res;
 
-    while ((block = rawData.mid(index, blockSize)).size()) {
+    while ((block = rawData.mid(index, blockSizeIn)).size()) {
 
-        if (index + blockSize > rawData.size()) {
-            //encodeBytes();
+        if (index + blockSizeIn > rawData.size() && block.size() && !block[0]) {
+            qWarning() << "When trying to encrypt data, problems arose, the last block contains non-significant zeros."
+                          " These zeros will be deleted during the decryption process."
+                          " For encode and decode data with non-significant zeros use BlockSize::OneByte";
         }
 
-        res.append(encodeBlok(fromArray(block), e, m, blockSize + 1));
-        index += blockSize;
+        res.append(encodeBlok(fromArray(block), e, m, blockSizeOut));
+        index += blockSizeIn;
     }
 
     return res;
 
 }
-QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey) {
+QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey, BlockSize blockSizeMode) {
 
     if (getBitsSize(privKey) != _rsa) {
         return QByteArray();
@@ -269,17 +286,21 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
 
     INT d = fromArray(privKey.mid(0, privKey.size() / 2));
     INT m = fromArray(privKey.mid(privKey.size() / 2));
-    short blockSize = getBlockSize(m) + 1;
+
+    short blockSizeIn = getBlockSize(m) + 1;
+
+    short blockSizeOut = 1; // BlockSize::OneByte
+    if (blockSizeMode == BlockSize::Auto) {
+        blockSizeOut = getBlockSize(m);
+    }
 
     QByteArray res;
-    while ((block = rawData.mid(index, blockSize)).size()) {
+    while ((block = rawData.mid(index, blockSizeIn)).size()) {
+        bool isLastBlock = (index + blockSizeIn) >= rawData.size();
 
-        if (index + blockSize > rawData.size()) {
-            //decodeBytes();
-        }
-
-        res.append(decodeBlok(fromArray(block), d, m, blockSize - 1));
-        index += blockSize;
+        res.append(decodeBlok(fromArray(block), d, m,
+                              (isLastBlock && blockSizeMode == BlockSize::Auto)? -1 : blockSizeOut));
+        index += blockSizeIn;
     }
     return res;
 
@@ -288,7 +309,7 @@ QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &pri
 
     QByteArray hash = QCryptographicHash::hash(rawData, HashAlgorithm::Sha256);
 
-    QByteArray signature = encode(hash, privKey);
+    QByteArray signature = encode(hash, privKey, BlockSize::OneByte);
 
     rawData.append(SIGN_MARKER + signature.toHex() + SIGN_MARKER);
 
@@ -307,7 +328,7 @@ bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArra
 
     // hash, that was decrypt from recieved signature
     QByteArray recievedHash = decode(QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)),
-                                     pubKey);
+                                     pubKey, BlockSize::OneByte);
 
     // if recievedHash == hashAlgorithm(recived message), then signed message is valid
     return recievedHash == QCryptographicHash::hash(message, HashAlgorithm::Sha256);

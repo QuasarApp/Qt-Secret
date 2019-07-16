@@ -22,7 +22,7 @@ QByteArray randomArray(int length = -1) {
     }
 
     for (int i = 0; i < length; ++i) {
-        res.push_back(static_cast<char>(rand() % 0xFF));
+        res.push_back(static_cast<char>(rand() % 0xFD) + 1);
     }
 
     return res;

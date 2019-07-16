@@ -39,11 +39,12 @@ public:
         RSA_512 = 512,
         RSA_1024 = 1024,
         RSA_2048 = 2048,
-//        RSA_4096 = 4096,
-//        RSA_8192 = 8192,
-//        RSA_16384 = 16384,
-//        RSA_32768 = 32768
 
+    };
+
+    enum BlockSize {
+        Auto = 0, // fast but not stable. (using by default)
+        OneByte = 1 // stable but slow. (using for sig and check sig messages)
     };
 
 
@@ -52,18 +53,34 @@ public:
 // static methods
     static bool generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
                                  QRSAEncryption::Rsa rsa);
-    static QByteArray encodeS(const QByteArray &rawData, const QByteArray &pubKey);
-    static QByteArray decodeS(const QByteArray &rawData, const QByteArray &privKey);
-    static QByteArray signMessageS(QByteArray rawData, const QByteArray &privKey);
-    static bool checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey);
+
+    static QByteArray encodeS(const QByteArray &rawData, const QByteArray &pubKey,
+                              Rsa rsa = Rsa::RSA_256, BlockSize blockSizeMode = BlockSize::Auto);
+
+    static QByteArray decodeS(const QByteArray &rawData, const QByteArray &privKey,
+                              Rsa rsa = Rsa::RSA_256, BlockSize blockSizeMode = BlockSize::Auto);
+
+    static QByteArray signMessageS(QByteArray rawData, const QByteArray &privKey,
+                                   Rsa rsa = Rsa::RSA_256);
+
+    static bool checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey,
+                                  Rsa rsa = Rsa::RSA_256);
+
     static bool isValidRsaKey(const QByteArray& key);
+
     static unsigned int getKeyBytesSize(QRSAEncryption::Rsa rsa);
 
 // non-static methods
     bool generatePairKey(QByteArray &pubKey, QByteArray &privKey);
-    QByteArray encode(QByteArray rawData, const QByteArray &pubKey);
-    QByteArray decode(const QByteArray &rawData, const QByteArray &privKey);
+
+    QByteArray encode(QByteArray rawData, const QByteArray &pubKey,
+                      BlockSize blockSizeMode = BlockSize::Auto);
+
+    QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,
+                      BlockSize blockSizeMode = BlockSize::Auto);
+
     QByteArray signMessage(QByteArray rawData, const QByteArray &privKey);
+
     bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey);
 
     Rsa getRsa() const;
