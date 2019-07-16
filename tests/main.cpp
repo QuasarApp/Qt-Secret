@@ -11,7 +11,16 @@
 #include <qdebug.h>
 #include <cmath>
 
-const int testSize = 20;
+//const int testSize = 20;
+static const QHash <int,int > testSize = {
+    {QRSAEncryption::RSA_64, 128},
+    {QRSAEncryption::RSA_128, 64},
+    {QRSAEncryption::RSA_256, 32},
+    {QRSAEncryption::RSA_512, 16},
+    {QRSAEncryption::RSA_1024, 8},
+    {QRSAEncryption::RSA_2048, 4}
+
+};
 
 QByteArray randomArray(int length = -1) {
     srand(static_cast<unsigned int>(time(nullptr)));
@@ -33,13 +42,13 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
     QByteArray pub, priv;
     QRSAEncryption e(rsa);
 
-    for (int i = 0; i < testSize; i++) {
+    for (int i = 0; i < testSize[rsa]; i++) {
         if (!e.generatePairKey(pub, priv)) {
             qCritical() << "key not generated RSA" << rsa;
             return false;
         }
 
-        qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize);
+        qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize[rsa]);
         qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
         qInfo() << QString("Public key: %0").arg(QString(pub.toHex()));
 
@@ -53,7 +62,7 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
             return false;
         }
 
-        for (int i = 0; i < testSize; i++) {
+        for (int i = 0; i < testSize[rsa]; i++) {
             auto base = randomArray();
 
             auto encodeData = e.encode(base, pub);
@@ -115,22 +124,6 @@ int main() {
     if(!testCrypto(QRSAEncryption::Rsa::RSA_2048)) {
         return 1;
     }
-
-//    if(!testCrypto(QRSAEncryption::Rsa::RSA_4096)) {
-//        return 1;
-//    }
-
-//    if(!testCrypto(QRSAEncryption::Rsa::RSA_8192)) {
-//        return 1;
-//    }
-
-//    if(!testCrypto(QRSAEncryption::Rsa::RSA_16384)) {
-//        return 1;
-//    }
-
-//    if(!testCrypto(QRSAEncryption::Rsa::RSA_32768)) {
-//        return 1;
-//    }
 
     qInfo() << "Tests passed successfully";
 
