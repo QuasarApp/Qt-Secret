@@ -9,7 +9,8 @@
 
 #include <QString>
 #include <iostream>
-
+#include <ctime>
+#include <chrono>
 
 INT eulerFunc(const INT &p, const INT &q) {
     return (p - 1) * (q - 1);
