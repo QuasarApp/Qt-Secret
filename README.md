@@ -13,7 +13,6 @@ The current implementation of RSA does not provide reliable long-term protection
  * RSA256 (key size 512bit)
  * RSA512 (key size 1024bit)
  * RSA1024 (key size 2048bit)
- * RSA2048 (key size 4096bit)
 
 #### Supported futures 
 
