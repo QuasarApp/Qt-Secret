@@ -73,7 +73,7 @@ public:
 // non-static methods
     bool generatePairKey(QByteArray &pubKey, QByteArray &privKey);
 
-    QByteArray encode(QByteArray rawData, const QByteArray &pubKey,
+    QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
                       BlockSize blockSizeMode = BlockSize::Auto);
 
     QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,

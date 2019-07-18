@@ -108,7 +108,6 @@ INT QRSAEncryption::randomPrimeNumber(INT no) const {
 
     // max INT
     INT max('1', _rsa / 2, 2);
-    auto str = max.getString();
 
     auto p = toPrime(randomNumber() % max);
     while(p == no) p = toPrime(randomNumber() % max);
@@ -134,8 +133,7 @@ INT QRSAEncryption::extEuclid(INT a, INT b) const {
 }
 
 short QRSAEncryption::getBlockSize(INT i) const {
-
-    return static_cast<short>(std::ceil(static_cast<double>(i.getString(2).size()) / 8)) - 1;
+    return static_cast<short>(i.longBytes()) - 1;
 }
 
 QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT &m, short blockSize) {
@@ -233,7 +231,7 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
 }
 
 // --- non-static methods ---
-QByteArray QRSAEncryption::encode(QByteArray rawData, const QByteArray &pubKey, BlockSize blockSizeMode) {
+QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey, BlockSize blockSizeMode) {
 
     if (getBitsSize(pubKey) != _rsa) {
         return QByteArray();
