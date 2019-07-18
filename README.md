@@ -7,9 +7,6 @@ The Qt-Secret library supports the following algorithms:
 
 ### RSA
 The current implementation of RSA does not provide reliable long-term protection; therefore, to provide consistent protection, use the generated keys as session keys.
-#### Supported sizes
- * RSA64 (key size 128bit)
- * RSA128 (key size 256bit)
 
 #### Supported futures 
 
