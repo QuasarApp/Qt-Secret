@@ -11,17 +11,6 @@ The current implementation of RSA does not provide reliable long-term protection
 Individual thanks [bricke](https://github.com/bricke) for implementing the AES encryption class.
 
 #### AES Levels
-The class supports all AES key lenghts
-
-* AES_128
-* AES_192
-* AES_256
-
-#### Modes
-The class supports the following operating modes
-
-* ECB
-* CBC
 * CFB
 * OFB
 
