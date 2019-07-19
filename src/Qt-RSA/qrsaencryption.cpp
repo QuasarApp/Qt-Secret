@@ -67,18 +67,42 @@ QByteArray QRSAEncryption::toArray(const INT &i, short sizeBlok) {
     return res.left(sizeBlok);
 }
 
-INT QRSAEncryption::randomNumber() const {
+INT QRSAEncryption::randomNumber(bool fullFill) const {
     srand(std::chrono::duration_cast<std::chrono::nanoseconds>
           (std::chrono::system_clock::now().time_since_epoch()).count()
           % std::numeric_limits<int>::max());
 
-    int longDiff = _rsa / (sizeof (int) * 8);
-
     INT res = 1;
 
-    while (longDiff > 0) {
-        longDiff--;
-        res *= rand() % std::numeric_limits<int>::max();
+    if(fullFill) {
+
+        std::chrono::steady_clock::time_point startTime, endTime;
+
+        // matching executing time of sizeBits() functions
+        startTime = std::chrono::steady_clock::now();
+        res.sizeBits();
+        endTime = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+        qDebug() << "   time of executing sizeBits() = " << elapsed.count() << " ns";
+
+        // matching executing time of lengthBits() functions
+        startTime = std::chrono::steady_clock::now();
+        res.longBits();
+        endTime = std::chrono::steady_clock::now();
+        elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+        qDebug() << "   time of executing lengthBits() = " << elapsed.count() << " ns";
+
+        while(res.sizeBits() < _rsa) {
+            res *= rand() % std::numeric_limits<int>::max();
+        }
+    } else {
+
+        int longDiff = _rsa / (sizeof (int) * 8);
+
+        while (longDiff > 0) {
+            longDiff--;
+            res *= rand() % std::numeric_limits<int>::max();
+        }
     }
 
     return res;
@@ -192,6 +216,7 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
     bool keyGenRes{false};
     INT p, q, modul, eilor, e, d;
     do {
+
         pubKey.clear();
         privKey.clear();
 
