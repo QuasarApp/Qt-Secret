@@ -45,7 +45,7 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
 
     for (int i = 0; i < testSize[rsa]; i++) {
 
-        qInfo() << QString("Test keys (%0/%1):").arg(i + 1).arg(testSize[rsa]);
+        qInfo() << QString("Test RSA-%0 (%1/%2):").arg(testSize.key(testSize[rsa])).arg(i + 1).arg(testSize[rsa]);
 
         if (!e.generatePairKey(pub, priv)) {
             qCritical() << "key not generated RSA" << rsa;
