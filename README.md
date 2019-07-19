@@ -13,7 +13,7 @@ Current version use __int128 type, and this type not supported in msvc compilers
 
  * git clone https://github.com/QurApp/Qt-Secret.git
  * cd Qt-Secret
- * git submodule update --init -
+ * git subm
  * Include in your pro file the pri file of Qt-Secret library
   >> include($$PWD/Qt-Secret/src/Qt-Secret.pri)
  * Rebuild yuor project
