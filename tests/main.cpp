@@ -19,7 +19,9 @@ static const QHash <int,int > testSize = {
     {QRSAEncryption::RSA_512, 16},
     {QRSAEncryption::RSA_1024, 8},
     {QRSAEncryption::RSA_2048, 4},
-    {QRSAEncryption::RSA_4096, 2}
+    {QRSAEncryption::RSA_4096, 2},
+    {QRSAEncryption::RSA_8192, 1}
+
 
 };
 
@@ -129,6 +131,10 @@ int main() {
     }
 
     if(!testCrypto(QRSAEncryption::Rsa::RSA_4096)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_8192)) {
         return 1;
     }
 
