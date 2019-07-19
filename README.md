@@ -13,18 +13,7 @@ Current version use __int128 type, and this type not supported in msvc compilers
 
  * git clone https://github.com/QuasarApp/Qt-Secret.git
  * cd Qt-Secret
- * git submodule update --init --recursive
- * qmake -r 
- * make -j8
- * make test #(for testing)
-
-# Include
-
-## for qmake projects 
-
- * cd yourRepo
- * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
- * git submodule update --init --update
+ * git submodule update --init -
  * Include in your pro file the pri file of Qt-Secret library
   >> include($$PWD/Qt-Secret/src/Qt-Secret.pri)
  * Rebuild yuor project
