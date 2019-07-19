@@ -11,7 +11,7 @@ The current implementation of RSA does not provide reliable long-term protection
 Individual thanks [bricke](http
 Current version use __int128 type, and this type not supported in msvc compilers (for windows use mingw64)
 
- * git clone https://github.com/QuasarApp/Qt-Secret.git
+ * git clone https://github.com/QurApp/Qt-Secret.git
  * cd Qt-Secret
  * git submodule update --init -
  * Include in your pro file the pri file of Qt-Secret library
@@ -118,14 +118,3 @@ QString iv("your-IV-vector");
 
 QByteArray hashKey = QCryptographicHash::hash(key.toLocal8Bit(), QCryptographicHash::Sha256);
 QByteArray hashIV = QCryptographicHash::hash(iv.toLocal8Bit(), QCryptographicHash::Md5);
-
-//Static invocation
-QByteArray encrypted = QAESEncryption::Crypt(QAESEncryption::AES_256, QAESEncryption::CBC, 
-                        inputStr.toLocal8Bit(), hashKey, hashIV);
-//...
-// Removal of Padding via Static function
-QString decodedString = QString(QAESEncryption::RemovePadding(decodeText));
-
-```
-
- 
