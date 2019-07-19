@@ -1,15 +1,21 @@
 # Qt-Secret
 
-Simple encryption library supporting RSA and AES algorithms.
+Fast encryption library supporting RSA and AES algorithms.
 
 # Futures 
 The Qt-Secret library supports the following algorithms:
 
 ### RSA
-The current implementation of RSA does not provide reliable long-term protection; therefore, to provide consistent protection, use the generated keys as session keys.
+The current implementation supports the following key sizes:
 #### Supported sizes
- * RSA64 (key size 128bit)
- * RSA128 (key size 256bit)
+ * RSA64 
+ * RSA128 
+ * RSA256
+ * RSA512
+ * RSA1024 
+ * RSA2048
+ * RSA4096 
+ * RSA8192 
 
 #### Supported futures 
 
