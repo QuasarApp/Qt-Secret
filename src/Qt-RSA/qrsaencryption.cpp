@@ -78,23 +78,7 @@ INT QRSAEncryption::randomNumber(bool fullFill) const {
 
     if(fullFill) {
 
-        std::chrono::steady_clock::time_point startTime, endTime;
-
-        // matching executing time of sizeBits() functions
-        startTime = std::chrono::steady_clock::now();
-        res.sizeBits();
-        endTime = std::chrono::steady_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
-        qDebug() << "   time of executing sizeBits() = " << elapsed.count() << " ns";
-
-        // matching executing time of lengthBits() functions
-        startTime = std::chrono::steady_clock::now();
-        res.longBits();
-        endTime = std::chrono::steady_clock::now();
-        elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
-        qDebug() << "   time of executing lengthBits() = " << elapsed.count() << " ns";
-
-        while(res.sizeBits() < _rsa) {
+        while(res.longBits() < _rsa) {
             res *= rand() % std::numeric_limits<int>::max();
         }
     } else {

@@ -104,33 +104,33 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
 
 int main() {
 
-    //if(!testCrypto(QRSAEncryption::Rsa::RSA_64)) {
-    //    return 1;
-    //}
-    //
-    //if(!testCrypto(QRSAEncryption::Rsa::RSA_128)) {
-    //    return 1;
-    //}
-    //
-    //if(!testCrypto(QRSAEncryption::Rsa::RSA_256)) {
-    //    return 1;
-    //}
-    //
-    //if(!testCrypto(QRSAEncryption::Rsa::RSA_512)) {
-    //    return 1;
-    //}
-    //
-    //if(!testCrypto(QRSAEncryption::Rsa::RSA_1024)) {
-    //    return 1;
-    //}
-    //
-    //if(!testCrypto(QRSAEncryption::Rsa::RSA_2048)) {
-    //    return 1;
-    //}
-    //
-    //if(!testCrypto(QRSAEncryption::Rsa::RSA_4096)) {
-    //    return 1;
-    //}
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_64)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_128)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_256)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_512)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_1024)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_2048)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_4096)) {
+        return 1;
+    }
 
     if(!testCrypto(QRSAEncryption::Rsa::RSA_8192)) {
         return 1;
