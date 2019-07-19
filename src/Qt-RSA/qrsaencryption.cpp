@@ -68,6 +68,8 @@ QByteArray QRSAEncryption::toArray(const INT &i, short sizeBlok) {
 }
 
 INT QRSAEncryption::randomNumber(bool fullFill) const {
+
+
     srand(std::chrono::duration_cast<std::chrono::nanoseconds>
           (std::chrono::system_clock::now().time_since_epoch()).count()
           % std::numeric_limits<int>::max());
