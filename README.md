@@ -8,23 +8,7 @@ The Qt-Secret library supports the following algorithms:
 ### RSA
 The current implementation of RSA does not provide reliable long-term protection; therefore, to provide consistent prot//github.com/bricke/Qt-AES), because it fulfills the goals of this library.
 
-Individual thanks [bricke](https://github.com/bricke) for implementing the AES encryption class.
-
-#### AES Levels
-* CFB
-* OFB
-
-#### Padding
-By default the padding method is `ISO`, however, the class supports:
-
-* ZERO
-* PKCS7
-* ISO
-
-
-# Build
-
-### Warning
+Individual thanks [bricke](http
 Current version use __int128 type, and this type not supported in msvc compilers (for windows use mingw64)
 
  * git clone https://github.com/QuasarApp/Qt-Secret.git
