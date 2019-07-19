@@ -11,16 +11,30 @@
 #include <qdebug.h>
 #include <cmath>
 
-const int testSize = 100;
+//const int testSize = 20;
+static const QHash <int,int > testSize = {
+    {QRSAEncryption::RSA_64, 128},
+    {QRSAEncryption::RSA_128, 64},
+    {QRSAEncryption::RSA_256, 32},
+    {QRSAEncryption::RSA_512, 16},
+    {QRSAEncryption::RSA_1024, 8},
+    {QRSAEncryption::RSA_2048, 4},
+    {QRSAEncryption::RSA_4096, 2},
+    {QRSAEncryption::RSA_8192, 1}
 
-QByteArray randomArray() {
+
+};
+
+QByteArray randomArray(int length = -1) {
     srand(static_cast<unsigned int>(time(nullptr)));
     QByteArray res;
 
-    int length = rand() % 124 * 1;
+    if (length == -1) {
+        length = rand() % 124 * 1;
+    }
 
     for (int i = 0; i < length; ++i) {
-        res.push_back(static_cast<char>(rand() % 0xFF));
+        res.push_back(static_cast<char>(rand() % 0xFD) + 1);
     }
 
     return res;
@@ -29,12 +43,15 @@ QByteArray randomArray() {
 bool testCrypto(QRSAEncryption::Rsa rsa) {
 
     QByteArray pub, priv;
-    QRSAEncryption e;
+    QRSAEncryption e(rsa);
 
-    for (int i = 0; i < testSize; i++) {
-        e.generatePairKey(pub, priv, rsa);
+    for (int i = 0; i < testSize[rsa]; i++) {
+        if (!e.generatePairKey(pub, priv)) {
+            qCritical() << "key not generated RSA" << rsa;
+            return false;
+        }
 
-        qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize);
+        qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize[rsa]);
         qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
         qInfo() << QString("Public key: %0").arg(QString(pub.toHex()));
 
@@ -48,7 +65,7 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
             return false;
         }
 
-        for (int i = 0; i < testSize; i++) {
+        for (int i = 0; i < testSize[rsa]; i++) {
             auto base = randomArray();
 
             auto encodeData = e.encode(base, pub);
@@ -92,6 +109,30 @@ int main() {
     }
 
     if(!testCrypto(QRSAEncryption::Rsa::RSA_128)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_256)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_512)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_1024)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_2048)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_4096)) {
+        return 1;
+    }
+
+    if(!testCrypto(QRSAEncryption::Rsa::RSA_8192)) {
         return 1;
     }
 

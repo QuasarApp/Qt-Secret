@@ -21,7 +21,9 @@ CONFIG(release, debug|release): {
     DESTDIR="$$PWD/build/debug"
 }
 
-VERSION = 1.1.0
+include($$PWD/mini-gmp/GMP.pri)
+
+VERSION = 1.2.0
 
 HEADERS += Qt-AES/qaesencryption.h \
            qtsecret_global.h \

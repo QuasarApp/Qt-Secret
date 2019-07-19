@@ -7,83 +7,72 @@
 
 #include "qrsaencryption.h"
 
-typedef unsigned __int128  uint128_t;
-typedef signed __int128  int128_t;
+#include <QString>
+#include <iostream>
+#include <ctime>
+#include <chrono>
 
-template<class INT>
 INT eulerFunc(const INT &p, const INT &q) {
     return (p - 1) * (q - 1);
 }
 
-template<class INT>
-INT mul(INT a, INT b, const INT &m) {
-    INT res = 0;
-    while (a != 0) {
-        if (a & 1) res = (res + b) % m;
-        a >>= 1;
-        b = (b << 1) % m;
+bool QRSAEncryption::isMutuallyPrime(const INT &a, const INT &b) {
+    if (        (!(a % 2) && !(b % 2))
+                || (!(a % 3) && !(b % 3))
+                || (!(a % 5) && !(b % 5))
+                || (!(a % 7) && !(b % 7))
+                ) return false;
+
+    return INT().gcd(a, b) == 1;
+}
+
+QRSAEncryption::Rsa QRSAEncryption::getBitsSize(const INT &i) const {
+    int rsaBits = RSA_64;
+    int intBits = i.sizeBits();
+
+    while (rsaBits < intBits) {
+        rsaBits *= 2;
     }
+
+    return static_cast<QRSAEncryption::Rsa>(rsaBits);
+
+}
+
+QRSAEncryption::Rsa QRSAEncryption::getBitsSize(const QByteArray &key) const {
+    if (isValidRsaKey(key)) {
+        return static_cast<QRSAEncryption::Rsa>(key.size() * 4);
+    }
+
+    return QRSAEncryption::Rsa::Invalid;
+}
+
+INT QRSAEncryption::fromArray(const QByteArray &array) const {
+    INT res = 0;
+    res.fromHex(array.toHex().toStdString());
     return res;
 }
 
-template<class INT>
-INT pows(const INT &a, const INT &b, const INT &m) {
-    if(b == 0)
-        return 1;
-    if(b % 2 == 0){
-        INT t = pows(a, b / 2, m);
-        return mul(t , t, m) % m;
+QByteArray QRSAEncryption::toArray(const INT &i, short sizeBlok) {
+    QByteArray res;
+    res = QByteArray::fromHex(QByteArray::fromStdString(i.getString(16)));
+
+    if (sizeBlok < 0) {
+        return res;
     }
-    return ( mul(pows(a, b - 1, m), a, m)) % m;
-}
 
-template<class INT>
-INT binpow (INT a, INT n, INT m) {
-    INT res = 1;
-    while (n) {
-        if (n & 1) {
-            res = mul(res, a, m);
-        }
-        a = mul(a, a % m, m);
-        n >>= 1;
+    while (res.size() < sizeBlok) {
+        res.push_front(char(0));
     }
-    return res % m;
+
+    return res.left(sizeBlok);
 }
 
-template<class INT>
-bool gcd(INT a, INT b) {
-    INT c;
-    while ( a != 0 ) {
-        c = a;
-        a = b % a;
-        b = c;
-    }
-    return b;
-}
-
-template<class INT>
-bool isMutuallyPrime(INT a, INT b) {
-    if (        (!(a % 2) && !(b % 2))
-             || (!(a % 3) && !(b % 3))
-             || (!(a % 5) && !(b % 5))
-             || (!(a % 7) && !(b % 7))
-       ) return false;
-
-    return gcd(a, b) == 1;
-}
-
-template<class INT>
-unsigned int getBitsSize() {
-    return sizeof(INT) * 8;
-}
-
-template<class INT>
-INT randNumber() {
+INT QRSAEncryption::randomNumber() const {
     srand(std::chrono::duration_cast<std::chrono::nanoseconds>
           (std::chrono::system_clock::now().time_since_epoch()).count()
           % std::numeric_limits<int>::max());
 
-    int longDiff = getBitsSize<INT>() / (sizeof (int) * 8);
+    int longDiff = _rsa / (sizeof (int) * 8);
 
     INT res = 1;
 
@@ -95,30 +84,9 @@ INT randNumber() {
     return res;
 }
 
-// Ferma test
-template<class INT>
-bool isPrimeFerma(INT x){
-
-    if(x == 2) return true;
-
-    for(int i = 0; i < 100; i++){
-        INT a = (randNumber<INT>() % (x - 2)) + 2;
-
-        if (!isMutuallyPrime(a, x))
-            return false;
-        if( binpow(a, x-1, x) != 1)
-            return false;
-    }
-
-    return true;
-}
-
-// return nearest prime number
-template<class INT>
-INT toPrime(INT n) {
-
+INT QRSAEncryption::toPrime(INT n) const {
     if (!(n % 2)) {
-        n++;
+        ++n;
     }
 
     INT LN = n;
@@ -126,32 +94,28 @@ INT toPrime(INT n) {
 
     while (true) {
 
-        if (isPrimeFerma(LN)) return LN;
+        if (LN.isPrime(false)) return LN;
 
         RN+=2;
 
-        if (isPrimeFerma(RN)) return RN;
+        if (LN.isPrime(false)) return RN;
         LN-=2;
     }
 }
 
-template<class INT>
-INT randomPrimeNumber(INT no = 0) {
-
+INT QRSAEncryption::randomPrimeNumber(INT no) const {
     srand(static_cast<unsigned int>(time(nullptr)));
 
     // max INT
-    auto max = (~((INT(1)) << (getBitsSize<INT>() - 1))) >> ((getBitsSize<INT>()) >> 1);
+    INT max('1', _rsa / 2, 2);
 
-    auto p = toPrime(randNumber<INT>() % max);
-    while(p == no) p = toPrime(randNumber<INT>() % max);
+    auto p = toPrime(randomNumber() % max);
+    while(p == no) p = toPrime(randomNumber() % max);
 
     return p;
 }
 
-template<class INT>
-INT ExtEuclid(INT a, INT b)
-{
+INT QRSAEncryption::extEuclid(INT a, INT b) const {
     INT x = 0, y = 1, u = 1, v = 0, gcd = b, m, n, q, r;
     while (a != 0) {
         q = gcd / a;
@@ -168,131 +132,26 @@ INT ExtEuclid(INT a, INT b)
     return y;
 }
 
-template<class INT>
-QByteArray toArray(INT i, short sizeBlok = -1) {
-    QByteArray res;
-    res.append(reinterpret_cast<char*>(&i), sizeof (i));
-
-    if (sizeBlok < 0) {
-        return res;
-    }
-
-    return res.left(sizeBlok);
+short QRSAEncryption::getBlockSize(INT i) const {
+    return static_cast<short>(i.longBytes()) - 1;
 }
 
-template<class INT>
-INT fromArray(const QByteArray& array) {
-    INT res = 0;
+QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT &m, short blockSize) {
 
-    memcpy(&res, array.data(),
-           static_cast<unsigned int>(std::min(array.size(),
-                                              static_cast<int>(sizeof(INT)))));
-    return res;
+    return toArray(INT::powm(block, e, m), blockSize);
 }
 
-template<class INT>
-bool keyGenerator(QByteArray &pubKey, QByteArray &privKey) {
+QByteArray QRSAEncryption::decodeBlok(const INT &block, const INT &d, const INT &m, short blockSize) {
 
-    INT p = randomPrimeNumber<INT>();
-    INT q = randomPrimeNumber<INT>(p);
-
-    INT modul = 0;
-    while ((modul = p * q) < 0) {
-        p = toPrime((p - 1) / 2);
-    }
-
-    INT eilor = eulerFunc(p, q);
-    INT e = randNumber<INT>() % eilor;
-
-    if (!(e % 2)) e--;
-
-    do {
-        e -= 2;
-    } while((!isMutuallyPrime(eilor, e)));
-
-    INT d = ExtEuclid<INT>(eilor , e);;
-
-    while(d < 0 ) {
-        d += eilor;
-    }
-
-    pubKey.append(toArray(e));
-    pubKey.append(toArray(modul));
-    privKey.append(toArray(d));
-    privKey.append(toArray(modul));
-
-    return true;
+    return toArray(INT::powm(block, d, m), blockSize);
 }
 
-template< class INT>
-short getBytes(INT i) {
-    return static_cast<short>(std::floor(log2(i) / 8));
-}
-template<class INT>
-short getBlockSize(const INT &i) {
-    return getBytes<INT>(i);
-}
-
-template <class INT>
-QByteArray encodeBlok(const INT& block, const INT &e, const INT &m) {
-    return toArray(binpow(block, e, m), getBlockSize(m) + 1);
-}
-
-template <class INT>
-QByteArray decodeBlok(const INT& block, const INT &d, const INT &m) {
-    return toArray(binpow(block, d, m), getBlockSize(m));
-}
-
-template<class INT>
-QByteArray encodeArray(QByteArray rawData, const QByteArray &pubKey) {
-    int index = 0;
-
-    QByteArray block;
-
-    INT e = fromArray<INT>(pubKey.mid(0, pubKey.size() / 2));
-    INT m = fromArray<INT>(pubKey.mid(pubKey.size() / 2));
-    short blockSize = getBlockSize(m);
-
-    if (!blockSize) {
-        qDebug() << "module of key small! size = 1 byte, 2 byte is minimum";
-        return QByteArray();
-    }
-
-    QByteArray res;
-
-    rawData.append(ENDLINE);
-
-    while ((block = rawData.mid(index, blockSize)).size()) {
-
-        res.append(encodeBlok(fromArray<INT>(block), e, m));
-        index += blockSize;
-    }
-
-    return res;
-}
-
-template<class INT>
-QByteArray decodeArray(const QByteArray &rawData, const QByteArray &privKey) {
-    int index = 0;
-
-    QByteArray block;
-
-    INT d = fromArray<INT>(privKey.mid(0, privKey.size() / 2));
-    INT m = fromArray<INT>(privKey.mid(privKey.size() / 2));
-    short blockSize = getBlockSize(m) + 1;
-
-    QByteArray res;
-    while ((block = rawData.mid(index, blockSize)).size()) {
-        res.append(decodeBlok(fromArray<INT>(block), d, m));
-        index += blockSize;
-    }
-    return res.remove(res.lastIndexOf(ENDLINE), res.size());
-}
-
-QRSAEncryption::QRSAEncryption() {
+QRSAEncryption::QRSAEncryption(Rsa rsa) {
+    _rsa = rsa;
 }
 
 unsigned int QRSAEncryption::getKeyBytesSize(QRSAEncryption::Rsa rsa) {
+
     return rsa / 4;
 }
 
@@ -300,51 +159,69 @@ unsigned int QRSAEncryption::getKeyBytesSize(QRSAEncryption::Rsa rsa) {
 bool QRSAEncryption::generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
                                       QRSAEncryption::Rsa rsa) {
 
-    return QRSAEncryption().generatePairKey(pubKey, privKey, rsa);
+    return QRSAEncryption(rsa).generatePairKey(pubKey, privKey);
 }
-QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &pubKey) {
 
-    return QRSAEncryption().encode(rawData, pubKey);
-}
-QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey) {
+QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &pubKey,
+                                   Rsa rsa, BlockSize blockSizeMode) {
 
-    return QRSAEncryption().decode(rawData, privKey);
+    return QRSAEncryption(rsa).encode(rawData, pubKey, blockSizeMode);
 }
-QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey) {
 
-    return QRSAEncryption().signMessage(rawData, privKey);
-}
-bool QRSAEncryption::checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey) {
+QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey,
+                                   Rsa rsa, BlockSize blockSizeMode) {
 
-    return QRSAEncryption().checkSignMessage(rawData, pubKey);
+    return QRSAEncryption(rsa).decode(rawData, privKey, blockSizeMode);
 }
+
+QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey, Rsa rsa) {
+
+    return QRSAEncryption(rsa).signMessage(rawData, privKey);
+}
+
+bool QRSAEncryption::checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey, Rsa rsa) {
+
+    return QRSAEncryption(rsa).checkSignMessage(rawData, pubKey);
+}
+
 // --- end of static methods ---
 
-bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, QRSAEncryption::Rsa rsa) {
+bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
 
     int cnt{0};
     bool keyGenRes{false};
-
+    INT p, q, modul, eilor, e, d;
     do {
         pubKey.clear();
         privKey.clear();
 
-        switch (rsa) {
+        p = randomPrimeNumber();
+        q = randomPrimeNumber(p);
 
-            case RSA_64: {
-                if (!keyGenerator<int64_t>(pubKey, privKey)) {
-                    return false;
-                }
-                break;
-            }
-
-            case RSA_128: {
-                if (!keyGenerator<int128_t>(pubKey, privKey)) {
-                    return false;
-                }
-                break;
-            }
+        modul = 0;
+        while ((modul = p * q) < 0) {
+            p = toPrime((p - 1) / 2);
         }
+
+        eilor = eulerFunc(p, q);
+        e = randomNumber() % eilor;
+
+        if (!(e % 2)) --e;
+
+        do {
+            e -= 2;
+        } while((!isMutuallyPrime(eilor, e)));
+
+        d = extEuclid(eilor , e);;
+
+        while(d < 0 ) {
+            d += eilor;
+        }
+
+        pubKey.append(toArray(e, _rsa / 8));
+        pubKey.append(toArray(modul, _rsa / 8));
+        privKey.append(toArray(d, _rsa / 8));
+        privKey.append(toArray(modul, _rsa / 8));
 
     } while (!(keyGenRes = testKeyPair(pubKey, privKey)) && (++cnt < KEY_GEN_LIMIT));
 
@@ -354,40 +231,84 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, QR
 }
 
 // --- non-static methods ---
-QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey) {
+QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey, BlockSize blockSizeMode) {
 
-    switch (pubKey.size() * 4) {
-        case RSA_64: {
-            return encodeArray<uint64_t>(rawData, pubKey);
-        }
-
-        case RSA_128: {
-            return encodeArray<uint128_t>(rawData, pubKey);
-        }
+    if (getBitsSize(pubKey) != _rsa) {
+        return QByteArray();
     }
 
-    return QByteArray();
+    int index = 0;
+
+    QByteArray block;
+
+    INT e = fromArray(pubKey.mid(0, pubKey.size() / 2));
+    INT m = fromArray(pubKey.mid(pubKey.size() / 2));
+
+    short blockSizeOut = getBlockSize(m) + 1; // BlockSize::OneByte
+    short blockSizeIn = 1; // BlockSize::OneByte
+
+    if (blockSizeMode == BlockSize::Auto) {
+        blockSizeIn = getBlockSize(m);
+    }
+
+    if (!blockSizeIn) {
+        qDebug() << "module of key small! size = 1 byte, 2 byte is minimum";
+        return QByteArray();
+    }
+
+    QByteArray res;
+
+    while ((block = rawData.mid(index, blockSizeIn)).size()) {
+
+        if (index + blockSizeIn > rawData.size() && block.size() && !block[0]) {
+            qWarning() << "When trying to encrypt data, problems arose, the last block contains non-significant zeros."
+                          " These zeros will be deleted during the decryption process."
+                          " For encode and decode data with non-significant zeros use BlockSize::OneByte";
+        }
+
+        res.append(encodeBlok(fromArray(block), e, m, blockSizeOut));
+        index += blockSizeIn;
+    }
+
+    return res;
+
 }
-QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey) {
+QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey, BlockSize blockSizeMode) {
 
-    switch (privKey.size() * 4) {
-
-        case RSA_64: {
-            return decodeArray<uint64_t>(rawData, privKey);
-        }
-
-        case RSA_128: {
-            return decodeArray<uint128_t>(rawData, privKey);
-        }
+    if (getBitsSize(privKey) != _rsa) {
+        return QByteArray();
     }
 
-    return QByteArray();
+    int index = 0;
+
+    QByteArray block;
+
+    INT d = fromArray(privKey.mid(0, privKey.size() / 2));
+    INT m = fromArray(privKey.mid(privKey.size() / 2));
+
+    short blockSizeIn = getBlockSize(m) + 1;
+
+    short blockSizeOut = 1; // BlockSize::OneByte
+    if (blockSizeMode == BlockSize::Auto) {
+        blockSizeOut = getBlockSize(m);
+    }
+
+    QByteArray res;
+    while ((block = rawData.mid(index, blockSizeIn)).size()) {
+        bool isLastBlock = (index + blockSizeIn) >= rawData.size();
+
+        res.append(decodeBlok(fromArray(block), d, m,
+                              (isLastBlock && blockSizeMode == BlockSize::Auto)? -1 : blockSizeOut));
+        index += blockSizeIn;
+    }
+    return res;
+
 }
 QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey) {
 
     QByteArray hash = QCryptographicHash::hash(rawData, HashAlgorithm::Sha256);
 
-    QByteArray signature = encode(hash, privKey);
+    QByteArray signature = encode(hash, privKey, BlockSize::OneByte);
 
     rawData.append(SIGN_MARKER + signature.toHex() + SIGN_MARKER);
 
@@ -406,12 +327,15 @@ bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArra
 
     // hash, that was decrypt from recieved signature
     QByteArray recievedHash = decode(QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)),
-                                     pubKey);
+                                     pubKey, BlockSize::OneByte);
 
     // if recievedHash == hashAlgorithm(recived message), then signed message is valid
     return recievedHash == QCryptographicHash::hash(message, HashAlgorithm::Sha256);
 }
-// --- end of non-static methods ---
+
+QRSAEncryption::Rsa QRSAEncryption::getRsa() const {
+    return _rsa;
+}
 
 bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) {
 
@@ -423,6 +347,8 @@ bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &pri
 
     return result;
 }
+
+// --- end of non-static methods ---
 
 bool QRSAEncryption::isValidRsaKey(const QByteArray &key) {
     return key.size() && ((static_cast<unsigned int>(key.size()) % getKeyBytesSize(RSA_64)) == 0);
