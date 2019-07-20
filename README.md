@@ -1,4 +1,5 @@
-# Qt-Secret
+# ![Qt-Secret Logo](res/png/QtSecretLogo2.png)
+
 
 Fast encryption library supporting RSA and AES algorithms.
 
@@ -51,9 +52,6 @@ By default the padding method is `ISO`, however, the class supports:
 
 
 # Build
-
-### Warning
-Current version use __int128 type, and this type not supported in msvc compilers (for windows use mingw64)
 
  * git clone https://github.com/QuasarApp/Qt-Secret.git
  * cd Qt-Secret
