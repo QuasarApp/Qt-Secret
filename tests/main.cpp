@@ -21,8 +21,6 @@ static const QHash <int,int > testSize = {
     {QRSAEncryption::RSA_2048, 4},
     {QRSAEncryption::RSA_4096, 2},
     {QRSAEncryption::RSA_8192, 1}
-
-
 };
 
 QByteArray randomArray(int length = -1) {
@@ -46,12 +44,14 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
     QRSAEncryption e(rsa);
 
     for (int i = 0; i < testSize[rsa]; i++) {
+
+        qInfo() << QString("Test RSA-%0 (%1/%2):").arg(testSize.key(testSize[rsa])).arg(i + 1).arg(testSize[rsa]);
+
         if (!e.generatePairKey(pub, priv)) {
             qCritical() << "key not generated RSA" << rsa;
             return false;
         }
 
-        qInfo() << QString("Test keys (%0/%1):").arg(i).arg(testSize[rsa]);
         qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
         qInfo() << QString("Public key: %0").arg(QString(pub.toHex()));
 
