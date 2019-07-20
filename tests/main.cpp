@@ -132,10 +132,6 @@ int main() {
         return 1;
     }
 
-    if(!testCrypto(QRSAEncryption::Rsa::RSA_8192)) {
-        return 1;
-    }
-
     qInfo() << "Tests passed successfully";
 
     return 0;
