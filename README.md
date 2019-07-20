@@ -91,8 +91,8 @@ By default the padding method is `ISO`, however, the class supports:
 #include <qrsaencryption.h>
 
     QByteArray pub, priv;
-    QRSAEncryption e;
-    e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_128); // or QRSAEncryption::Rsa::RSA_64
+    QRSAEncryption e(QRSAEncryption::Rsa::RSA_2048);
+    e.generatePairKey(pub, priv);
     QByteArray msg = "test message";
 
     auto encodeData = e.encode(msg, pub);
@@ -109,7 +109,7 @@ By default the padding method is `ISO`, however, the class supports:
 
     QByteArray pub, priv;
     QRSAEncryption e;
-    e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_128); // or QRSAEncryption::Rsa::RSA_64
+    e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_128); // or other rsa size 
 
     QByteArray msg = "test message";
 
