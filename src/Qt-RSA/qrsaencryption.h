@@ -98,7 +98,7 @@ private:
 
     INT fromArray(const QByteArray& array) const;
     QByteArray toArray(const INT &i, short sizeBlok = -1);
-    INT randomNumber() const;
+    INT randomNumber(bool fullFilled = true) const;
     INT toPrime(INT) const;
     INT randomPrimeNumber(INT no = 0) const;
     INT extEuclid(INT a, INT b) const;

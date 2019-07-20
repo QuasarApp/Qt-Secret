@@ -67,18 +67,27 @@ QByteArray QRSAEncryption::toArray(const INT &i, short sizeBlok) {
     return res.left(sizeBlok);
 }
 
-INT QRSAEncryption::randomNumber() const {
+INT QRSAEncryption::randomNumber(bool fullFill) const {
+
     srand(std::chrono::duration_cast<std::chrono::nanoseconds>
           (std::chrono::system_clock::now().time_since_epoch()).count()
           % std::numeric_limits<int>::max());
 
-    int longDiff = _rsa / (sizeof (int) * 8);
+    INT res{1};
 
-    INT res = 1;
+    if(fullFill) {
 
-    while (longDiff > 0) {
-        longDiff--;
-        res *= rand() % std::numeric_limits<int>::max();
+        while(res.longBits() < _rsa) {
+            res *= rand() % std::numeric_limits<int>::max();
+        }
+    } else {
+
+        int longDiff = _rsa / (sizeof (int) * 8);
+
+        while (longDiff > 0) {
+            longDiff--;
+            res *= rand() % std::numeric_limits<int>::max();
+        }
     }
 
     return res;
@@ -192,6 +201,7 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
     bool keyGenRes{false};
     INT p, q, modul, eilor, e, d;
     do {
+
         pubKey.clear();
         privKey.clear();
 
