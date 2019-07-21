@@ -9,6 +9,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
+           Qt-Secret-GUI \
            minigmp \
            src \
            tests \
