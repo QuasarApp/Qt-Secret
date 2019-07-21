@@ -23,28 +23,17 @@ Window {
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
 
-        Item {
-            Loader {
-                source: "KeysGeneratePage.qml"
-            }
-        }
+        KeysGeneratePage {}
 
-        Item {
-            Loader {
-                source: "EncryptDecryptPage.qml"
-            }
-        }
+        EncryptDecryptPage {}
 
-        Item {
-            Loader {
-                source: "DigitalSignaturePage.qml"
-            }
-        }
+        DigitalSignaturePage {}
     }
 
     TabBar {
         id: tabBar
         width: parent.width
+        font.pointSize: 17
         currentIndex: swipeView.currentIndex
 
         TabButton {
