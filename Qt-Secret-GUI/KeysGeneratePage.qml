@@ -28,13 +28,6 @@ Item {
 
                 Label {
                     id: rsaSizeLabel
-
-                    Layout.minimumWidth: 100
-                    Layout.preferredWidth: 100
-                    Layout.maximumWidth: 100
-                    Layout.leftMargin: 100
-                    Layout.topMargin: 40
-
                     text: qsTr("RSA size:")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
@@ -78,7 +71,6 @@ Item {
                 TextField {
                     id: privateKeyTE
                     selectByMouse: true
-                    Layout.fillWidth: true
                     font.family: "Courier"
                     wrapMode: Text.WrapAnywhere
                     verticalAlignment: Text.AlignTop
@@ -106,7 +98,6 @@ Item {
                 TextField {
                     id: publicKeyTE
                     selectByMouse: true
-                    Layout.fillWidth: true
                     font.family: "Courier"
                     wrapMode: Text.WrapAnywhere
                     verticalAlignment: Text.AlignTop
