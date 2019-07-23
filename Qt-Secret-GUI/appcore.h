@@ -15,7 +15,7 @@ public:
 
 signals:
     // generate keys
-    void printKeys(QByteArray *pubKey, QByteArray *privKey);
+    void printKeys(QString pubKey, QString privKey);
     // encryption and decryption
     void printEncryptedData(QByteArray *encryptedData);
     void printDecryptedData(QByteArray *decryptedData);
@@ -25,7 +25,7 @@ signals:
 
 public slots:
     // generate keys
-    void generateKeys(QRSAEncryption rsa);
+    void generateKeys(int rsaIdx);
     // encryption and decryption
     void encryptData(QByteArray *dataToEncrypt);
     void decryptData(QByteArray *dataToDecrypt);

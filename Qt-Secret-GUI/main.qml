@@ -23,6 +23,8 @@ Window {
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
 
+        anchors.topMargin: tabBar.height
+
         KeysGeneratePage {}
 
         EncryptDecryptPage {}

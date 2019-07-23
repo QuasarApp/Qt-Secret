@@ -5,11 +5,11 @@ AppCore::AppCore(QObject *parent) : QObject(parent)
 
 }
 
-void AppCore::generateKeys(QRSAEncryption rsa)
+void AppCore::generateKeys(int rsaIdx)
 {
-    QRSAEncryption e(rsa);
+    QRSAEncryption e((QRSAEncryption::Rsa(rsaIdx)));
     e.generatePairKey(pubKey, privKey);
-    emit printKeys(&pubKey, &privKey);
+    emit printKeys(pubKey.toHex(), privKey.toHex());
 }
 
 void AppCore::encryptData(QByteArray *dataToEncrypt)
