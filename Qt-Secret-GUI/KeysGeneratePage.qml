@@ -28,16 +28,13 @@ Item {
 
                 Label {
                     id: rsaSizeLabel
-<<<<<<< HEAD
-                    font.pointSize: 18
-=======
 
                     Layout.minimumWidth: 100
                     Layout.preferredWidth: 100
                     Layout.maximumWidth: 100
+                    Layout.leftMargin: 100
+                    Layout.topMargin: 40
 
-//                    font.pointSize: 18
->>>>>>> 06c7ebeae91f0d4253f50d27084ed6254cfc4375
                     text: qsTr("RSA size:")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
@@ -46,7 +43,6 @@ Item {
                 ComboBox {
                     id: rsaSizeCB
                     currentIndex: 0
-//                    font.pointSize: 18
                     editable: false
                     model: [64, 128, 256, 512, 1024, 2048, 4096, 8192]
                 }
@@ -54,7 +50,6 @@ Item {
                 Button {
                     id: generateButton
                     text: qsTr("Generate")
-//                    font.pointSize: 18
 
                     onClicked: {
                         appCore.generateKeys(rsaSizeCB.model[rsaSizeCB.currentIndex])
@@ -78,7 +73,6 @@ Item {
                     text: qsTr("Private key:")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
-//                    font.pointSize: 18
                 }
 
                 TextField {
@@ -86,7 +80,6 @@ Item {
                     selectByMouse: true
                     Layout.fillWidth: true
                     font.family: "Courier"
-//                    font.pixelSize: 15
                     wrapMode: Text.WrapAnywhere
                     verticalAlignment: Text.AlignTop
                 }
@@ -108,7 +101,6 @@ Item {
                     text: qsTr("Public key:")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
-//                    font.pointSize: 18
                 }
 
                 TextField {
@@ -116,7 +108,6 @@ Item {
                     selectByMouse: true
                     Layout.fillWidth: true
                     font.family: "Courier"
-//                    font.pixelSize: 15
                     wrapMode: Text.WrapAnywhere
                     verticalAlignment: Text.AlignTop
                 }
