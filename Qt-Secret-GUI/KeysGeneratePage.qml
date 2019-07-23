@@ -35,7 +35,7 @@ Item {
                     Layout.preferredWidth: 100
                     Layout.maximumWidth: 100
 
-                    font.pointSize: 18
+//                    font.pointSize: 18
                     text: qsTr("RSA size:")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
@@ -49,7 +49,7 @@ Item {
                     Layout.maximumWidth: 117
 
                     currentIndex: 0
-                    font.pointSize: 18
+//                    font.pointSize: 18
                     editable: false
                     model: [64, 128, 256, 512, 1024, 2048, 4096, 8192]
                 }
@@ -63,7 +63,7 @@ Item {
                     //Layout.minimumHeight: 50
 
                     text: qsTr("Generate")
-                    font.pointSize: 18
+//                    font.pointSize: 18
 
                     onClicked: {
                         appCore.generateKeys(rsaSizeCB.model[rsaSizeCB.currentIndex])
@@ -87,7 +87,7 @@ Item {
                     text: qsTr("Private key:")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
-                    font.pointSize: 18
+//                    font.pointSize: 18
                 }
 
                 TextField {
@@ -96,7 +96,7 @@ Item {
                     selectByMouse: true
 
                     font.family: "Courier"
-                    font.pixelSize: 15
+//                    font.pixelSize: 15
                     wrapMode: Text.WrapAnywhere
                     verticalAlignment: Text.AlignTop
                 }
@@ -119,13 +119,13 @@ Item {
                     text: qsTr("Public key:")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
-                    font.pointSize: 18
+//                    font.pointSize: 18
                 }
 
                 TextField {
                     id: publicKeyTE
                     font.family: "Courier"
-                    font.pixelSize: 15
+//                    font.pixelSize: 15
                     wrapMode: Text.WrapAnywhere
                     verticalAlignment: Text.AlignTop
                 }

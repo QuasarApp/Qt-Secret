@@ -4,5 +4,6 @@
         <file>KeysGeneratePage.qml</file>
         <file>EncryptDecryptPage.qml</file>
         <file>DigitalSignaturePage.qml</file>
+        <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

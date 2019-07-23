@@ -9,11 +9,12 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-           Qt-Secret-GUI \
            minigmp \
            src \
            tests \
-           qaesencryption
+           qaesencryption \
+           Qt-Secret-GUI
+
 
 include($$PWD/test.pri)
 
