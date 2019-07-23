@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.12
 Item {
 
     Connections {
+
         target: appCore
         onPrintKeys: {
             privateKeyTE.text = privKey
@@ -22,19 +23,11 @@ Item {
             height: childrenRect.height
 
             RowLayout {
-
                 id: firstRow
                 spacing: 20
 
-                Layout.minimumHeight: 50
-
                 Label {
                     id: rsaSizeLabel
-
-                    Layout.minimumWidth: 100
-                    Layout.preferredWidth: 100
-                    Layout.maximumWidth: 100
-
                     font.pointSize: 18
                     text: qsTr("RSA size:")
                     verticalAlignment: Text.AlignVCenter
@@ -43,11 +36,6 @@ Item {
 
                 ComboBox {
                     id: rsaSizeCB
-
-                    Layout.minimumWidth: 117
-                    Layout.preferredWidth: 117
-                    Layout.maximumWidth: 117
-
                     currentIndex: 0
                     font.pointSize: 18
                     editable: false
@@ -56,12 +44,6 @@ Item {
 
                 Button {
                     id: generateButton
-
-                    Layout.minimumWidth: 115
-                    Layout.preferredWidth: 115
-                    Layout.maximumWidth: 115
-                    //Layout.minimumHeight: 50
-
                     text: qsTr("Generate")
                     font.pointSize: 18
 
@@ -75,6 +57,7 @@ Item {
         Rectangle {
 
             height: childrenRect.height
+            width: parent.width
 
             RowLayout {
 
@@ -83,7 +66,6 @@ Item {
 
                 Label {
                     id: privateKeyLabel
-
                     text: qsTr("Private key:")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
@@ -92,9 +74,8 @@ Item {
 
                 TextField {
                     id: privateKeyTE
-
                     selectByMouse: true
-
+                    Layout.fillWidth: true
                     font.family: "Courier"
                     font.pixelSize: 15
                     wrapMode: Text.WrapAnywhere
@@ -106,6 +87,7 @@ Item {
         Rectangle {
 
             height: childrenRect.height
+            width: childrenRect.width
 
             RowLayout {
 
@@ -114,8 +96,6 @@ Item {
 
                 Label {
                     id: publicKeyLabel
-                    x: 8
-                    y: 265
                     text: qsTr("Public key:")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
@@ -124,6 +104,8 @@ Item {
 
                 TextField {
                     id: publicKeyTE
+                    selectByMouse: true
+                    Layout.fillWidth: true
                     font.family: "Courier"
                     font.pixelSize: 15
                     wrapMode: Text.WrapAnywhere
