@@ -22,7 +22,7 @@ Current version use __int128 type, and this type not supported in msvc compilers
  
  * cd yourRepo
  * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
- * git submodule update --init --update
+ * git submodule update --int --update
  * Add the rule for build Qt-Secret
  * Add INCLUDEPATH and LIBS for your build system 
  * Rebuild yuor project
