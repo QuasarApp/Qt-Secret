@@ -14,7 +14,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         appcore.cpp \
-        main.cpp
+        main.cpp \
+        secretworker.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,7 +33,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    appcore.h
+    appcore.h \
+    secretworker.h
 
-DISTFILES += \
-    qtquickcontrols2.conf
+DISTFILES +=

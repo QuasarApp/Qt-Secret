@@ -11,7 +11,9 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    AppCore appCore;
+    QClipboard *clipboard = QGuiApplication::clipboard();
+
+    AppCore appCore(clipboard);
     QQmlContext *context = engine.rootContext();
     context->setContextProperty("appCore", &appCore);
 

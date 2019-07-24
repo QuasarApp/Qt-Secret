@@ -13,17 +13,14 @@ Window {
     height: 480
     title: qsTr("Qt-Secret-GUI")
 
-//     Settings {
-//         id: settings
-//         property string style: "Material"
-//     }
-
     SwipeView {
         id: swipeView
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
 
-        anchors.topMargin: tabBar.height
+        anchors.topMargin: tabBar.height + 20
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
 
         KeysGeneratePage {}
 
@@ -35,7 +32,6 @@ Window {
     TabBar {
         id: tabBar
         width: parent.width
-//        font.pointSize: 17
         currentIndex: swipeView.currentIndex
 
         TabButton {

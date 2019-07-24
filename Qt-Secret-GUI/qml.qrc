@@ -1,9 +1,11 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>KeysGeneratePage.qml</file>
-        <file>EncryptDecryptPage.qml</file>
         <file>DigitalSignaturePage.qml</file>
+        <file>EncryptDecryptPage.qml</file>
+        <file>KeysGeneratePage.qml</file>
+        <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
+        <file>images/cpy.png</file>
+        <file>CopyButton.qml</file>
     </qresource>
 </RCC>
