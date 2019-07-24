@@ -10,9 +10,9 @@ Item {
 
         target: appCore
         onQmlShowKeys: {
-            publicKeyTE.text = pubKey
-            privateKeyTE.text = privKey
             loadPopup.close()
+            secondRow.setText(privKey)
+            thirdRow.setText(pubKey)
         }
         onQmlOpenPopup: {
             loadPopup.open()
@@ -31,18 +31,8 @@ Item {
             Layout.minimumHeight: 50
             Layout.leftMargin: 30
 
-            Label {
-                id: rsaSizeLabel
-                text: qsTr("RSA size:")
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-            }
-
-            ComboBox {
-                id: rsaSizeCB
-                currentIndex: 0
-                editable: false
-                model: [64, 128, 256, 512, 1024, 2048, 4096, 8192]
+            RsaSizeModule {
+                id: rsaSizeModule
             }
 
             Button {
@@ -50,74 +40,22 @@ Item {
                 text: qsTr("Generate")
 
                 onClicked: {
-                    appCore.generateKeys(rsaSizeCB.model[rsaSizeCB.currentIndex])
+                    appCore.generateKeys(rsaSizeModule.rsaSize)
                 }
             }
         }
 
-        RowLayout {
-
+        RowElement {
             id: secondRow
-            spacing: 20
-            Layout.minimumHeight: 50
-
-            Label {
-                id: privateKeyLabel
-                text: qsTr("Private key:")
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-            }
-
-            ScrollView {
-                id: privateKeySV
-                Layout.fillWidth: true
-                Layout.maximumHeight: parentItem.height * 0.4
-
-                TextArea {
-                    id: privateKeyTE
-                    placeholderText: "Private key"
-                    selectByMouse: true
-                    wrapMode: Text.WrapAnywhere
-                    verticalAlignment: Text.AlignTop
-                }
-            }
-
-            CopyButton {
-                onClicked: appCore.copyToClipboard(privateKeyTE.text)
-            }
+            labelText: qsTr("Private key:")
+            onButtonClicked: appCore.copyToClipboard(secondRow.textAreaText)
         }
 
-        RowLayout {
-
+        RowElement {
             id: thirdRow
-            spacing: 20
-            Layout.minimumHeight: 50
             Layout.leftMargin: 8
-
-            Label {
-                id: publicKeyLabel
-                text: qsTr("Public key:")
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-            }
-
-            ScrollView {
-                id: publicKeySV
-                Layout.fillWidth: true
-                Layout.maximumHeight: parentItem.height * 0.4
-
-                TextArea {
-                    id: publicKeyTE
-                    placeholderText: "Public key"
-                    selectByMouse: true
-                    wrapMode: Text.WrapAnywhere
-                    verticalAlignment: Text.AlignTop
-                }
-            }
-
-            CopyButton {
-                onClicked: appCore.copyToClipboard(publicKeyTE.text)
-            }
+            labelText: qsTr("Public key:")
+            onButtonClicked: appCore.copyToClipboard(thirdRow.textAreaText)
         }
     }
 

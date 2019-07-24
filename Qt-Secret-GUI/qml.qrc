@@ -7,5 +7,7 @@
         <file>qtquickcontrols2.conf</file>
         <file>images/cpy.png</file>
         <file>CopyButton.qml</file>
+        <file>RowElement.qml</file>
+        <file>RsaSizeModule.qml</file>
     </qresource>
 </RCC>

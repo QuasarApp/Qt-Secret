@@ -13,8 +13,8 @@ AppCore::AppCore(QObject *parent, QClipboard *_clipboard) : QObject(parent)
 
 AppCore::~AppCore()
 {
-    workThread.wait(0);
     workThread.quit();
+    workThread.wait();
 }
 
 void AppCore::generateKeys(int rsa)
