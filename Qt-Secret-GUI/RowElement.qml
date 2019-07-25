@@ -6,9 +6,9 @@ RowLayout {
 
     id: rowElement
 
-    property string id: "Row layout name"
-    property string labelText: "Label text"
-    property string textAreaPlaceholderText: "Text area"
+    property string id: qsTr("Row layout name")
+    property string labelText: qsTr("Label text")
+    property string textAreaPlaceholderText: qsTr("Text area")
     property string textAreaText: rowElementTA.text
 
     signal buttonClicked()
@@ -22,13 +22,15 @@ RowLayout {
 
     Label {
         id: rowElementLabel
-        text: qsTr(labelText)
+        text: labelText
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
     }
 
     ScrollView {
         id: rowElementSV
+        clip: true;
+
         Layout.fillWidth: true
         Layout.maximumHeight: parentItem.height * 0.4
 
@@ -36,10 +38,12 @@ RowLayout {
             policy: ScrollBar.AlwaysOff
         }
 
-        TextArea {
+        TextField {
+
             id: rowElementTA
-            placeholderText: textAreaText
             selectByMouse: true
+            width: rowElementSV.width
+            readOnly: true;
             wrapMode: Text.WrapAnywhere
             verticalAlignment: Text.AlignTop
         }

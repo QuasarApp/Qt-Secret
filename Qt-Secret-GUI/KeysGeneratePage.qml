@@ -47,12 +47,14 @@ Item {
 
         RowElement {
             id: secondRow
+            Layout.fillWidth: true
             labelText: qsTr("Private key:")
             onButtonClicked: appCore.copyToClipboard(secondRow.textAreaText)
         }
 
         RowElement {
             id: thirdRow
+            Layout.fillWidth: true
             Layout.leftMargin: 8
             labelText: qsTr("Public key:")
             onButtonClicked: appCore.copyToClipboard(thirdRow.textAreaText)
