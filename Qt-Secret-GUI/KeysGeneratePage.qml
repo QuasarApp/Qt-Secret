@@ -24,6 +24,8 @@ Item {
         id: column
         spacing: 10
         anchors.fill: parent
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
 
         RowLayout {
             id: firstRow

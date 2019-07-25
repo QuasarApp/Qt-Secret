@@ -19,8 +19,6 @@ Window {
         currentIndex: tabBar.currentIndex
 
         anchors.topMargin: tabBar.height + 20
-        anchors.leftMargin: 20
-        anchors.rightMargin: 20
 
         KeysGeneratePage {}
 
