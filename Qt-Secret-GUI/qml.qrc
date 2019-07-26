@@ -6,8 +6,10 @@
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>images/cpy.png</file>
-        <file>CopyButton.qml</file>
-        <file>RowElement.qml</file>
-        <file>RsaSizeModule.qml</file>
+        <file>modules/CopyButton.qml</file>
+        <file>modules/RowElement.qml</file>
+        <file>modules/RsaSizeModule.qml</file>
+        <file>modules/LoadPopup.qml</file>
+        <file>modules/KeysChoiceOption.qml</file>
     </qresource>
 </RCC>

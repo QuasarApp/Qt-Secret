@@ -6,5 +6,5 @@ Button {
     implicitWidth: 46
     implicitHeight: 46
 
-    icon.source: "images/cpy.png"
+    icon.source: "../images/cpy.png"
 }
