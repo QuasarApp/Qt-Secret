@@ -159,36 +159,63 @@ QRSAEncryption::QRSAEncryption(Rsa rsa) {
     _rsa = rsa;
 }
 
+bool QRSAEncryption::generatePairKeyS(QByteArray &pubKey, QByteArray &privKey, QRSAEncryption::Rsa rsa) {
+    qWarning() << "method " << Q_FUNC_INFO <<
+                  " will be deleted in newxt version. please use generatePairKey method";
+    return generatePairKey(pubKey, privKey, rsa);
+}
+
+QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &pubKey, QRSAEncryption::Rsa rsa, QRSAEncryption::BlockSize blockSizeMode) {
+    qWarning() << "method " << Q_FUNC_INFO <<
+                  " will be deleted in newxt version. please use encode method";
+    return encode(rawData, pubKey, rsa, blockSizeMode);
+
+}
+
+QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey, QRSAEncryption::Rsa rsa, QRSAEncryption::BlockSize blockSizeMode) {
+    qWarning() << "method " << Q_FUNC_INFO <<
+                  " will be deleted in newxt version. please use decode method";
+    return encode(rawData, privKey, rsa, blockSizeMode);
+
+}
+
+QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey, QRSAEncryption::Rsa rsa) {
+    qWarning() << "method " << Q_FUNC_INFO <<
+                  " will be deleted in newxt version. please use signMessage method";
+    return encode(rawData, privKey, rsa);
+
+}
+
 unsigned int QRSAEncryption::getKeyBytesSize(QRSAEncryption::Rsa rsa) {
 
     return rsa / 4;
 }
 
 // --- static methods ---
-bool QRSAEncryption::generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
+bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey,
                                       QRSAEncryption::Rsa rsa) {
 
     return QRSAEncryption(rsa).generatePairKey(pubKey, privKey);
 }
 
-QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &pubKey,
+QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey,
                                    Rsa rsa, BlockSize blockSizeMode) {
 
     return QRSAEncryption(rsa).encode(rawData, pubKey, blockSizeMode);
 }
 
-QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey,
+QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey,
                                    Rsa rsa, BlockSize blockSizeMode) {
 
     return QRSAEncryption(rsa).decode(rawData, privKey, blockSizeMode);
 }
 
-QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey, Rsa rsa) {
+QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey, Rsa rsa) {
 
     return QRSAEncryption(rsa).signMessage(rawData, privKey);
 }
 
-bool QRSAEncryption::checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey, Rsa rsa) {
+bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey, Rsa rsa) {
 
     return QRSAEncryption(rsa).checkSignMessage(rawData, pubKey);
 }
