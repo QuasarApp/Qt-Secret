@@ -53,23 +53,29 @@ public:
     QRSAEncryption(Rsa rsa = Rsa::RSA_256);
 
 // static methods
+
+    // OLDMETHODS DELETE IN next Version
     static bool generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
-                                 QRSAEncryption::Rsa rsa);
-
+                                 QRSAEncryption::Rsa rsa = RSA_256);
     static QByteArray encodeS(const QByteArray &rawData, const QByteArray &pubKey,
-                              Rsa rsa = Rsa::RSA_256, BlockSize blockSizeMode = BlockSize::Auto);
-
+                              Rsa rsa = RSA_256, BlockSize blockSizeMode = BlockSize::Auto);
     static QByteArray decodeS(const QByteArray &rawData, const QByteArray &privKey,
-                              Rsa rsa = Rsa::RSA_256, BlockSize blockSizeMode = BlockSize::Auto);
-
+                              Rsa rsa = RSA_256, BlockSize blockSizeMode = BlockSize::Auto);
     static QByteArray signMessageS(QByteArray rawData, const QByteArray &privKey,
-                                   Rsa rsa = Rsa::RSA_256);
+                                   Rsa rsa = RSA_256);
+    // OLDMETHODS END
 
-    static bool checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey,
-                                  Rsa rsa = Rsa::RSA_256);
-
+    static bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
+                                 QRSAEncryption::Rsa rsa);
+    static QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
+                              Rsa rsa, BlockSize blockSizeMode = BlockSize::Auto);
+    static QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,
+                              Rsa rsa, BlockSize blockSizeMode = BlockSize::Auto);
+    static QByteArray signMessage(QByteArray rawData, const QByteArray &privKey,
+                                   Rsa rsa);
+    static bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
+                                  Rsa rsa);
     static bool isValidRsaKey(const QByteArray& key);
-
     static unsigned int getKeyBytesSize(QRSAEncryption::Rsa rsa);
 
 // non-static methods
