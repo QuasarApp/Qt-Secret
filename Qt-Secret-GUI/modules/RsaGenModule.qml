@@ -6,8 +6,16 @@ RowLayout {
 
     id: rsaSizeModule
     spacing: 20
+    Layout.minimumHeight: 50
+    Layout.leftMargin: 30
 
     property int rsaSize: rsaSizeCB.model[rsaSizeCB.currentIndex]
+
+    signal buttonClicked()
+
+    function setComboBoxIndex(index) {
+        rsaSizeCB.currentIndex = index
+    }
 
     Label {
         id: rsaSizeLabel
@@ -21,5 +29,14 @@ RowLayout {
         currentIndex: 0
         editable: false
         model: [64, 128, 256, 512, 1024, 2048, 4096, 8192]
+    }
+
+    Button {
+        id: generateButton
+        text: qsTr("Generate")
+
+        onClicked: {
+            onClicked: rsaSizeModule.buttonClicked()
+        }
     }
 }

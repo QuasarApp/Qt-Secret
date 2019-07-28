@@ -8,8 +8,8 @@
         <file>images/cpy.png</file>
         <file>modules/CopyButton.qml</file>
         <file>modules/RowElement.qml</file>
-        <file>modules/RsaSizeModule.qml</file>
         <file>modules/LoadPopup.qml</file>
-        <file>modules/KeysChoiceOption.qml</file>
+        <file>modules/RsaGenModule.qml</file>
+        <file>modules/LabledText.qml</file>
     </qresource>
 </RCC>

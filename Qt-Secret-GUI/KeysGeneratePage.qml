@@ -28,38 +28,21 @@ Item {
         anchors.leftMargin: 20
         anchors.rightMargin: 20
 
-        RowLayout {
-            id: firstRow
-            spacing: 20
-            Layout.minimumHeight: 50
-            Layout.leftMargin: 30
-
-            RsaSizeModule {
-                id: rsaSizeModule
-            }
-
-            Button {
-                id: generateButton
-                text: qsTr("Generate")
-
-                onClicked: {
-                    appCore.generateKeys(rsaSizeModule.rsaSize)
-                }
-            }
+        RsaGenModule {
+            id: rsaGenModule
+            onButtonClicked: appCore.generateKeys(rsaGenModule.rsaSize)
         }
 
         RowElement {
             id: secondRow
-            Layout.fillWidth: true
-            labelText: qsTr("Private key:")
+            labText: qsTr("Private key:")
             onButtonClicked: appCore.copyToClipboard(secondRow.textAreaText)
         }
 
         RowElement {
             id: thirdRow
-            Layout.fillWidth: true
             Layout.leftMargin: 8
-            labelText: qsTr("Public key:")
+            labText: qsTr("Public key:")
             onButtonClicked: appCore.copyToClipboard(thirdRow.textAreaText)
         }
     }

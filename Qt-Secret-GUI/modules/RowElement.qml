@@ -6,47 +6,22 @@ RowLayout {
 
     id: rowElement
 
-    property string id: qsTr("Row layout name")
-    property string labelText: qsTr("Label text")
-    property string textAreaPlaceholderText: qsTr("Text area")
-    property string textAreaText: rowElementTA.text
+    property string labText: qsTr("Label text")
+    property string textAreaText: labledText.textAreaText
 
     signal buttonClicked()
 
     function setText(text) {
-        rowElementTA.text = text
+        labledText.setText(text)
     }
 
     spacing: 20
     Layout.minimumHeight: 50
+    Layout.fillWidth: true
 
-    Label {
-        id: rowElementLabel
-        text: labelText
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    ScrollView {
-        id: rowElementSV
-        clip: true;
-
-        Layout.fillWidth: true
-        Layout.maximumHeight: parentItem.height * 0.4
-
-        ScrollBar.horizontal: ScrollBar {
-            policy: ScrollBar.AlwaysOff
-        }
-
-        TextField {
-
-            id: rowElementTA
-            selectByMouse: true
-            width: rowElementSV.width
-            readOnly: true;
-            wrapMode: Text.WrapAnywhere
-            verticalAlignment: Text.AlignTop
-        }
+    LabledText {
+        id: labledText
+        labelText: labText
     }
 
     CopyButton {

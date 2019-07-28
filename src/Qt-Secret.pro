@@ -31,4 +31,3 @@ HEADERS += Qt-AES/qaesencryption.h \
 
 SOURCES += Qt-AES/qaesencryption.cpp \
            Qt-RSA/qrsaencryption.cpp
-
