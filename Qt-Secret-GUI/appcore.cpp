@@ -1,8 +1,8 @@
 #include "appcore.h"
 
-AppCore::AppCore(QObject *parent, QClipboard *_clipboard) : QObject(parent)
-{
-    clipboard = _clipboard;
+AppCore::AppCore(QObject *parent, QClipboard *clpbrd) : QObject(parent) {
+
+    clipboard = clpbrd;
 
     connect(this, &AppCore::wrkGenerateKeys, &secWorker, &SecretWorker::generateKeys);
     connect(&secWorker, &SecretWorker::showKeysOnQml, this, &AppCore::printKeys);
@@ -11,36 +11,37 @@ AppCore::AppCore(QObject *parent, QClipboard *_clipboard) : QObject(parent)
     workThread.start();
 }
 
-AppCore::~AppCore()
-{
+AppCore::~AppCore() {
+
     workThread.quit();
     workThread.wait();
 }
 
-void AppCore::generateKeys(int rsa)
-{
+void AppCore::generateKeys(int rsa) {
     emit qmlOpenPopup();
     emit wrkGenerateKeys(rsa);
 }
 
-void AppCore::printKeys()
-{
+void AppCore::printKeys() {
     emit qmlShowKeys(secWorker.pubKey.toHex(), secWorker.privKey.toHex());
 }
 
-void AppCore::copyToClipboard(QString text)
-{
+void AppCore::copyToClipboard(QString text) {
     clipboard->setText(text);
 }
 
-void AppCore::encryptData(QByteArray *dataToEncrypt)
-{}
+void AppCore::encryptData(QByteArray *dataToEncrypt) {
 
-void AppCore::decryptData(QByteArray *dataToDecrypt)
-{}
+}
 
-void AppCore::signMessage(QByteArray *messageToSign)
-{}
+void AppCore::decryptData(QByteArray *dataToDecrypt) {
 
-void AppCore::checkSign(QByteArray *messageToCheck)
-{}
+}
+
+void AppCore::signMessage(QByteArray *messageToSign) {
+
+}
+
+void AppCore::checkSign(QByteArray *messageToCheck) {
+
+}

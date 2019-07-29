@@ -10,7 +10,7 @@ class AppCore : public QObject
 {
     Q_OBJECT
 public:
-    explicit AppCore(QObject *parent = nullptr, QClipboard *_clipboard = nullptr);
+    explicit AppCore(QObject *parent = nullptr, QClipboard *clpbrd = nullptr);
     ~AppCore();
 
     SecretWorker secWorker;

@@ -19,6 +19,7 @@ Window {
         currentIndex: tabBar.currentIndex
 
         anchors.topMargin: tabBar.height + 20
+        anchors.bottomMargin: 15
 
         KeysGeneratePage {}
 
@@ -33,13 +34,13 @@ Window {
         currentIndex: swipeView.currentIndex
 
         TabButton {
-            text: "Keys generate"
+            text: qsTr("Keys generate")
         }
         TabButton {
-            text: "Encryption and decryption"
+            text: qsTr("Encryption and decryption")
         }
         TabButton {
-            text: "Digital signature"
+            text: qsTr("Digital signature")
         }
     }
 }

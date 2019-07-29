@@ -11,12 +11,4 @@ Popup {
     BusyIndicator {
         running: true
     }
-
-    //function open() {
-    //    popup.open()
-    //}
-    //
-    //function close() {
-    //    popup.close()
-    //}
 }

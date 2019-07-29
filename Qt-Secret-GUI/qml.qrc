@@ -11,5 +11,6 @@
         <file>modules/LoadPopup.qml</file>
         <file>modules/RsaGenModule.qml</file>
         <file>modules/LabledText.qml</file>
+        <file>modules/EncryptDecryptMenu.qml</file>
     </qresource>
 </RCC>

@@ -12,6 +12,7 @@ RowLayout {
 
     property string labelText: qsTr("Label text")
     property string textAreaText: rowElementTA.text
+    property double verticalSize: 0.2
 
     function setText(text) {
         rowElementTA.text = text
@@ -29,7 +30,7 @@ RowLayout {
         clip: true;
 
         Layout.fillWidth: true
-        Layout.maximumHeight: parentItem.height * 0.4
+        Layout.maximumHeight: parentItem.height * verticalSize
 
         ScrollBar.horizontal: ScrollBar {
             policy: ScrollBar.AlwaysOff
@@ -39,7 +40,6 @@ RowLayout {
             id: rowElementTA
             selectByMouse: true
             width: rowElementSV.width
-            readOnly: true;
             wrapMode: Text.WrapAnywhere
             verticalAlignment: Text.AlignTop
         }

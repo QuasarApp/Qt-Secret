@@ -22,6 +22,7 @@ RowLayout {
     LabledText {
         id: labledText
         labelText: labText
+        verticalSize: 0.4
     }
 
     CopyButton {
