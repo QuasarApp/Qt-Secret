@@ -7,6 +7,18 @@ Item {
 
     id: parentItem
 
+    Connections {
+
+        target: appCore
+        onQmlReady: {
+            loadPopup.close()
+            messageLabledText.setText(message)
+        }
+        onQmlOpenPopup: {
+            loadPopup.open()
+        }
+    }
+
     ColumnLayout {
 
         id: column
@@ -15,30 +27,36 @@ Item {
         anchors.leftMargin: 20
         anchors.rightMargin: 20
 
-        function changeState(state) {
-
-            console.log("clicked: " + state ? "encrypt" : "decrypt")
-            //console.log("clicked: " + encryptDecryptMenu.encryptState ? "encrypt" : "decrypt")
-            //keyLabledText.labelText = encryptDecryptMenu.encryptState ? qsTr("Public key:") : qsTr("Private key:")
-            //messageLabledText.labelText = encryptDecryptMenu.encryptState ? qsTr("Text to encrypt:") : qsTr("Text to decrypt:");
+        function changeState() {
+            keyLabledText.labelText = (encryptDecryptMenu.encryptState ? qsTr("Public key:") : qsTr("Private key:"))
+            inputText.labelText = (encryptDecryptMenu.encryptState ? qsTr("Text to encrypt:") : qsTr("Text to decrypt:"))
+            outputText.labelText = (encryptDecryptMenu.encryptState ? qsTr("Encrypted text:") : qsTr("Decrypted text:"))
         }
 
         EncryptDecryptMenu {
             id: encryptDecryptMenu
-            verticalSize: 0.3
-            onChangeState: {
-                column.changeState()
-            }
+            verticalSize: 0.1
+            onChangeState: column.changeState()
+            onGetEncrypDecrypt: appCore.getEncryptDecrypt(encryptDecryptMenu.state, keyLabledText.textAreaText, inputText.textAreaText)
         }
 
         LabledText {
             id: keyLabledText
             verticalSize: 0.4
+            labelText: qsTr("Public key:")
         }
 
         LabledText {
-            id: messageLabledText
+            id: inputText
             verticalSize: 0.4
+            labelText: qsTr("Text to encrypt:")
+        }
+
+        RowElement {
+            id: outputText
+            verticalSize: 0.4
+            labelText: qsTr("Encrypted text:")
+            onButtonClicked: appCore.copyToClipboard(outputText.textAreaText)
         }
 
     }

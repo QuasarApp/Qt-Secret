@@ -6,8 +6,9 @@ RowLayout {
 
     id: rowElement
 
-    property string labText: qsTr("Label text")
+    property string labelText
     property string textAreaText: labledText.textAreaText
+    property double verticalSize: 0.2
 
     signal buttonClicked()
 
@@ -21,8 +22,8 @@ RowLayout {
 
     LabledText {
         id: labledText
-        labelText: labText
-        verticalSize: 0.4
+        labelText: rowElement.labelText
+        verticalSize: rowElement.verticalSize
     }
 
     CopyButton {

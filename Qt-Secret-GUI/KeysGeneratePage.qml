@@ -35,14 +35,14 @@ Item {
 
         RowElement {
             id: secondRow
-            labText: qsTr("Private key:")
+            labelText: qsTr("Private key:")
             onButtonClicked: appCore.copyToClipboard(secondRow.textAreaText)
         }
 
         RowElement {
             id: thirdRow
             Layout.leftMargin: 8
-            labText: qsTr("Public key:")
+            labelText: qsTr("Public key:")
             onButtonClicked: appCore.copyToClipboard(thirdRow.textAreaText)
         }
     }

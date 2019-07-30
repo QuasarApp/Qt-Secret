@@ -10,7 +10,7 @@ RowLayout {
     Layout.minimumHeight: 50
     Layout.fillWidth: true
 
-    property string labelText: qsTr("Label text")
+    property string labelText: qsTr("Label")
     property string textAreaText: rowElementTA.text
     property double verticalSize: 0.2
 
@@ -20,7 +20,7 @@ RowLayout {
 
     Label {
         id: rowElementLabel
-        text: labelText
+        text: labledText.labelText
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
     }

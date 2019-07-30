@@ -6,28 +6,36 @@ RowLayout {
 
     id: encryptDecryptMenu
 
+    property double verticalSize: 0.1
+    property bool encryptState: true
+
+    signal changeState()
+    signal getEncrypDecrypt()
+
     spacing: 20
     Layout.minimumHeight: 50
     Layout.fillWidth: true
-
-    property double verticalSize: 0.2
-    property bool encryptState: true
-
-    signal changeState(bool state)
+    Layout.maximumHeight: parentItem.height * verticalSize
 
     RadioButton {
         text: qsTr("Encryption")
-        onClicked: {
-            encryptDecryptMenu.changeState(true)
-            // encryptDecryptMenu.encryptState =
+        checked: true
+        onToggled: {
+            encryptState = true
+            changeState()
         }
     }
 
     RadioButton {
         text: qsTr("Decryption")
-        onClicked: {
-            encryptDecryptMenu.changeState(false)
-            // encryptDecryptMenu.encryptState = false
+        onToggled: {
+            encryptState = false
+            changeState()
         }
+    }
+
+    Button {
+        id: processButton
+        text: (encryptDecryptMenu.encryptState ? qsTr("Encrypt") : qsTr("Decrypt"))
     }
 }
