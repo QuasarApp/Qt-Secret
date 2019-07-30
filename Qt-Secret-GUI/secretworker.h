@@ -13,11 +13,16 @@ public:
     QByteArray pubKey;
     QByteArray privKey;
 
+    QByteArray message;
+
 public slots:
     void generateKeys(int rsa);
+    void encryptMessage(QByteArray pubKey, QByteArray message);
+    void decryptMessage(QByteArray pubKey, QByteArray message);
 
 signals:
     void showKeysOnQml();
+    void showMessageOnQml();
 };
 
 #endif // SECRETWORKER_H

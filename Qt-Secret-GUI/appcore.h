@@ -19,28 +19,33 @@ public:
     QClipboard *clipboard;
 
 signals:
+    // general to all pages
+    void qmlOpenPopup(); // from AppCore to qml
+    void qmlClosePopup(); // from AppCore to qml
+
     // generate keys
     void wrkGenerateKeys(int rsa); // from AppCore to secWorker
-    void qmlOpenPopup(); // from AppCore to qml
     void qmlShowKeys(QByteArray pubKey, QByteArray privKey); // to qml
 
     // encryption and decryption
-    void printEncryptedData(QByteArray *encryptedData);
-    void printDecryptedData(QByteArray *decryptedData);
+    void wrkEncryptMessage(QByteArray pubKey, QByteArray message);
+    void wrkDecryptMessage(QByteArray pubKey, QByteArray message);
+    void qmlShowMessage(QByteArray message);
 
     // digital signature
     void printSignedMessage(QByteArray *signedMessage);
     void printSignCheckResult(bool checkResult);
 
 public slots:
-    // generate keys
-    void generateKeys(int rsa); // from qml to from AppCore
-    void printKeys(); // from secWorker to from AppCore
     void copyToClipboard(QString text);
 
+    // generate keys
+    void generateKeys(int rsa); // from qml to AppCore
+    void printKeys(); // from secWorker to from AppCore
+
     // encryption and decryption
-    void encryptData(QByteArray *dataToEncrypt);
-    void decryptData(QByteArray *dataToDecrypt);
+    void getEncryptDecrypt(bool actionType, QString key, QString message); // from qml to AppCore
+    void printMessage(); // from secWorker to from AppCore
 
     // digital signature
     void signMessage(QByteArray *messageToSign);

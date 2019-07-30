@@ -11,12 +11,8 @@ Item {
 
         target: appCore
         onQmlShowKeys: {
-            loadPopup.close()
             secondRow.setText(privKey)
             thirdRow.setText(pubKey)
-        }
-        onQmlOpenPopup: {
-            loadPopup.open()
         }
     }
 
@@ -46,6 +42,4 @@ Item {
             onButtonClicked: appCore.copyToClipboard(thirdRow.textAreaText)
         }
     }
-
-    LoadPopup { id: loadPopup }
 }

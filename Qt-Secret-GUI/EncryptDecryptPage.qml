@@ -8,15 +8,8 @@ Item {
     id: parentItem
 
     Connections {
-
         target: appCore
-        onQmlReady: {
-            loadPopup.close()
-            messageLabledText.setText(message)
-        }
-        onQmlOpenPopup: {
-            loadPopup.open()
-        }
+        onQmlShowMessage: outputText.setText(message)
     }
 
     ColumnLayout {
@@ -37,7 +30,7 @@ Item {
             id: encryptDecryptMenu
             verticalSize: 0.1
             onChangeState: column.changeState()
-            onGetEncrypDecrypt: appCore.getEncryptDecrypt(encryptDecryptMenu.state, keyLabledText.textAreaText, inputText.textAreaText)
+            onGetEncrypDecrypt: appCore.getEncryptDecrypt(encryptDecryptMenu.encryptState, keyLabledText.textAreaText, inputText.textAreaText)
         }
 
         LabledText {
@@ -58,8 +51,5 @@ Item {
             labelText: qsTr("Encrypted text:")
             onButtonClicked: appCore.copyToClipboard(outputText.textAreaText)
         }
-
     }
-
-    LoadPopup { id: loadPopup }
 }

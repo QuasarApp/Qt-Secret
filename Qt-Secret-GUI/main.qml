@@ -5,6 +5,7 @@ import QtQml.Models 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls.Material 2.12
 import Qt.labs.settings 1.0
+import "modules/"
 
 Window {
     id: window
@@ -12,6 +13,12 @@ Window {
     width: 640
     height: 480
     title: qsTr("Qt-Secret-GUI")
+
+    Connections {
+        target: appCore
+        onQmlClosePopup: loadPopup.close()
+        onQmlOpenPopup: loadPopup.open()
+    }
 
     SwipeView {
         id: swipeView
@@ -43,4 +50,7 @@ Window {
             text: qsTr("Digital signature")
         }
     }
+
+    LoadPopup { id: loadPopup }
+
 }

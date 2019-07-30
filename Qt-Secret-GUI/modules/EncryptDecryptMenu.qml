@@ -37,5 +37,6 @@ RowLayout {
     Button {
         id: processButton
         text: (encryptDecryptMenu.encryptState ? qsTr("Encrypt") : qsTr("Decrypt"))
+        onClicked: getEncrypDecrypt()
     }
 }
