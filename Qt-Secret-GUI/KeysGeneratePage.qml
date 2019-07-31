@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.12
 import "modules/"
 
 Item {
-
     id: parentItem
 
     Connections {
@@ -32,6 +31,7 @@ Item {
         RowElement {
             id: secondRow
             labelText: qsTr("Private key:")
+            buttonImageSource: "../images/cpy.png"
             onButtonClicked: appCore.copyToClipboard(secondRow.textAreaText)
         }
 
@@ -39,6 +39,7 @@ Item {
             id: thirdRow
             Layout.leftMargin: 8
             labelText: qsTr("Public key:")
+            buttonImageSource: "../images/cpy.png"
             onButtonClicked: appCore.copyToClipboard(thirdRow.textAreaText)
         }
     }

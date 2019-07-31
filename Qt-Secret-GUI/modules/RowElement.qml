@@ -9,6 +9,7 @@ RowLayout {
     property string labelText
     property string textAreaText: labledText.textAreaText
     property double verticalSize: 0.2
+    property string buttonImageSource
 
     signal buttonClicked()
 
@@ -26,7 +27,8 @@ RowLayout {
         verticalSize: rowElement.verticalSize
     }
 
-    CopyButton {
+    ActionButton {
         onClicked: rowElement.buttonClicked()
+        source: rowElement.buttonImageSource
     }
 }

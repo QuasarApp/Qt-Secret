@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.12
 import "modules/"
 
 Item {
-
     id: parentItem
 
     Connections {
@@ -21,34 +20,43 @@ Item {
         anchors.rightMargin: 20
 
         function changeState() {
-            keyLabledText.labelText = (encryptDecryptMenu.encryptState ? qsTr("Public key:") : qsTr("Private key:"))
-            inputText.labelText = (encryptDecryptMenu.encryptState ? qsTr("Text to encrypt:") : qsTr("Text to decrypt:"))
-            outputText.labelText = (encryptDecryptMenu.encryptState ? qsTr("Encrypted text:") : qsTr("Decrypted text:"))
+            keyLabledText.labelText = (encryptDecryptMenu.state ? qsTr("Public key:") : qsTr("Private key:"))
+            inputText.labelText = (encryptDecryptMenu.state ? qsTr("Text to encrypt:") : qsTr("Text to decrypt:"))
+            outputText.labelText = (encryptDecryptMenu.state ? qsTr("Encrypted text:") : qsTr("Decrypted text:"))
         }
 
         EncryptDecryptMenu {
             id: encryptDecryptMenu
             verticalSize: 0.1
+            firstStateName: qsTr("Encrypt")
+            secondStateName: qsTr("Decrypt")
             onChangeState: column.changeState()
-            onGetEncrypDecrypt: appCore.getEncryptDecrypt(encryptDecryptMenu.encryptState, keyLabledText.textAreaText, inputText.textAreaText)
+            onGetEncrypDecrypt: appCore.getEncryptDecrypt(encryptDecryptMenu.encryptState,
+                                                          keyLabledText.textAreaText,
+                                                          inputText.textAreaText)
         }
 
-        LabledText {
+        RowElement {
             id: keyLabledText
             verticalSize: 0.4
             labelText: qsTr("Public key:")
+            buttonImageSource: "../images/clear.png"
+            onButtonClicked: keyLabledText.setText("")
         }
 
-        LabledText {
+        RowElement {
             id: inputText
             verticalSize: 0.4
             labelText: qsTr("Text to encrypt:")
+            buttonImageSource: "../images/clear.png"
+            onButtonClicked: inputText.setText("")
         }
 
         RowElement {
             id: outputText
             verticalSize: 0.4
             labelText: qsTr("Encrypted text:")
+            buttonImageSource: "../images/cpy.png"
             onButtonClicked: appCore.copyToClipboard(outputText.textAreaText)
         }
     }

@@ -17,8 +17,8 @@ public:
 
 public slots:
     void generateKeys(int rsa);
-    void encryptMessage(QByteArray pubKey, QByteArray message);
-    void decryptMessage(QByteArray pubKey, QByteArray message);
+    void encryptMessage(QByteArray pubKey,  QByteArray inputText);
+    void decryptMessage(QByteArray privKey, QByteArray inputMessage);
 
 signals:
     void showKeysOnQml();

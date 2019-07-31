@@ -9,15 +9,14 @@ void SecretWorker::generateKeys(int rsa)
     emit showKeysOnQml();
 }
 
-void SecretWorker::encryptMessage(QByteArray pubKey, QByteArray message)
+void SecretWorker::encryptMessage(QByteArray pubKey, QByteArray inputText)
 {
-    qDebug() << "input message: " << message;
-    QRSAEncryption::encodeS(message, pubKey);
+    message = QRSAEncryption::encodeS(inputText, pubKey);
     emit showMessageOnQml();
 }
 
-void SecretWorker::decryptMessage(QByteArray privKey, QByteArray message)
+void SecretWorker::decryptMessage(QByteArray privKey, QByteArray inputMessage)
 {
-    QRSAEncryption::decodeS(message, privKey);
+    message = QRSAEncryption::decodeS(inputMessage, privKey);
     emit showMessageOnQml();
 }

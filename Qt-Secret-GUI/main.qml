@@ -10,7 +10,7 @@ import "modules/"
 Window {
     id: window
     visible: true
-    width: 640
+    width: 860
     height: 480
     title: qsTr("Qt-Secret-GUI")
 
