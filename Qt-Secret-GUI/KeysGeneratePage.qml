@@ -4,15 +4,14 @@ import QtQuick.Layouts 1.12
 import "modules/"
 
 Item {
-
     id: parentItem
 
     Connections {
 
         target: appCore
         onQmlShowKeys: {
-            secondRow.setText(privKey)
-            thirdRow.setText(pubKey)
+            publicKeyRow.setText(pubKey)
+            privateKeyRow.setText(privKey)
         }
     }
 
@@ -30,16 +29,18 @@ Item {
         }
 
         RowElement {
-            id: secondRow
-            labelText: qsTr("Private key:")
-            onButtonClicked: appCore.copyToClipboard(secondRow.textAreaText)
+            id: publicKeyRow
+            labelText: qsTr("Public key:")
+            buttonImageSource: "../images/cpy.png"
+            onButtonClicked: appCore.copyToClipboard(publicKeyRow.textAreaText)
         }
 
         RowElement {
-            id: thirdRow
+            id: privateKeyRow
             Layout.leftMargin: 8
-            labelText: qsTr("Public key:")
-            onButtonClicked: appCore.copyToClipboard(thirdRow.textAreaText)
+            labelText: qsTr("Private key:")
+            buttonImageSource: "../images/cpy.png"
+            onButtonClicked: appCore.copyToClipboard(privateKeyRow.textAreaText)
         }
     }
 }

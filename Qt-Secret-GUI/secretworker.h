@@ -2,6 +2,7 @@
 #define SECRETWORKER_H
 
 #include <QObject>
+#include <QDebug>
 #include <qrsaencryption.h>
 
 class SecretWorker : public QObject
@@ -17,8 +18,8 @@ public:
 
 public slots:
     void generateKeys(int rsa);
-    void encryptMessage(QByteArray pubKey, QByteArray message);
-    void decryptMessage(QByteArray pubKey, QByteArray message);
+    void encryptMessage(QString encPubKey,  QString inputText);
+    void decryptMessage(QString decPrivKey, QString inputMessage);
 
 signals:
     void showKeysOnQml();

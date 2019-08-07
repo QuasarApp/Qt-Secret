@@ -37,21 +37,20 @@ void AppCore::copyToClipboard(QString text) {
 
 void AppCore::getEncryptDecrypt(bool actionType, QString key, QString message)
 {
+    emit qmlOpenPopup();
+
     // encryption
     if(actionType) {
-        emit qmlOpenPopup();
-        emit wrkEncryptMessage(key.toUtf8(), message.toUtf8());
+        emit wrkEncryptMessage(key, message);
     }
     // decryption
     else {
-        emit qmlOpenPopup();
-        emit wrkDecryptMessage(key.toUtf8(), message.toUtf8());
+        emit wrkDecryptMessage(key, message);
     }
 }
 
 void AppCore::printMessage()
 {
-    qDebug() << "print message: " << secWorker.message.toHex();
     emit qmlShowMessage(secWorker.message.toHex());
     emit qmlClosePopup();
 }

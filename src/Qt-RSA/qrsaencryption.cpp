@@ -167,7 +167,6 @@ unsigned int QRSAEncryption::getKeyBytesSize(QRSAEncryption::Rsa rsa) {
 // --- static methods ---
 bool QRSAEncryption::generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
                                       QRSAEncryption::Rsa rsa) {
-
     return QRSAEncryption(rsa).generatePairKey(pubKey, privKey);
 }
 

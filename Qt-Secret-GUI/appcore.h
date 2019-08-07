@@ -28,8 +28,8 @@ signals:
     void qmlShowKeys(QByteArray pubKey, QByteArray privKey); // to qml
 
     // encryption and decryption
-    void wrkEncryptMessage(QByteArray pubKey, QByteArray message);
-    void wrkDecryptMessage(QByteArray pubKey, QByteArray message);
+    void wrkEncryptMessage(QString pubKey, QString message);
+    void wrkDecryptMessage(QString pubKey, QString message);
     void qmlShowMessage(QByteArray message);
 
     // digital signature

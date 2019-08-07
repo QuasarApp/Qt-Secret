@@ -4,10 +4,12 @@ import QtQuick.Layouts 1.12
 
 RowLayout {
 
-    id: encryptDecryptMenu
+    id: doubleStateMenu
 
     property double verticalSize: 0.1
-    property bool encryptState: true
+    property string firstStateName
+    property string secondStateName
+    property bool state: true
 
     signal changeState()
     signal getEncrypDecrypt()
@@ -18,25 +20,25 @@ RowLayout {
     Layout.maximumHeight: parentItem.height * verticalSize
 
     RadioButton {
-        text: qsTr("Encryption")
+        text: firstStateName
         checked: true
         onToggled: {
-            encryptState = true
+            doubleStateMenu.state = true
             changeState()
         }
     }
 
     RadioButton {
-        text: qsTr("Decryption")
+        text: secondStateName
         onToggled: {
-            encryptState = false
+            doubleStateMenu.state = false
             changeState()
         }
     }
 
     Button {
         id: processButton
-        text: (encryptDecryptMenu.encryptState ? qsTr("Encrypt") : qsTr("Decrypt"))
+        text: doubleStateMenu.state ? firstStateName : secondStateName
         onClicked: getEncrypDecrypt()
     }
 }
