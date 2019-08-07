@@ -18,6 +18,7 @@ public:
 
 public slots:
     void generateKeys(int rsa);
+
     void encryptMessage(QString encPubKey,  QString inputText);
     void decryptMessage(QString decPrivKey, QString inputMessage);
 
