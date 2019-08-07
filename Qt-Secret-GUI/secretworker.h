@@ -14,7 +14,7 @@ public:
     QByteArray pubKey;
     QByteArray privKey;
 
-    QByteArray message;
+    QString message;
 
 public slots:
     void generateKeys(int rsa);

@@ -30,7 +30,7 @@ signals:
     // encryption and decryption
     void wrkEncryptMessage(QString pubKey, QString message);
     void wrkDecryptMessage(QString pubKey, QString message);
-    void qmlShowMessage(QByteArray message);
+    void qmlShowMessage(QString message);
 
     // digital signature
     void printSignedMessage(QByteArray *signedMessage);

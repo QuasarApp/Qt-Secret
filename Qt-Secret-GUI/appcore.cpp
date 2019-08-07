@@ -51,7 +51,7 @@ void AppCore::getEncryptDecrypt(bool actionType, QString key, QString message)
 
 void AppCore::printMessage()
 {
-    emit qmlShowMessage(secWorker.message.toHex());
+    emit qmlShowMessage(secWorker.message);
     emit qmlClosePopup();
 }
 
