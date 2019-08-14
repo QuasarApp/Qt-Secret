@@ -12,7 +12,7 @@ RowLayout {
     property bool state: true
 
     signal changeState()
-    signal getEncrypDecrypt()
+    signal getAction()
 
     spacing: 20
     Layout.minimumHeight: 50
@@ -39,6 +39,6 @@ RowLayout {
     Button {
         id: processButton
         text: doubleStateMenu.state ? firstStateName : secondStateName
-        onClicked: getEncrypDecrypt()
+        onClicked: getAction()
     }
 }

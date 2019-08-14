@@ -9,7 +9,11 @@ AppCore::AppCore(QObject *parent, QClipboard *clpbrd) : QObject(parent) {
 
     connect(this, &AppCore::wrkEncryptMessage, &secWorker, &SecretWorker::encryptMessage);
     connect(this, &AppCore::wrkDecryptMessage, &secWorker, &SecretWorker::decryptMessage);
-    connect(&secWorker, &SecretWorker::showMessageOnQml, this, &AppCore::printMessage);
+    connect(&secWorker, &SecretWorker::showEncDecResOnQml, this, &AppCore::printEncDecResult);
+
+    connect(this, &AppCore::wrkSignMessage, &secWorker, &SecretWorker::signMessage);
+    connect(this, &AppCore::wrkCheckSign, &secWorker, &SecretWorker::checkSign);
+    connect(&secWorker, &SecretWorker::showSignResOnQml, this, &AppCore::printSignResult);
 
     secWorker.moveToThread(&workThread);
     workThread.start();
@@ -21,6 +25,11 @@ AppCore::~AppCore() {
     workThread.wait();
 }
 
+void AppCore::copyToClipboard(QString text) {
+    clipboard->setText(text);
+}
+
+// generate keys
 void AppCore::generateKeys(int rsa) {
     emit qmlOpenPopup();
     emit wrkGenerateKeys(rsa);
@@ -31,10 +40,7 @@ void AppCore::printKeys() {
     emit qmlClosePopup();
 }
 
-void AppCore::copyToClipboard(QString text) {
-    clipboard->setText(text);
-}
-
+// encryption and decryption
 void AppCore::getEncryptDecrypt(bool actionType, QString key, QString message)
 {
     emit qmlOpenPopup();
@@ -49,16 +55,29 @@ void AppCore::getEncryptDecrypt(bool actionType, QString key, QString message)
     }
 }
 
-void AppCore::printMessage()
+void AppCore::printEncDecResult()
 {
-    emit qmlShowMessage(secWorker.message);
+    emit qmlShowEncDecResult(secWorker.message);
     emit qmlClosePopup();
 }
 
-void AppCore::signMessage(QByteArray *messageToSign) {
+// sign message and check sign
+void AppCore::getSignCheck(bool actionType, QString key, QString message)
+{
+    emit qmlOpenPopup();
 
+    // sign message
+    if(actionType) {
+        emit wrkSignMessage(key, message);
+    }
+    // check sign
+    else {
+        emit wrkCheckSign(key, message);
+    }
 }
 
-void AppCore::checkSign(QByteArray *messageToCheck) {
-
+void AppCore::printSignResult()
+{
+    emit qmlShowSignResult(secWorker.message);
+    emit qmlClosePopup();
 }

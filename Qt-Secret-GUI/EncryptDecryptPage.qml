@@ -8,7 +8,7 @@ Item {
 
     Connections {
         target: appCore
-        onQmlShowMessage: outputText.setText(message)
+        onQmlShowEncDecResult: outputText.setText(message)
     }
 
     ColumnLayout {
@@ -25,20 +25,21 @@ Item {
             outputText.labelText = (encryptDecryptMenu.state ? qsTr("Encrypted text:") : qsTr("Decrypted text:"))
         }
 
-        EncryptDecryptMenu {
+        DoubleStateMenu {
+
             id: encryptDecryptMenu
             verticalSize: 0.1
             firstStateName: qsTr("Encrypt")
             secondStateName: qsTr("Decrypt")
             onChangeState: column.changeState()
-            onGetEncrypDecrypt: appCore.getEncryptDecrypt(encryptDecryptMenu.state,
+            onGetAction: appCore.getEncryptDecrypt(encryptDecryptMenu.state,
                                                           keyLabledText.textAreaText,
                                                           inputText.textAreaText)
         }
 
         RowElement {
             id: keyLabledText
-            verticalSize: 0.4
+            verticalSize: 0.3
             labelText: qsTr("Public key:")
             buttonImageSource: "../images/clear.png"
             onButtonClicked: keyLabledText.setText("")
@@ -46,7 +47,7 @@ Item {
 
         RowElement {
             id: inputText
-            verticalSize: 0.4
+            verticalSize: 0.3
             labelText: qsTr("Text to encrypt:")
             buttonImageSource: "../images/clear.png"
             onButtonClicked: inputText.setText("")
@@ -54,7 +55,7 @@ Item {
 
         RowElement {
             id: outputText
-            verticalSize: 0.4
+            verticalSize: 0.3
             labelText: qsTr("Encrypted text:")
             buttonImageSource: "../images/cpy.png"
             onButtonClicked: appCore.copyToClipboard(outputText.textAreaText)

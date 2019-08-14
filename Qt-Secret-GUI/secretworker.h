@@ -15,6 +15,7 @@ public:
     QByteArray privKey;
 
     QString message;
+    bool checkResult;
 
 public slots:
     void generateKeys(int rsa);
@@ -22,9 +23,13 @@ public slots:
     void encryptMessage(QString encPubKey,  QString inputText);
     void decryptMessage(QString decPrivKey, QString inputMessage);
 
+    void signMessage(QString signPrivKey, QString inputMessage);
+    void checkSign(QString signPubKey, QString inputMessage);
+
 signals:
     void showKeysOnQml();
-    void showMessageOnQml();
+    void showEncDecResOnQml();
+    void showSignResOnQml();
 };
 
 #endif // SECRETWORKER_H

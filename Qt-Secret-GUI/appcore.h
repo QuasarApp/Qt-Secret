@@ -29,27 +29,28 @@ signals:
 
     // encryption and decryption
     void wrkEncryptMessage(QString pubKey, QString message);
-    void wrkDecryptMessage(QString pubKey, QString message);
-    void qmlShowMessage(QString message);
+    void wrkDecryptMessage(QString privKey, QString message);
+    void qmlShowEncDecResult(QString message);
 
     // digital signature
-    void printSignedMessage(QByteArray *signedMessage);
-    void printSignCheckResult(bool checkResult);
+    void wrkSignMessage(QString privKey, QString message);
+    void wrkCheckSign(QString pubKey, QString message);
+    void qmlShowSignResult(QString message);
 
 public slots:
     void copyToClipboard(QString text);
 
     // generate keys
-    void generateKeys(int rsa); // from qml to AppCore
-    void printKeys(); // from secWorker to from AppCore
+    void generateKeys(int rsa);
+    void printKeys();
 
     // encryption and decryption
-    void getEncryptDecrypt(bool actionType, QString key, QString message); // from qml to AppCore
-    void printMessage(); // from secWorker to from AppCore
+    void getEncryptDecrypt(bool actionType, QString key, QString message);
+    void printEncDecResult();
 
-    // digital signature
-    void signMessage(QByteArray *messageToSign);
-    void checkSign(QByteArray *messageToCheck);
+    // sign message and check sign
+    void getSignCheck(bool actionType, QString key, QString message);
+    void printSignResult();
 };
 
 #endif // APPCORE_H
