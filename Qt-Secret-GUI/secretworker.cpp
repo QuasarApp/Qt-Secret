@@ -27,7 +27,7 @@ void SecretWorker::decryptMessage(QString decPrivKey, QString inputMessage) {
 
 void SecretWorker::signMessage(QString signPrivKey, QString inputMessage) {
 
-    message = QString(QRSAEncryption::signMessageS(QByteArray::fromHex(inputMessage.toUtf8()),
+    message = QString(QRSAEncryption::signMessageS(inputMessage.toUtf8(),
                                                    QByteArray::fromHex(signPrivKey.toUtf8()),
                                                    QRSAEncryption::Rsa(signPrivKey.length() * 2)));
     emit showSignResOnQml();
@@ -35,8 +35,8 @@ void SecretWorker::signMessage(QString signPrivKey, QString inputMessage) {
 
 void SecretWorker::checkSign(QString signPubKey, QString inputMessage) {
 
-    message = QRSAEncryption::checkSignMessageS(QByteArray::fromHex(inputMessage.toUtf8()),
-                                                    QByteArray::fromHex(signPubKey.toUtf8()),
-                                                    QRSAEncryption::Rsa(signPubKey.length() * 2)) ? "Sign is true" : "Sign is false";
+    message = QRSAEncryption::checkSignMessageS(inputMessage.toUtf8(),
+                                                QByteArray::fromHex(signPubKey.toUtf8()),
+                                                QRSAEncryption::Rsa(signPubKey.length() * 2)) ? "Sign is true" : "Sign is false";
     emit showSignResOnQml();
 }
