@@ -11,7 +11,7 @@ The current implementation supports the following key sizes:
 #### Supported sizes
  * RSA64 
  * RSA128 
- * RSA256
+ * RSA2562
  * RSA512
  * RSA1024 
  * RSA2048
