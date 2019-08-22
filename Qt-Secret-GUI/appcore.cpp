@@ -26,23 +26,26 @@ AppCore::~AppCore() {
 }
 
 void AppCore::copyToClipboard(QString text) {
+
     clipboard->setText(text);
 }
 
 // generate keys
 void AppCore::generateKeys(int rsa) {
+
     emit qmlOpenPopup();
     emit wrkGenerateKeys(rsa);
 }
 
 void AppCore::printKeys() {
+
     emit qmlShowKeys(secWorker.pubKey.toHex(), secWorker.privKey.toHex());
     emit qmlClosePopup();
 }
 
 // encryption and decryption
-void AppCore::getEncryptDecrypt(bool actionType, QString key, QString message)
-{
+void AppCore::getEncryptDecrypt(bool actionType, QString key, QString message) {
+
     emit qmlOpenPopup();
 
     // encryption
@@ -55,15 +58,15 @@ void AppCore::getEncryptDecrypt(bool actionType, QString key, QString message)
     }
 }
 
-void AppCore::printEncDecResult()
-{
+void AppCore::printEncDecResult() {
+
     emit qmlShowEncDecResult(secWorker.message);
     emit qmlClosePopup();
 }
 
 // sign message and check sign
-void AppCore::getSignCheck(bool actionType, QString key, QString message)
-{
+void AppCore::getSignCheck(bool actionType, QString key, QString message) {
+
     emit qmlOpenPopup();
 
     // sign message
@@ -76,8 +79,8 @@ void AppCore::getSignCheck(bool actionType, QString key, QString message)
     }
 }
 
-void AppCore::printSignResult()
-{
+void AppCore::printSignResult() {
+
     emit qmlShowSignResult(secWorker.message);
     emit qmlClosePopup();
 }
