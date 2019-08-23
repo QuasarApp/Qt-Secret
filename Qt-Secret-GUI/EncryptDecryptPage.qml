@@ -60,5 +60,6 @@ Item {
             buttonImageSource: "../images/cpy.png"
             onButtonClicked: appCore.copyToClipboard(outputText.textAreaText)
         }
+
     }
 }
