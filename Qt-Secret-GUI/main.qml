@@ -10,8 +10,11 @@ import "modules/"
 Window {
     id: window
     visible: true
-    width: 860
+    width: 800
     height: 480
+
+    minimumWidth: 640
+    minimumHeight: 480
     title: qsTr("Qt-Secret-GUI")
 
     Connections {
