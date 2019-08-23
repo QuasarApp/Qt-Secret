@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>DigitalSignaturePage.qml</file>
+        <file>EncryptDecryptPage.qml</file>
+        <file>KeysGeneratePage.qml</file>
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>images/cpy.png</file>
+        <file>modules/RowElement.qml</file>
+        <file>modules/LoadPopup.qml</file>
+        <file>modules/RsaGenModule.qml</file>
+        <file>modules/LabledText.qml</file>
+        <file>modules/ActionButton.qml</file>
+        <file>images/clear.png</file>
+        <file>modules/DoubleStateMenu.qml</file>
+    </qresource>
+</RCC>

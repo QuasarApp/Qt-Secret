@@ -12,7 +12,9 @@ SUBDIRS += \
            minigmp \
            src \
            tests \
-           qaesencryption
+           qaesencryption \
+           Qt-Secret-GUI
+
 
 include($$PWD/test.pri)
 
