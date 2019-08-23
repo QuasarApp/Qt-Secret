@@ -175,15 +175,21 @@ QByteArray QRSAEncryption::encodeS(const QByteArray &rawData, const QByteArray &
 QByteArray QRSAEncryption::decodeS(const QByteArray &rawData, const QByteArray &privKey, QRSAEncryption::Rsa rsa, QRSAEncryption::BlockSize blockSizeMode) {
     qWarning() << "method " << Q_FUNC_INFO <<
                   " will be deleted in newxt version. please use decode method";
-    return encode(rawData, privKey, rsa, blockSizeMode);
+    return decode(rawData, privKey, rsa, blockSizeMode);
 
 }
 
 QByteArray QRSAEncryption::signMessageS(QByteArray rawData, const QByteArray &privKey, QRSAEncryption::Rsa rsa) {
     qWarning() << "method " << Q_FUNC_INFO <<
                   " will be deleted in newxt version. please use signMessage method";
-    return encode(rawData, privKey, rsa);
+    return signMessage(rawData, privKey, rsa);
 
+}
+
+bool QRSAEncryption::checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey, QRSAEncryption::Rsa rsa) {
+    qWarning() << "method " << Q_FUNC_INFO <<
+                  " will be deleted in newxt version. please use signMessage method";
+    return checkSignMessage(rawData, pubKey, rsa);
 }
 
 unsigned int QRSAEncryption::getKeyBytesSize(QRSAEncryption::Rsa rsa) {

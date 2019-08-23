@@ -63,6 +63,8 @@ public:
                               Rsa rsa = RSA_256, BlockSize blockSizeMode = BlockSize::Auto);
     static QByteArray signMessageS(QByteArray rawData, const QByteArray &privKey,
                                    Rsa rsa = RSA_256);
+    static bool checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey,
+                                        Rsa rsa);
     // OLDMETHODS END
 
     static bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
