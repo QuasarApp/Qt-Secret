@@ -67,8 +67,19 @@ By default the padding method is `ISO`, however, the class supports:
  * cd yourRepo
  * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
  * git submodule update --init --update
- * Include in your pro file the pri file of Qt-Secret library
-  >> include($$PWD/Qt-Secret/src/Qt-Secret.pri)
+ * Add to the list of libraries for the Qt-Secret assembly. For an example you can create Main.Pro in which connect Qt-Secret and your project pro files as subprojects.
+ 
+ **Main.pro:**
+``` qmake
+TEMPLATE = subdirs
+CONFIG += ordered
+
+SUBDIRS += \
+           Qt-Secret \
+           MyProject
+```
+ * Include in your MyProject.pro file the pri file of Qt-Secret library
+  >> include($$PWD/../Qt-Secret/src/Qt-Secret.pri)
  * Rebuild yuor project
 
 ## for other build system
