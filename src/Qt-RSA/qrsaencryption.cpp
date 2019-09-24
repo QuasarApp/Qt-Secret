@@ -107,7 +107,7 @@ INT QRSAEncryption::toPrime(INT n) const {
 
         RN+=2;
 
-        if (LN.isPrime(false)) return RN;
+        if (RN.isPrime(false)) return RN;
         LN-=2;
     }
 }
