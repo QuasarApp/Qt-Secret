@@ -56,7 +56,8 @@ By default the padding method is `ISO`, however, the class supports:
  * git clone https://github.com/QuasarApp/Qt-Secret.git
  * cd Qt-Secret
  * git submodule update --init --recursive
- * qmake -r 
+ * sudo apt install qt5-default
+ * qmake -r Qt-Secret.pro 
  * make -j8
  * make test #(for testing)
 
