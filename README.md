@@ -56,7 +56,9 @@ By default the padding method is `ISO`, however, the class supports:
  * git clone https://github.com/QuasarApp/Qt-Secret.git
  * cd Qt-Secret
  * git submodule update --init --recursive
- * qmake -r 
+ * sudo apt install qt5-default
+ * qmake -r DEFINE+=WITHOUT_GUI Qt-Secret.pro 
+  > DEFINE+=WITHOUT_GUI fot build without gui example, if you want build gui example remove this line. For build the gui example you need to install qml controls 2 in you os. Try **sudo apt install qml-module-qtquick-controls2**
  * make -j8
  * make test #(for testing)
 

@@ -15,6 +15,9 @@ SUBDIRS += \
            qaesencryption \
            Qt-Secret-GUI
 
+contains(DEFINES, WITHOUT_GUI): {
+    SUBDIRS -= Qt-Secret-GUI
+}
 
 include($$PWD/test.pri)
 
