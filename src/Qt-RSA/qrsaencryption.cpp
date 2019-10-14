@@ -78,7 +78,7 @@ INT QRSAEncryption::randomNumber(bool fullFill) const {
     if(fullFill) {
 
         while(res.longBits() < _rsa) {
-            res *= rand() % std::numeric_limits<int>::max();
+            res *= (rand() % (std::numeric_limits<int>::max() - 1)) + 1;
         }
     } else {
 
@@ -86,7 +86,7 @@ INT QRSAEncryption::randomNumber(bool fullFill) const {
 
         while (longDiff > 0) {
             longDiff--;
-            res *= rand() % std::numeric_limits<int>::max();
+            res *= (rand() % (std::numeric_limits<int>::max() - 1)) + 1;
         }
     }
 
