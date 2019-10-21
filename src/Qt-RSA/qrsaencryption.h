@@ -18,18 +18,12 @@
 
 #include <bigint.h>
 
-typedef BigInt INT;
-
-#define KEY_GEN_LIMIT 10
-
-static const QString SIGN_MARKER = "-SIGN-";
-static const int signMarkerLength = SIGN_MARKER.length();
-
-typedef QCryptographicHash::Algorithm HashAlgorithm;
 
 class Qt_SECRETSHARED_EXPORT QRSAEncryption
 {
 public:
+    typedef BigInt INT;
+    typedef QCryptographicHash::Algorithm HashAlgorithm;
 
     enum Rsa {
         Invalid = 0,
