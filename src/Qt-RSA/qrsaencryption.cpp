@@ -12,6 +12,11 @@
 #include <ctime>
 #include <chrono>
 
+#define KEY_GEN_LIMIT 10
+
+const QString SIGN_MARKER = "-SIGN-";
+const int signMarkerLength = SIGN_MARKER.length();
+
 QRSAEncryption::INT eulerFunc(const QRSAEncryption::INT &p, const QRSAEncryption::INT &q) {
     return (p - 1) * (q - 1);
 }

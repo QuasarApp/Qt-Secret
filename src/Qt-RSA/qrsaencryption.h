@@ -19,12 +19,6 @@
 #include <bigint.h>
 
 
-#define KEY_GEN_LIMIT 10
-
-static const QString SIGN_MARKER = "-SIGN-";
-static const int signMarkerLength = SIGN_MARKER.length();
-
-
 class Qt_SECRETSHARED_EXPORT QRSAEncryption
 {
 public:
