@@ -12,7 +12,7 @@
 #include <ctime>
 #include <chrono>
 
-INT eulerFunc(const INT &p, const INT &q) {
+QRSAEncryption::INT eulerFunc(const QRSAEncryption::INT &p, const QRSAEncryption::INT &q) {
     return (p - 1) * (q - 1);
 }
 
@@ -46,7 +46,7 @@ QRSAEncryption::Rsa QRSAEncryption::getBitsSize(const QByteArray &key) const {
     return QRSAEncryption::Rsa::Invalid;
 }
 
-INT QRSAEncryption::fromArray(const QByteArray &array) const {
+QRSAEncryption::INT QRSAEncryption::fromArray(const QByteArray &array) const {
     INT res = 0;
     res.fromHex(array.toHex().toStdString());
     return res;
@@ -67,7 +67,7 @@ QByteArray QRSAEncryption::toArray(const INT &i, short sizeBlok) {
     return res.left(sizeBlok);
 }
 
-INT QRSAEncryption::randomNumber(bool fullFill) const {
+QRSAEncryption::INT QRSAEncryption::randomNumber(bool fullFill) const {
 
     srand(std::chrono::duration_cast<std::chrono::nanoseconds>
           (std::chrono::system_clock::now().time_since_epoch()).count()
@@ -93,7 +93,7 @@ INT QRSAEncryption::randomNumber(bool fullFill) const {
     return res;
 }
 
-INT QRSAEncryption::toPrime(INT n) const {
+QRSAEncryption::INT QRSAEncryption::toPrime(INT n) const {
     if (!(n % 2)) {
         ++n;
     }
@@ -112,7 +112,7 @@ INT QRSAEncryption::toPrime(INT n) const {
     }
 }
 
-INT QRSAEncryption::randomPrimeNumber(INT no) const {
+QRSAEncryption::INT QRSAEncryption::randomPrimeNumber(INT no) const {
     srand(static_cast<unsigned int>(time(nullptr)));
 
     // max INT
@@ -124,7 +124,7 @@ INT QRSAEncryption::randomPrimeNumber(INT no) const {
     return p;
 }
 
-INT QRSAEncryption::extEuclid(INT a, INT b) const {
+QRSAEncryption::INT QRSAEncryption::extEuclid(INT a, INT b) const {
     INT x = 0, y = 1, u = 1, v = 0, gcd = b, m, n, q, r;
     while (a != 0) {
         q = gcd / a;
@@ -255,7 +255,7 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
             e -= 2;
         } while((!isMutuallyPrime(eilor, e)));
 
-        d = extEuclid(eilor , e);;
+        d = extEuclid(eilor , e);
 
         while(d < 0 ) {
             d += eilor;
