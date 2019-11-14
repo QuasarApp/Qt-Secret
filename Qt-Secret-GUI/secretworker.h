@@ -3,13 +3,18 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QDir>
 #include <qrsaencryption.h>
+
+#define    NAME_LENGTH     8
 
 class SecretWorker : public QObject
 {
     Q_OBJECT
 public:
     explicit SecretWorker(QObject *parent = nullptr);
+
+    QString keysDirPath;
 
     QByteArray pubKey;
     QByteArray privKey;
@@ -19,6 +24,8 @@ public:
 
 public slots:
     void generateKeys(int rsa);
+    void setKeysDirPath(QString dirPath);
+    void saveKeys();
 
     void encryptMessage(QString encPubKey,  QString inputText);
     void decryptMessage(QString decPrivKey, QString inputMessage);
