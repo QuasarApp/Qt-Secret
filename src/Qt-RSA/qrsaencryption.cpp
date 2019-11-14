@@ -380,6 +380,10 @@ QRSAEncryption::Rsa QRSAEncryption::getRsa() const {
     return _rsa;
 }
 
+QByteArray QRSAEncryption::convertFromSsl(const QByteArray &sslKey) const {
+    return {};
+}
+
 bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) {
 
     QByteArray tesVal = "Test message of encrypkey";

@@ -38,6 +38,89 @@ QByteArray randomArray(int length = -1) {
     return res;
 }
 
+bool checkKeys(const QByteArray& pubKey, const QByteArray& privKey,
+               QRSAEncryption::Rsa rsa) {
+    QRSAEncryption e(rsa);
+
+    qInfo() << QString("Private key: %0").arg(QString(pubKey.toHex()));
+    qInfo() << QString("Public key: %0").arg(QString(privKey.toHex()));
+
+    if (pubKey.size() != QRSAEncryption::RSA_2048 / 4) {
+        qCritical() << "pubKey size wrong RSA" << rsa;
+        return false;
+    }
+
+    if (privKey.size() != QRSAEncryption::RSA_2048 / 4) {
+        qCritical() << "privKey size wrong RSA" << rsa;
+        return false;
+    }
+
+    for (int i = 0; i < testSize[rsa]; i++) {
+        auto base = randomArray();
+
+        auto encodeData = e.encode(base, pubKey);
+        auto decodeData = e.decode(encodeData, privKey);
+
+        if ( base != decodeData) {
+            qCritical() << "encode/decode data error RSA" << rsa;
+            return false;
+        }
+
+        encodeData = e.signMessage(base, privKey);
+
+        if (!e.checkSignMessage(encodeData, pubKey)) {
+            qCritical() << "sig message error RSA" << rsa;
+            return false;
+        }
+
+        encodeData += "work it";
+
+        if (e.checkSignMessage(encodeData, pubKey)) {
+            qCritical() << "sig message error RSA with added value to back" << rsa;
+            return false;
+        }
+
+        encodeData.push_front("not work");
+
+        if (e.checkSignMessage(encodeData, pubKey)) {
+            qCritical() << "sig message error RSA with added value to front" << rsa;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool testSslKeys() {
+    QByteArray pubKey, privKey;
+
+    QFile filePublic(":/sslKeys/res/public.pem");
+    QFile filePriv(":/sslKeys/res/private.pem");
+
+    if (filePublic.open(QIODevice::ReadOnly)) {
+        pubKey = filePublic.readAll();
+        filePublic.close();
+    } else {
+        return false;
+    }
+
+    if (filePriv.open(QIODevice::ReadOnly)) {
+        privKey = filePriv.readAll();
+        filePriv.close();
+    } else {
+        return false;
+    }
+
+    QRSAEncryption e(QRSAEncryption::RSA_2048);
+    pubKey = e.convertFromSsl(pubKey);
+    privKey = e.convertFromSsl(privKey);
+
+    qInfo() << QString("Test SSL RSA):");
+
+    return checkKeys(pubKey, privKey, QRSAEncryption::RSA_2048);
+
+}
+
 bool testCrypto(QRSAEncryption::Rsa rsa) {
 
     QByteArray pub, priv;
@@ -52,50 +135,8 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
             return false;
         }
 
-        qInfo() << QString("Private key: %0").arg(QString(priv.toHex()));
-        qInfo() << QString("Public key: %0").arg(QString(pub.toHex()));
-
-        if (pub.size() != rsa / 4) {
-            qCritical() << "pubKey size wrong RSA" << rsa;
+        if (!checkKeys(pub, priv, rsa)) {
             return false;
-        }
-
-        if (priv.size() != rsa / 4) {
-            qCritical() << "privKey size wrong RSA" << rsa;
-            return false;
-        }
-
-        for (int i = 0; i < testSize[rsa]; i++) {
-            auto base = randomArray();
-
-            auto encodeData = e.encode(base, pub);
-            auto decodeData = e.decode(encodeData, priv);
-
-            if ( base != decodeData) {
-                qCritical() << "encode/decode data error RSA" << rsa;
-                return false;
-            }
-
-            encodeData = e.signMessage(base, priv);
-
-            if (!e.checkSignMessage(encodeData, pub)) {
-                qCritical() << "sig message error RSA" << rsa;
-                return false;
-            }
-
-            encodeData += "work it";
-
-            if (e.checkSignMessage(encodeData, pub)) {
-                qCritical() << "sig message error RSA with added value to back" << rsa;
-                return false;
-            }
-
-            encodeData.push_front("not work");
-
-            if (e.checkSignMessage(encodeData, pub)) {
-                qCritical() << "sig message error RSA with added value to front" << rsa;
-                return false;
-            }
         }
     }
 
@@ -103,6 +144,10 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
 }
 
 int main() {
+
+    if (!testSslKeys()) {
+        return 1;
+    }
 
     if(!testCrypto(QRSAEncryption::Rsa::RSA_64)) {
         return 1;

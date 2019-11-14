@@ -95,6 +95,8 @@ public:
 
     Rsa getRsa() const;
 
+    QByteArray convertFromSsl(const QByteArray& sslKey) const;
+
 private:
 
     Rsa _rsa;

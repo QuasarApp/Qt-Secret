@@ -24,3 +24,6 @@ include($$PWD/../src/Qt-Secret.pri)
 
 SOURCES += \
     main.cpp
+
+RESOURCES += \
+    testRes.qrc

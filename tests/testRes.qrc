@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/sslKeys">
+        <file>res/public.pem</file>
+        <file>res/private.pem</file>
+    </qresource>
+</RCC>
