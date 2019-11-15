@@ -380,7 +380,23 @@ QRSAEncryption::Rsa QRSAEncryption::getRsa() const {
     return _rsa;
 }
 
-QByteArray QRSAEncryption::convertFromSsl(const QByteArray &sslKey) const {
+QByteArray QRSAEncryption::convertPublic(const QByteArray &sslKey) const {
+    return sslKey.fromBase64(sslKey);
+}
+
+QByteArray QRSAEncryption::convertPrivate(const QByteArray &sslKey, const QByteArray &pass) const {
+    return {};
+}
+
+QByteArray QRSAEncryption::convertFromSsl(QByteArray sslKey, const QByteArray &pass) const {
+
+    if (sslKey.contains("PUBLIC KEY")) {
+        sslKey = sslKey.replace("\n", "");
+        sslKey = sslKey.replace("-----END PUBLIC KEY-----", "");
+        sslKey = sslKey.replace("-----BEGIN PUBLIC KEY-----", "");
+        return convertPublic(sslKey);
+    }
+
     return {};
 }
 

@@ -93,9 +93,12 @@ bool checkKeys(const QByteArray& pubKey, const QByteArray& privKey,
 
 bool testSslKeys() {
     QByteArray pubKey, privKey;
+    QByteArray pubKeyAes, privKeyAes;
 
     QFile filePublic(":/sslKeys/res/public.pem");
-    QFile filePriv(":/sslKeys/res/private.pem");
+    QFile filePriv(":/sslKeys/res/publicWithAES.pem");
+    QFile filePublicAes(":/sslKeys/res/public.pem");
+    QFile filePrivAes(":/sslKeys/res/privateWirhAes.pem");
 
     if (filePublic.open(QIODevice::ReadOnly)) {
         pubKey = filePublic.readAll();
@@ -111,13 +114,38 @@ bool testSslKeys() {
         return false;
     }
 
+    if (filePublicAes.open(QIODevice::ReadOnly)) {
+        pubKeyAes = filePublicAes.readAll();
+        filePublicAes.close();
+    } else {
+        return false;
+    }
+
+    if (filePrivAes.open(QIODevice::ReadOnly)) {
+        privKeyAes = filePrivAes.readAll();
+        filePrivAes.close();
+    } else {
+        return false;
+    }
+
     QRSAEncryption e(QRSAEncryption::RSA_2048);
     pubKey = e.convertFromSsl(pubKey);
     privKey = e.convertFromSsl(privKey);
 
+    pubKeyAes = e.convertFromSsl(pubKeyAes, "1111");
+    privKeyAes = e.convertFromSsl(privKeyAes, "1111");
+
     qInfo() << QString("Test SSL RSA):");
 
-    return checkKeys(pubKey, privKey, QRSAEncryption::RSA_2048);
+    if (!checkKeys(pubKey, privKey, QRSAEncryption::RSA_2048)) {
+        return false;
+    }
+
+    if (!checkKeys(pubKeyAes, privKeyAes, QRSAEncryption::RSA_2048)) {
+        return false;
+    }
+
+    return true;
 
 }
 

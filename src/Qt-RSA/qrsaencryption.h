@@ -94,8 +94,9 @@ public:
     bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey);
 
     Rsa getRsa() const;
-
-    QByteArray convertFromSsl(const QByteArray& sslKey) const;
+    QByteArray convertPublic(const QByteArray& sslKey) const;
+    QByteArray convertPrivate(const QByteArray& sslKey, const QByteArray& pass = "") const;
+    QByteArray convertFromSsl(QByteArray sslKey, const QByteArray &pass = "") const;
 
 private:
 
