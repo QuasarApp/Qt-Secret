@@ -2,5 +2,8 @@
     <qresource prefix="/sslKeys">
         <file>res/public.pem</file>
         <file>res/private.pem</file>
+        <file>res/publicWithAES.pem</file>
+        <file>res/privateWirhAes.pem</file>
+        <file>res/pass</file>
     </qresource>
 </RCC>
