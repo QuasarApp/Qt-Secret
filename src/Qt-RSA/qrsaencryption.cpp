@@ -6,6 +6,7 @@
 //#
 
 #include "qrsaencryption.h"
+#include "../Qt-AES/qaesencryption.h"
 
 #include <QString>
 #include <iostream>
@@ -381,11 +382,11 @@ QRSAEncryption::Rsa QRSAEncryption::getRsa() const {
 }
 
 QByteArray QRSAEncryption::convertPublic(const QByteArray &sslKey) const {
-    return sslKey.fromBase64(sslKey);
+    return QByteArray::fromBase64(sslKey);
 }
 
 QByteArray QRSAEncryption::convertPrivate(const QByteArray &sslKey, const QByteArray &pass) const {
-    return {};
+    return QAESEncryption::Decrypt(QAESEncryption::AES_128, QAESEncryption::CBC, QByteArray::fromBase64(sslKey), pass);
 }
 
 QByteArray QRSAEncryption::convertFromSsl(QByteArray sslKey, const QByteArray &pass) const {
@@ -395,6 +396,11 @@ QByteArray QRSAEncryption::convertFromSsl(QByteArray sslKey, const QByteArray &p
         sslKey = sslKey.replace("-----END PUBLIC KEY-----", "");
         sslKey = sslKey.replace("-----BEGIN PUBLIC KEY-----", "");
         return convertPublic(sslKey);
+    } else if (sslKey.contains("PRIVATE KEY")) {
+        sslKey = sslKey.replace("\n", "");
+        sslKey = sslKey.replace("-----END RSA PRIVATE KEY-----", "");
+        sslKey = sslKey.replace("-----BEGIN RSA PRIVATE KEY-----", "");
+        return convertPrivate(sslKey, pass);
     }
 
     return {};
