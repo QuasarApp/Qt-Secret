@@ -134,7 +134,7 @@ bool testExample() {
 
 int main() {
 
-    if(!testExample()) {s
+    if(!testExample()) {
         return 1;
     }
 
