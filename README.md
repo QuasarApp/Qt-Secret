@@ -105,13 +105,16 @@ SUBDIRS += \
 
     QByteArray pub, priv;
     QRSAEncryption e(QRSAEncryption::Rsa::RSA_2048);
-    e.generatePairKey(pub, priv);
+    e.generatePairKey(pub, priv); // or other rsa size
+
     QByteArray msg = "test message";
 
-    auto encodeData = e.encode(msg, pub);
-    auto decodeData = e.decode(encodeData, priv);
-    
-    
+    auto signedMessage = e.signMessage(msg, priv);
+
+    if (e.checkSignMessage(signedMessage, pub)) {
+        qInfo() <<" message signed success";
+    }
+
 
 ```
 
@@ -120,17 +123,23 @@ SUBDIRS += \
 ``` cpp
 #include <qrsaencryption.h>
 
+bool testExample() {
     QByteArray pub, priv;
-    QRSAEncryption e;
-    e.generatePairKey(pub, priv, QRSAEncryption::Rsa::RSA_128); // or other rsa size 
+    QRSAEncryption e(QRSAEncryption::Rsa::RSA_2048);
+    e.generatePairKey(pub, priv); // or other rsa size
 
     QByteArray msg = "test message";
 
     auto signedMessage = e.signMessage(msg, priv);
 
     if (e.checkSignMessage(signedMessage, pub)) {
-        // message signed success
+        qInfo() <<" message signed success";
+        return true;
     }
+
+    return false;
+
+}
 
 ```
 

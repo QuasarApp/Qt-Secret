@@ -48,19 +48,6 @@ public:
 
 // static methods
 
-    // OLDMETHODS DELETE IN next Version
-    static bool generatePairKeyS(QByteArray &pubKey, QByteArray &privKey,
-                                 QRSAEncryption::Rsa rsa = RSA_256);
-    static QByteArray encodeS(const QByteArray &rawData, const QByteArray &pubKey,
-                              Rsa rsa = RSA_256, BlockSize blockSizeMode = BlockSize::Auto);
-    static QByteArray decodeS(const QByteArray &rawData, const QByteArray &privKey,
-                              Rsa rsa = RSA_256, BlockSize blockSizeMode = BlockSize::Auto);
-    static QByteArray signMessageS(QByteArray rawData, const QByteArray &privKey,
-                                   Rsa rsa = RSA_256);
-    static bool checkSignMessageS(const QByteArray &rawData, const QByteArray &pubKey,
-                                        Rsa rsa);
-    // OLDMETHODS END
-
     static bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
                                  QRSAEncryption::Rsa rsa);
     static QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
