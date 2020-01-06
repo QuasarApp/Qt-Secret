@@ -6,7 +6,7 @@
 #
 
 unix:exec = $$PWD/src/mini-gmp/tests/build/release/QtBigIntTests,$$PWD/tests/build/release/Qt-SecretTest,$$PWD/src/Qt-AES/build/release/QAESEncryption
-win32:exec = $$PWD/src/mini-gmp/tests/build/release/QtBigIntTests.exe,$$PWD/src/Qt-AES/build/release/QAESEncryption.exe
+win32:exec = $$PWD/src/mini-gmp/tests/build/release/QtBigIntTests.exe,$$PWD/src/Qt-AES/build/release/QAESEncryption.exe,$$PWD/tests/build/release/Qt-SecretTest.exe
 
 QT_DIR = $$[QT_HOST_BINS]
 
@@ -34,9 +34,9 @@ win32:testGMP.commands =$$PWD/deployTests/QtBigIntTests.exe
 
 contains(QMAKE_HOST.os, Linux):{
     DEPLOYER=cqtdeployer
-    win32:testAES.commands = wine $$PWD/deployTests/QAESEncryption.exe
-    win32:testRSA.commands = wine $$PWD/deployTests/Qt-SecretTest.exe
-    win32:testGMP.commands = wine $$PWD/deployTests/QtBigIntTests.exe
+    win32:testAES.commands = wine $$PWD/deployTests/QAESEncryption.bat
+    win32:testRSA.commands = wine $$PWD/deployTests/Qt-SecretTest.bat
+    win32:testGMP.commands = wine $$PWD/deployTests/QtBigIntTests.bat
 
 
 } else {
