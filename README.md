@@ -68,8 +68,8 @@ By default the padding method is `ISO`, however, the class supports:
 
  * cd yourRepo
  * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
- * git submodule update --init --update
- * Add to the list of libraries for the Qt-Secret assembly. For an example you can create Main.Pro in which connect Qt-Secret and your project pro files as subprojects.
+ * git submodule update --init --recursive
+ * Add to the list of libraries for the Qt-Secret assembly. For an example you can create Main.Pro in which connect Qt-Secret and your project.pro files as subprojects.
  
  **Main.pro:**
 ``` qmake
@@ -88,7 +88,7 @@ SUBDIRS += \
  
  * cd yourRepo
  * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
- * git submodule update --init --update
+ * git submodule update --init --recursive
  * Add the rule for build Qt-Secret
  * Add INCLUDEPATH and LIBS for your build system 
  * Rebuild yuor project
