@@ -3,8 +3,12 @@
 * Open QtCreator
 * Create a new subdirs project (file >> create new project of file >> other projects >> subdirs project) and call it 'Master'
 * Copy **your project folder** into **the Master project folder** or if you use git then add your project like submodule of master poject. Use command: "git submodules add **URL**"
- * Open Master.pro and add your project like subproject
+* Open Master.pro and add your project like subproject
+
 ``` qmake
+TEMPLATE = subdirs
+CONFIG += ordered
+
 SUBDIRS += \
            youProjectFolder
 
@@ -16,9 +20,12 @@ youProjectFolder.file = path/to/yuorProject.pro
  * Open Master.pro
  * Add Qt-Secret library like submproject of Master
 ``` qmake
+TEMPLATE = subdirs
+CONFIG += ordered
+
 SUBDIRS += \
+           Qt-Secret \
            youProjectFolder \
-          Qt-Secret \
 
 youProjectFolder.file = path/to/yuorProject.pro
 ``` 
