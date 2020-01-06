@@ -132,9 +132,31 @@ bool testExample() {
 
 }
 
+bool testEncryptAndDecryptExample() {
+
+    QByteArray pub, priv;
+    QRSAEncryption e(QRSAEncryption::Rsa::RSA_2048);
+    e.generatePairKey(pub, priv); // or other rsa size
+
+    QByteArray msg = "test message";
+
+    auto encryptMessage = e.encode(msg, pub);
+
+    if (encryptMessage == msg)
+        return false;
+
+    auto decodeMessage = e.decode(encryptMessage, priv);
+
+    return decodeMessage == msg;
+}
+
 int main() {
 
     if(!testExample()) {
+        return 1;
+    }
+
+    if (!testEncryptAndDecryptExample()) {
         return 1;
     }
 
@@ -153,7 +175,6 @@ int main() {
     if(!testCrypto(QRSAEncryption::Rsa::RSA_512)) {
         return 1;
     }
-
 
     if(!testCrypto(QRSAEncryption::Rsa::RSA_1024)) {
         return 1;

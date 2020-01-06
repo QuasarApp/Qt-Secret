@@ -104,6 +104,9 @@ SUBDIRS += \
 
 ``` cpp
 #include <qrsaencryption.h>
+#include <QDebug>
+
+bool testEncryptAndDecryptExample() {
 
     QByteArray pub, priv;
     QRSAEncryption e(QRSAEncryption::Rsa::RSA_2048);
@@ -111,11 +114,21 @@ SUBDIRS += \
 
     QByteArray msg = "test message";
 
-    auto signedMessage = e.signMessage(msg, priv);
+    auto encryptMessage = e.encode(msg, pub);
 
-    if (e.checkSignMessage(signedMessage, pub)) {
-        qInfo() <<" message signed success";
+    if (encryptMessage == msg)
+        return false;
+
+    auto decodeMessage = e.decode(encryptMessage, priv);
+
+    return decodeMessage == msg;
+}
+
+int main() {
+    if (testEncryptAndDecryptExample()) {
+        qInfo() <<"success!";
     }
+}
 
 
 ```
@@ -124,6 +137,7 @@ SUBDIRS += \
 
 ``` cpp
 #include <qrsaencryption.h>
+#include <QDebug>
 
 bool testExample() {
     QByteArray pub, priv;
@@ -141,6 +155,12 @@ bool testExample() {
 
     return false;
 
+}
+
+int main() {
+    if (testExample()) {
+        qInfo() <<"success!";
+    }
 }
 
 ```
