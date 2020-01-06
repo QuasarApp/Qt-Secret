@@ -94,6 +94,8 @@ SUBDIRS += \
  * Rebuild yuor project
 
 
+#### Detailed instructions of include in QtCreator see [here](Doc/QtCreator.md).
+
 # Usage
 
 ## RSA
