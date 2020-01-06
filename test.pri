@@ -34,9 +34,9 @@ win32:testGMP.commands =$$PWD/deployTests/QtBigIntTests.exe
 
 contains(QMAKE_HOST.os, Linux):{
     DEPLOYER=cqtdeployer
-    win32:testAES.commands = wine cmd /c $$PWD/deployTests/QAESEncryption.bat
-    win32:testRSA.commands = wine cmd /c $$PWD/deployTests/Qt-SecretTest.bat
-    win32:testGMP.commands = wine cmd /c $$PWD/deployTests/QtBigIntTests.bat
+    win32:testAES.commands =
+    win32:testRSA.commands =
+    win32:testGMP.commands =
 
 
 } else {

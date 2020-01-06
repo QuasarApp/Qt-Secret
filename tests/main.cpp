@@ -159,9 +159,6 @@ int main() {
         return 1;
     }
 
-#ifdef Q_OS_UNIX
-
-
     if(!testCrypto(QRSAEncryption::Rsa::RSA_2048)) {
         return 1;
     }
@@ -169,7 +166,6 @@ int main() {
     if(!testCrypto(QRSAEncryption::Rsa::RSA_4096)) {
         return 1;
     }
-#endif
 
     qInfo() << "Tests passed successfully";
 
