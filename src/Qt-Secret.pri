@@ -15,16 +15,15 @@ CONFIG(release, debug|release): {
     Qt_SECRET_LIB_OUTPUT_DIR="$$PWD/build/debug"
 }
 
-
-
-!isEmpty(QT_ARCH): {
-    LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret_$$QT_ARCH
+lessThan (QT_MINOR_VERSION, 14) {
+    unix: LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret
+    win32: LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret1
 } else {
-    unix:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret
+    unix:android: LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret_$$QT_ARCH
+    unix:!android: LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret
 
-    win32:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret1
+    win32: LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret1
 }
-
 
 include($$PWD/mini-gmp/src/GMPIncudePah.pri)
 
