@@ -26,7 +26,6 @@ lessThan (QT_MINOR_VERSION, 14): {
 }
 
 include($$PWD/mini-gmp/src/GMPIncudePah.pri)
-message($$LIBS)
 
 INCLUDEPATH += "$$PWD/Qt-RSA"
 INCLUDEPATH += "$$PWD/Qt-AES"
