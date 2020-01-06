@@ -14,9 +14,17 @@ CONFIG(release, debug|release): {
 } else {
     Qt_SECRET_LIB_OUTPUT_DIR="$$PWD/build/debug"
 }
-unix:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret
 
-win32:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret1
+
+
+!isEmpty(QT_ARCH): {
+    LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret_$$QT_ARCH
+} else {
+    unix:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret
+
+    win32:LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret1
+}
+
 
 include($$PWD/mini-gmp/src/GMPIncudePah.pri)
 

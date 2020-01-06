@@ -10,6 +10,7 @@
 #include <QDateTime>
 #include <qdebug.h>
 #include <cmath>
+#include <time.h>
 
 //const int testSize = 20;
 static const QHash <int,int > testSize = {

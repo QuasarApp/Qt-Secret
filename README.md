@@ -126,7 +126,7 @@ bool testEncryptAndDecryptExample() {
 
 int main() {
     if (testEncryptAndDecryptExample()) {
-        qInfo() <<"success!";
+        qInfo() << "Success!";
     }
 }
 
