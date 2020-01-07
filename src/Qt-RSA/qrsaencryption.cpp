@@ -11,6 +11,7 @@
 #include <iostream>
 #include <ctime>
 #include <chrono>
+#include <QTextStream>
 
 #define KEY_GEN_LIMIT 10
 
@@ -346,6 +347,38 @@ bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArra
 
     // if recievedHash == hashAlgorithm(recived message), then signed message is valid
     return recievedHash == QCryptographicHash::hash(message, HashAlgorithm::Sha256);
+}
+
+bool QRSAEncryption::save(const QString &file, const QByteArray& key) {
+    QFile keyFile(file);
+
+    if (keyFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+
+        QTextStream stream(&keyFile);
+        stream << key.toBase64();
+
+        keyFile.close();
+        return true;
+    }
+
+    return false;
+}
+
+QByteArray QRSAEncryption::load(const QString &file) {
+    QFile keyFile(file);
+
+    if (keyFile.open(QIODevice::ReadOnly)) {
+
+        QTextStream stream(&keyFile);
+
+        QByteArray base64DataKey;
+        stream >> base64DataKey;
+
+        keyFile.close();
+        return QByteArray::fromBase64(base64DataKey);
+    }
+
+    return {};
 }
 
 QRSAEncryption::Rsa QRSAEncryption::getRsa() const {
