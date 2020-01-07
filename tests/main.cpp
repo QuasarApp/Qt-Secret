@@ -161,10 +161,6 @@ bool testGetKeyRsaType() {
         return false;
     }
 
-    if (QRSAEncryption::getKeyRsaType(validSizeKey) != QRSAEncryption::Rsa::Invalid) {
-        return false;
-    }
-
     qInfo() << "success";
     return true;
 }
