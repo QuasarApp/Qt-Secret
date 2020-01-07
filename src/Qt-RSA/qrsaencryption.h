@@ -130,6 +130,13 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
     static unsigned int getKeyBytesSize(QRSAEncryption::Rsa rsa);
 
     /**
+     * @brief getKeyRsaType - return the key RSA type.
+     * @param key - public or private RSA key.
+     * @return QRSAEncryption::Rsa
+     */
+    static QRSAEncryption::Rsa getKeyRsaType(const QByteArray& key);
+
+    /**
      * @brief save - save key into file.
      * @param file
      * @param key
