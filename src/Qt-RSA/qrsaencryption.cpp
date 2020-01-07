@@ -175,14 +175,7 @@ QRSAEncryption::Rsa QRSAEncryption::getKeyRsaType(const QByteArray &key) {
         auto res = static_cast<int>(QRSAEncryption::Rsa::RSA_64);
         for ( ;res <= QRSAEncryption::Rsa::RSA_8192; res *= 2 ) {
             if (static_cast<unsigned int>(key.size()) == getKeyBytesSize(static_cast<QRSAEncryption::Rsa>(res))) {
-
-                QRSAEncryption check(static_cast<QRSAEncryption::Rsa>(res));
-                INT e = check.fromArray(key.mid(0, key.size() / 2));
-                if (e.isPrime()) {
-                    return static_cast<QRSAEncryption::Rsa>(res);
-                }
-
-                break;
+                return static_cast<QRSAEncryption::Rsa>(res);
             }
         }
     }
