@@ -19,10 +19,8 @@ lessThan (QT_MINOR_VERSION, 14): {
     unix: LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret
     win32: LIBS += -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret1
 } else {
-    LIBTENP=
-    unix: LIBTENP = -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret
+    LIBTENP = -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret
     android: LIBTENP = -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret_$$QT_ARCH
-
     win32: LIBTENP= -L$$Qt_SECRET_LIB_OUTPUT_DIR -lQt-Secret1
 
     LIBS += $$LIBTENP
