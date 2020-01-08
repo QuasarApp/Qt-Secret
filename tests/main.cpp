@@ -133,6 +133,38 @@ bool testExample() {
 
 }
 
+bool testGetKeyRsaType() {
+
+    qInfo() << "Check GetKeyRsaType function";
+
+    QByteArray pub, priv;
+    QRSAEncryption e(QRSAEncryption::Rsa::RSA_512);
+    e.generatePairKey(pub, priv); // or other rsa size
+
+    QByteArray invalidKey, validSizeKey;
+
+    invalidKey = randomArray();
+
+    validSizeKey = randomArray(
+                static_cast<int>(
+                    QRSAEncryption::getKeyBytesSize(QRSAEncryption::Rsa::RSA_512)));
+
+    if (QRSAEncryption::getKeyRsaType(pub) != QRSAEncryption::Rsa::RSA_512) {
+        return false;
+    }
+
+    if (QRSAEncryption::getKeyRsaType(priv) != QRSAEncryption::Rsa::RSA_512) {
+        return false;
+    }
+
+    if (QRSAEncryption::getKeyRsaType(invalidKey) != QRSAEncryption::Rsa::Invalid) {
+        return false;
+    }
+
+    qInfo() << "success";
+    return true;
+}
+
 bool testEncryptAndDecryptExample() {
 
     QByteArray pub, priv;
@@ -152,6 +184,10 @@ bool testEncryptAndDecryptExample() {
 }
 
 int main() {
+
+    if (!testGetKeyRsaType()) {
+        return 1;
+    }
 
     if(!testExample()) {
         return 1;
