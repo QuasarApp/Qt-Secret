@@ -22,7 +22,7 @@ contains(QMAKE_HOST.os, Linux):{
 }
 
 
-deployTest.commands = $$DEPLOYER -bin $$exec clear -qmake $$QMAKE_BIN -targetDir $$PWD/deployTests -libDir $$PWD -recursiveDepth 5
+deployTest.commands = "$$DEPLOYER -bin $$exec clear -qmake $$QMAKE_BIN -targetDir $$PWD/deployTests -libDir $$PWD -recursiveDepth 5"
 
 unix:!android:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.sh
 win32:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.exe
