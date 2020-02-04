@@ -18,6 +18,7 @@ contains(QMAKE_HOST.os, Linux):{
 
 } else {
     DEPLOYER=%cqtdeployer%
+
 }
 
 
