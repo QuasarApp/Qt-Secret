@@ -17,31 +17,21 @@ contains(QMAKE_HOST.os, Linux):{
     QMAKE_BIN = $$QT_DIR/qmake
 
 } else {
-    DEPLOYER=%cqtdeployer%
+    DEPLOYER=$$(cqtdeployer)
 }
 
 
 deployTest.commands = $$DEPLOYER -bin $$exec clear -qmake $$QMAKE_BIN -targetDir $$PWD/deployTests -libDir $$PWD -recursiveDepth 5
 
 unix:!android:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.sh
-win32:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.exe
+win32:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.exe >> $$PWD/buildLog.log 2>>&1
 
 unix:!android:testAES.commands = $$PWD/deployTests/QAESEncryption.sh
-win32:testAES.commands = $$PWD/deployTests/QAESEncryption.exe
+win32:testAES.commands = $$PWD/deployTests/QAESEncryption.exe >> $$PWD/buildLog.log 2>>&1
 
 unix:!android:testGMP.commands = $$PWD/deployTests/QtBigIntTests.sh
-win32:testGMP.commands =$$PWD/deployTests/QtBigIntTests.exe
+win32:testGMP.commands =$$PWD/deployTests/QtBigIntTests.exe >> $$PWD/buildLog.log 2>>&1
 
-contains(QMAKE_HOST.os, Linux):{
-    DEPLOYER=cqtdeployer
-    win32:testAES.commands =
-    win32:testRSA.commands =
-    win32:testGMP.commands =
-
-
-} else {
-    DEPLOYER=%cqtdeployer%
-}
 
 test.depends += deployTest
 test.depends += testRSA
