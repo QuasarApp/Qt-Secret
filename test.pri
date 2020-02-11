@@ -17,7 +17,7 @@ contains(QMAKE_HOST.os, Linux):{
     QMAKE_BIN = $$QT_DIR/qmake
 
 } else {
-    DEPLOYER=%cqtdeployer%
+    DEPLOYER=$$(cqtdeployer)
 }
 
 
@@ -32,16 +32,6 @@ win32:testAES.commands = $$PWD/deployTests/QAESEncryption.exe
 unix:!android:testGMP.commands = $$PWD/deployTests/QtBigIntTests.sh
 win32:testGMP.commands =$$PWD/deployTests/QtBigIntTests.exe
 
-contains(QMAKE_HOST.os, Linux):{
-    DEPLOYER=cqtdeployer
-    win32:testAES.commands =
-    win32:testRSA.commands =
-    win32:testGMP.commands =
-
-
-} else {
-    DEPLOYER=%cqtdeployer%
-}
 
 test.depends += deployTest
 test.depends += testRSA
