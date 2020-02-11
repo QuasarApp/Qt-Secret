@@ -1,6 +1,5 @@
 # ![Qt-Secret Logo](res/png/QtSecretLogo2.png)
 
-
 Fast encryption library supporting RSA and AES algorithms.
 
 # Futures 
