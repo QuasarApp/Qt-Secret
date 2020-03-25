@@ -11,6 +11,7 @@
 #include <qdebug.h>
 #include <cmath>
 #include <time.h>
+#include <iostream>
 
 //const int testSize = 20;
 static const QHash <int,int > testSize = {
@@ -39,20 +40,24 @@ QByteArray randomArray(int length = -1) {
     return res;
 }
 
+void print(const QString& str) {
+    std::cout << str.toStdString() << std::endl;
+}
+
 bool checkKeys(const QByteArray& pubKey, const QByteArray& privKey,
                QRSAEncryption::Rsa rsa) {
     QRSAEncryption e(rsa);
 
-    qInfo() << QString("Private key: %0").arg(QString(pubKey.toHex()));
-    qInfo() << QString("Public key: %0").arg(QString(privKey.toHex()));
+    print( QString("Private key: %0").arg(QString(pubKey.toHex())));
+    print( QString("Public key: %0").arg(QString(privKey.toHex())));
 
     if (pubKey.size() != rsa / 4) {
-        qCritical() << "pubKey size wrong RSA" << rsa;
+        print("pubKey size wrong RSA" + QString::number(rsa));
         return false;
     }
 
     if (privKey.size() != rsa / 4) {
-        qCritical() << "privKey size wrong RSA" << rsa;
+        print("privKey size wrong RSA" + QString::number(rsa));
         return false;
     }
 
@@ -63,28 +68,28 @@ bool checkKeys(const QByteArray& pubKey, const QByteArray& privKey,
         auto decodeData = e.decode(encodeData, privKey);
 
         if ( base != decodeData) {
-            qCritical() << "encode/decode data error RSA" << rsa;
+            print("encode/decode data error RSA" + QString::number(rsa));
             return false;
         }
 
         encodeData = e.signMessage(base, privKey);
 
         if (!e.checkSignMessage(encodeData, pubKey)) {
-            qCritical() << "sig message error RSA" << rsa;
+            print("sig message error RSA" + QString::number(rsa));
             return false;
         }
 
         encodeData += "work it";
 
         if (e.checkSignMessage(encodeData, pubKey)) {
-            qCritical() << "sig message error RSA with added value to back" << rsa;
+            print("sig message error RSA with added value to back" + QString::number(rsa));
             return false;
         }
 
         encodeData.push_front("not work");
 
         if (e.checkSignMessage(encodeData, pubKey)) {
-            qCritical() << "sig message error RSA with added value to front" << rsa;
+            print("sig message error RSA with added value to front" + QString::number(rsa));
             return false;
         }
     }
@@ -100,10 +105,10 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
 
     for (int i = 0; i < testSize[rsa]; i++) {
 
-        qInfo() << QString("Test RSA-%0 (%1/%2):").arg(rsa).arg(i + 1).arg(testSize[rsa]);
+        print(QString("Test RSA-%0 (%1/%2):").arg(rsa).arg(i + 1).arg(testSize[rsa]));
 
         if (!e.generatePairKey(pub, priv)) {
-            qCritical() << "key not generated RSA" << rsa;
+            print( "key not generated RSA" + QString::number(rsa));
             return false;
         }
 
@@ -125,7 +130,7 @@ bool testExample() {
     auto signedMessage = e.signMessage(msg, priv);
 
     if (e.checkSignMessage(signedMessage, pub)) {
-        qInfo() <<" message signed success";
+        print(" message signed success");
         return true;
     }
 
@@ -134,8 +139,7 @@ bool testExample() {
 }
 
 bool testGetKeyRsaType() {
-
-    qInfo() << "Check GetKeyRsaType function";
+    print("Check GetKeyRsaType function");
 
     QByteArray pub, priv;
     QRSAEncryption e(QRSAEncryption::Rsa::RSA_512);
@@ -160,8 +164,7 @@ bool testGetKeyRsaType() {
     if (QRSAEncryption::getKeyRsaType(invalidKey) != QRSAEncryption::Rsa::Invalid) {
         return false;
     }
-
-    qInfo() << "success";
+    print("success");
     return true;
 }
 
@@ -225,7 +228,7 @@ int main() {
         return 1;
     }
 
-    qInfo() << "Tests passed successfully";
+    print("Tests passed successfully");
 
     return 0;
 }
