@@ -45,13 +45,13 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
     };
 
     /**
-     * @brief The BlockSize enum defined size of block of key
-     * Auto - fast but not stable. (using by default)
-     * OneByte - // stable but slow. (using for sig and check sig messages)
+     * @brief The BlockSize enum defined size of block of key.
      */
     enum BlockSize {
-        Auto = 0, // fast but not stable. (using by default)
-        OneByte = 1 // stable but slow. (using for sig and check sig messages)
+        /// Fast but not stable. (using by default)
+        Auto = 0,
+        /// Stable but slow. (using for sig and check sig messages)
+        OneByte = 1
     };
 
 
@@ -157,9 +157,15 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @brief generatePairKey - generate RSA pair keys
      * @param pubKey - return value of pablic key
      * @param privKey - return value of private key
+     * @param genesis - random bytes of arbitrary size.
+     *  This option allows you to generate a key pair that is attached to a given set of bytes.
+     *  Example if you set the value to 0xFF, then you will always get the same key pair attached to this value.
+     *  This can be convenient if you have some kind of super key by which you want to generate a pair of RSA keys.
+     * @note Leave genesis empty to generate random keys.
+     * @warning  The keys will not be the same if you generate RSA keys of different sizes.
      * @return true if all good.
      */
-    bool generatePairKey(QByteArray &pubKey, QByteArray &privKey);
+    bool generatePairKey(QByteArray &pubKey, QByteArray &privKey, const QByteArray& genesis = {}) const;
 
     /**
      * @brief encode - encode rawData
@@ -169,7 +175,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @return The encoded data.
      */
     QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
-                      BlockSize blockSizeMode = BlockSize::Auto);
+                      BlockSize blockSizeMode = BlockSize::Auto) const;
 
     /**
      * @brief decode - decode raw encoded data.
@@ -180,7 +186,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @return decoded data
      */
     QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,
-                      BlockSize blockSizeMode = BlockSize::Auto);
+                      BlockSize blockSizeMode = BlockSize::Auto) const;
 
     /**
      * @brief signMessage
@@ -208,13 +214,13 @@ private:
 
     Rsa _rsa;
 
-    bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey);
-    bool isMutuallyPrime(const INT &a, const INT &b);
+    bool testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) const;
+    bool isMutuallyPrime(const INT &a, const INT &b) const;
     Rsa getBitsSize(const INT& i) const;
     Rsa getBitsSize(const QByteArray& array) const;
 
     INT fromArray(const QByteArray& array) const;
-    QByteArray toArray(const INT &i, short sizeBlok = -1);
+    QByteArray toArray(const INT &i, short sizeBlok = -1) const;
     INT randomNumber(bool fullFilled = true) const;
     INT toPrime(INT) const;
     INT randomPrimeNumber(INT no = 0) const;
@@ -222,8 +228,9 @@ private:
 
     short getBlockSize(INT i) const;
 
-    QByteArray encodeBlok(const INT& block, const INT& e, const INT& m, short blockSize);
-    QByteArray decodeBlok(const INT& block, const INT& d, const INT& m, short blockSize);
+    QByteArray encodeBlok(const INT& block, const INT& e, const INT& m, short blockSize) const;
+    QByteArray decodeBlok(const INT& block, const INT& d, const INT& m, short blockSize) const;
+    void getPrimesFromGenesis(const QByteArray& genesis, INT& prime1, INT& prime2) const;
 
 
 };
