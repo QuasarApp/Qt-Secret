@@ -4,3 +4,6 @@
 [submodule "src/mini-gmp"]
 	path = src/mini-gmp
 	url = https://github.com/QuasarApp/mini-gmp.git
+[submodule "res/DoxyStyle"]
+	path = res/DoxyStyle
+	url = https://github.com/QuasarApp/DoxyStyle.git
