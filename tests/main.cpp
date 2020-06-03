@@ -97,10 +97,30 @@ bool checkKeys(const QByteArray& pubKey, const QByteArray& privKey,
     return true;
 }
 
+bool testGenesis(const QRSAEncryption& e) {
+    QByteArray
+    pubGenesis1, privGenesis1,
+    pubGenesis2, privGenesis2;
+
+    // check genesis
+    auto genesis = randomArray(0xFFFF);
+    if (!e.generatePairKey(pubGenesis1, privGenesis1, genesis)) {
+        print( "Fail to test genesis got generation keys " + QString::number(e.getRsa()));
+        return false;
+    }
+
+    if (!e.generatePairKey(pubGenesis2, privGenesis2, genesis)) {
+        print( "Fail to test genesis got generation keys " + QString::number(e.getRsa()));
+        return false;
+    }
+
+    return pubGenesis1 == pubGenesis2 && privGenesis1 == privGenesis2;
+};
 
 bool testCrypto(QRSAEncryption::Rsa rsa) {
 
     QByteArray pub, priv;
+
     QRSAEncryption e(rsa);
 
     for (int i = 0; i < testSize[rsa]; i++) {
@@ -109,6 +129,11 @@ bool testCrypto(QRSAEncryption::Rsa rsa) {
 
         if (!e.generatePairKey(pub, priv)) {
             print( "key not generated RSA" + QString::number(rsa));
+            return false;
+        }
+
+        if (!testGenesis(e)) {
+            print( "Test genesis failed. RSA" + QString::number(rsa));
             return false;
         }
 

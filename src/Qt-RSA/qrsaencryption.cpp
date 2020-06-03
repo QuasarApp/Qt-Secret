@@ -22,7 +22,7 @@ QRSAEncryption::INT eulerFunc(const QRSAEncryption::INT &p, const QRSAEncryption
     return (p - 1) * (q - 1);
 }
 
-bool QRSAEncryption::isMutuallyPrime(const INT &a, const INT &b) {
+bool QRSAEncryption::isMutuallyPrime(const INT &a, const INT &b) const {
     if (        (!(a % 2) && !(b % 2))
                 || (!(a % 3) && !(b % 3))
                 || (!(a % 5) && !(b % 5))
@@ -58,7 +58,7 @@ QRSAEncryption::INT QRSAEncryption::fromArray(const QByteArray &array) const {
     return res;
 }
 
-QByteArray QRSAEncryption::toArray(const INT &i, short sizeBlok) {
+QByteArray QRSAEncryption::toArray(const INT &i, short sizeBlok) const {
     QByteArray res;
     res = QByteArray::fromHex(QByteArray::fromStdString(i.getString(16)));
 
@@ -151,14 +151,37 @@ short QRSAEncryption::getBlockSize(INT i) const {
     return static_cast<short>(i.longBytes()) - 1;
 }
 
-QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT &m, short blockSize) {
+QByteArray QRSAEncryption::encodeBlok(const INT &block, const INT &e, const INT &m, short blockSize) const {
 
     return toArray(INT::powm(block, e, m), blockSize);
 }
 
-QByteArray QRSAEncryption::decodeBlok(const INT &block, const INT &d, const INT &m, short blockSize) {
+QByteArray QRSAEncryption::decodeBlok(const INT &block, const INT &d, const INT &m, short blockSize) const {
 
     return toArray(INT::powm(block, d, m), blockSize);
+}
+
+void QRSAEncryption::getPrimesFromGenesis(const QByteArray &genesis,
+                                          QRSAEncryption::INT &prime1,
+                                          QRSAEncryption::INT &prime2) const {
+
+    auto hash = QCryptographicHash::hash(genesis, QCryptographicHash::Sha512);
+
+    prime1 = toPrime(genesisInt(hash.left(hash.size() / 2), _rsa / 2));
+    prime2 = toPrime(genesisInt(hash.right(hash.size() / 2), _rsa / 2));
+
+}
+
+QRSAEncryption::INT QRSAEncryption::genesisInt(const QByteArray &genesis, int limitBits) const {
+    INT result;
+    auto hash = QCryptographicHash::hash(genesis, QCryptographicHash::Sha512);
+    result.fromHex(hash.toHex().toStdString());
+    int powP1 = std::max(static_cast<int>(std::trunc((limitBits) / result.sizeBits())), 1);
+    result.pow(powP1);
+    INT limit('1', limitBits, 2);
+
+    return result % limit;
+
 }
 
 QRSAEncryption::QRSAEncryption(Rsa rsa) {
@@ -214,7 +237,7 @@ bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArra
 
 // --- end of static methods ---
 
-bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
+bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, const QByteArray &genesis) const {
 
     int cnt{0};
     bool keyGenRes{false};
@@ -224,16 +247,24 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
         pubKey.clear();
         privKey.clear();
 
-        p = randomPrimeNumber();
-        q = randomPrimeNumber(p);
+        if (genesis.size()) {
+            getPrimesFromGenesis(genesis, p, q);
+            eilor = eulerFunc(p, q);
+            e = genesisInt(genesis, _rsa) % eilor;
+
+        } else {
+            p = randomPrimeNumber();
+            q = randomPrimeNumber(p);
+            eilor = eulerFunc(p, q);
+            e = randomNumber() % eilor;
+        }
+
 
         modul = 0;
         while ((modul = p * q) < 0) {
             p = toPrime((p - 1) / 2);
         }
 
-        eilor = eulerFunc(p, q);
-        e = randomNumber() % eilor;
 
         if (!(e % 2)) --e;
 
@@ -260,7 +291,7 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey) {
 }
 
 // --- non-static methods ---
-QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey, BlockSize blockSizeMode) {
+QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey, BlockSize blockSizeMode) const {
 
     if (getBitsSize(pubKey) != _rsa) {
         return QByteArray();
@@ -302,7 +333,7 @@ QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &p
     return res;
 
 }
-QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey, BlockSize blockSizeMode) {
+QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &privKey, BlockSize blockSizeMode) const {
 
     if (getBitsSize(privKey) != _rsa) {
         return QByteArray();
@@ -398,7 +429,7 @@ QRSAEncryption::Rsa QRSAEncryption::getRsa() const {
     return _rsa;
 }
 
-bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) {
+bool QRSAEncryption::testKeyPair(const QByteArray &pubKey, const QByteArray &privKey) const {
 
     QByteArray tesVal = "Test message of encrypkey";
 
