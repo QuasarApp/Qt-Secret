@@ -231,6 +231,7 @@ private:
     QByteArray encodeBlok(const INT& block, const INT& e, const INT& m, short blockSize) const;
     QByteArray decodeBlok(const INT& block, const INT& d, const INT& m, short blockSize) const;
     void getPrimesFromGenesis(const QByteArray& genesis, INT& prime1, INT& prime2) const;
+    INT genesisInt(const QByteArray& genesis, int limitBits) const;
 
 
 };

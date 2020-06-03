@@ -167,18 +167,20 @@ void QRSAEncryption::getPrimesFromGenesis(const QByteArray &genesis,
 
     auto hash = QCryptographicHash::hash(genesis, QCryptographicHash::Sha512);
 
-    INT p1, p2;
-    p1.fromHex(hash.left(hash.size() / 2).toHex().toStdString());
-    p2.fromHex(hash.right(hash.size() / 2).toHex().toStdString());
+    prime1 = toPrime(genesisInt(hash.left(hash.size() / 2), _rsa / 2));
+    prime2 = toPrime(genesisInt(hash.right(hash.size() / 2), _rsa / 2));
 
-    int powP1 = std::trunc((_rsa / 4) / p1.sizeBits());
-    int powP2 = std::trunc((_rsa / 4) / p2.sizeBits());
+}
 
-    p1.pow(powP1);
-    p2.pow(powP2);
+QRSAEncryption::INT QRSAEncryption::genesisInt(const QByteArray &genesis, int limitBits) const {
+    INT result;
+    auto hash = QCryptographicHash::hash(genesis, QCryptographicHash::Sha512);
+    result.fromHex(hash.toHex().toStdString());
+    int powP1 = std::max(static_cast<int>(std::trunc((limitBits) / result.sizeBits())), 1);
+    result.pow(powP1);
+    INT limit('1', limitBits, 2);
 
-    prime1 = toPrime(p1);
-    prime2 = toPrime(p2);
+    return result % limit;
 
 }
 
@@ -247,9 +249,14 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, co
 
         if (genesis.size()) {
             getPrimesFromGenesis(genesis, p, q);
+            eilor = eulerFunc(p, q);
+            e = genesisInt(genesis, _rsa) % eilor;
+
         } else {
             p = randomPrimeNumber();
             q = randomPrimeNumber(p);
+            eilor = eulerFunc(p, q);
+            e = randomNumber() % eilor;
         }
 
 
@@ -258,8 +265,6 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, co
             p = toPrime((p - 1) / 2);
         }
 
-        eilor = eulerFunc(p, q);
-        e = randomNumber() % eilor;
 
         if (!(e % 2)) --e;
 
