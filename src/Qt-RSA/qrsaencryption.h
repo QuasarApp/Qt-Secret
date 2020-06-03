@@ -171,7 +171,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @brief encode - encode rawData
      * @param rawData - data for encode
      * @param pubKey - public key. Public key size must be equals size of RSA class.
-     * @param blockSizeMode - block size. See @BlockSize
+     * @param blockSizeMode - block size. See BlockSize
      * @return The encoded data.
      */
     QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
@@ -182,7 +182,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * it is important that the data is decrypted and encrypted by the same class, or in the case of static methods with the same parameters
      * @param rawData - ecoded data.
      * @param privKey - private RSA key
-     * @param blockSizeMode - block size mode see @BlockSize
+     * @param blockSizeMode - block size mode see BlockSize
      * @return decoded data
      */
     QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,
