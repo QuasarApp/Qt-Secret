@@ -1,4 +1,4 @@
-# ![Qt-Secret Logo](res/png/QtSecretLogo2.png)
+# ![Qt-Secret Logo](res/png/Qt-Secret_Banner_web.png)
 
 Fast encryption library supporting RSA and AES algorithms.
 
