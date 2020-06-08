@@ -14,7 +14,9 @@ The current implementation supports the following key sizes:
  * RSA512
  * RSA1024 
  * RSA2048
- * RSA4096 
+ * RSA3072
+ * RSA4096
+ * RSA6144
  * RSA8192 
 
 #### Supported futures 
