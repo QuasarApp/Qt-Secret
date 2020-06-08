@@ -39,7 +39,9 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
         RSA_512 = 512,
         RSA_1024 = 1024,
         RSA_2048 = 2048,
+        RSA_3072 = 3072,
         RSA_4096 = 4096,
+        RSA_6144 = 6144,
         RSA_8192 = 8192,
 
     };
@@ -59,7 +61,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @brief QRSAEncryption
      * @param rsa - the Rsa size of class.
      */
-    QRSAEncryption(Rsa rsa = Rsa::RSA_256);
+    QRSAEncryption(Rsa rsa = Rsa::RSA_2048);
 
 // static methods
 
