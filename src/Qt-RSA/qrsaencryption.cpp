@@ -213,6 +213,12 @@ bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey,
     return QRSAEncryption(rsa).generatePairKey(pubKey, privKey);
 }
 
+bool QRSAEncryption::generatePairKey(QByteArray &pubKey, QByteArray &privKey, const QByteArray &genesis,
+                                      QRSAEncryption::Rsa rsa) {
+
+    return QRSAEncryption(rsa).generatePairKey(pubKey, privKey, genesis);
+}
+
 QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &pubKey,
                                    Rsa rsa, BlockSize blockSizeMode) {
 

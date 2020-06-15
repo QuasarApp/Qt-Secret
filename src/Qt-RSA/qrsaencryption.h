@@ -66,14 +66,30 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
 // static methods
 
     /**
-     * @brief generatePairKey staic implementation of generatePairKey
-     * @param pubKey
-     * @param privKey
-     * @param rsa
-     * @return
+     * @brief generatePairKey - generate RSA pair keys
+     * @param pubKey - return value of pablic key
+     * @param privKey - return value of private key
+     * @warning  The keys will not be the same if you generate RSA keys of different sizes.
+     * @return true if all good.
      */
     static bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
-                                 QRSAEncryption::Rsa rsa);
+                                QRSAEncryption::Rsa rsa);
+
+    /**
+     * @brief generatePairKey - generate RSA pair keys
+     * @param pubKey - return value of pablic key
+     * @param privKey - return value of private key
+     * @param genesis - random bytes of arbitrary size.
+     *  This option allows you to generate a key pair that is attached to a given set of bytes.
+     *  Example if you set the value to 0xFF, then you will always get the same key pair attached to this value.
+     *  This can be convenient if you have some kind of super key by which you want to generate a pair of RSA keys.
+     * @note Leave genesis empty to generate random keys.
+     * @warning  The keys will not be the same if you generate RSA keys of different sizes.
+     * @return true if all good.
+     */
+    static bool generatePairKey(QByteArray &pubKey, QByteArray &privKey,
+                                const QByteArray& genesis,
+                                QRSAEncryption::Rsa rsa);
 
     /**
      * @brief encode - static implementation of encode
