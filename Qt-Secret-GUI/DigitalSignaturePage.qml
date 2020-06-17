@@ -8,7 +8,9 @@ Item {
 
     Connections {
         target: appCore
-        onQmlShowSignResult: signOutText.setText(message)
+        function onQmlShowSignResult(message) {
+        signOutText.setText(message)
+    }
     }
 
     ColumnLayout {

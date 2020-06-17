@@ -8,7 +8,9 @@ Item {
 
     Connections {
         target: appCore
-        onQmlShowEncDecResult: outputText.setText(message)
+        function onQmlShowEncDecResult(message) {
+            outputText.setText(message)
+        }
     }
 
     ColumnLayout {
@@ -33,8 +35,8 @@ Item {
             secondStateName: qsTr("Decrypt")
             onChangeState: column.changeState()
             onGetAction: appCore.getEncryptDecrypt(encryptDecryptMenu.state,
-                                                          keyLabledText.textAreaText,
-                                                          inputText.textAreaText)
+                                                   keyLabledText.textAreaText,
+                                                   inputText.textAreaText)
         }
 
         RowElement {

@@ -19,8 +19,12 @@ Window {
 
     Connections {
         target: appCore
-        onQmlClosePopup: loadPopup.close()
-        onQmlOpenPopup: loadPopup.open()
+        function onQmlClosePopup() {
+            loadPopup.close()
+        }
+        function onQmlOpenPopup() {
+            loadPopup.open()
+        }
     }
 
     SwipeView {
