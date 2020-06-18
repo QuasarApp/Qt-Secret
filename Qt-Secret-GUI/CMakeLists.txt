@@ -6,19 +6,25 @@
 #
 
 cmake_minimum_required(VERSION 3.10)
-project(Qt-Secret LANGUAGES CXX)
-if(TARGET ${PROJECT_NAME})
-  message("The ${PROJECT_NAME} arledy included in main Project")
-  return()
-endif()
+set(CURRENT_PROJECT "${PROJECT_NAME}-GUI")
 
-include(Patronum/QuasarAppLib/CMake/ccache.cmake)
-# Add sub directories
-add_subdirectory(Patronum)
-add_subdirectory(Tests)
 
-include(Patronum/QuasarAppLib/CMake/QuasarAppCITargets.cmake)
-initAll()
+include(../src/mini-gmp/CMake/ProjectOut.cmake)
 
-addDoc("Patronum" ${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(Qt5 COMPONENTS Core Quick REQUIRED)
+
+file(GLOB SOURCE_CPP
+    "*.cpp"
+    "*.qrc"
+)
+
+add_executable(${CURRENT_PROJECT} ${SOURCE_CPP})
+target_link_libraries(${CURRENT_PROJECT} PRIVATE Qt5::Quick Qt-Secret)
+target_include_directories(${CURRENT_PROJECT} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

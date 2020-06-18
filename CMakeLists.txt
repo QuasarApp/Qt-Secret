@@ -17,6 +17,13 @@ include(src/mini-gmp/CMake/ccache.cmake)
 add_subdirectory(src)
 add_subdirectory(tests)
 
+IF(NOT DEFINED WITHOUT_GUI)
+    message("The GUI Example is enabled")
+    add_subdirectory(Qt-Secret-GUI)
+else()
+    message("The GUI Example is disabled")
+endif()
+
 include(src/mini-gmp/CMake/QuasarAppCITargets.cmake)
 initAll()
 
