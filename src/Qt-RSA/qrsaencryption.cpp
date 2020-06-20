@@ -100,21 +100,41 @@ QRSAEncryption::INT QRSAEncryption::randomNumber(bool fullFill) const {
 }
 
 QRSAEncryption::INT QRSAEncryption::toPrime(INT n) const {
-    if (!(n % 2)) {
-        ++n;
-    }
+//    if (!(n % 2)) {
+//        ++n;
+//    }
+
+//    INT LN = n;
+//    INT RN = n;
+
+//    while (true) {
+
+//        if (LN.isPrime(false)) return LN;
+
+//        RN+=2;
+
+//        if (RN.isPrime(false)) return RN;
+//        LN-=2;
+//    }
+
+    n -= n % 5;
 
     INT LN = n;
     INT RN = n;
-
+    INT BASE = n;
     while (true) {
 
-        if (LN.isPrime(false)) return LN;
+        BASE = LN + LN / 5;
+        if ((BASE - 1).isPrime(false)) return BASE - 1;
+        if ((BASE + 1).isPrime(false)) return BASE + 1;
 
-        RN+=2;
+        RN += 5;
+        BASE = RN + RN / 5;
 
-        if (RN.isPrime(false)) return RN;
-        LN-=2;
+        if ((BASE - 1).isPrime(false)) return BASE - 1;
+        if ((BASE + 1).isPrime(false)) return BASE + 1;
+
+        LN -= 5;
     }
 }
 
