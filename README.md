@@ -30,7 +30,7 @@ Aes implementation was borrowed from [bricke](https://github.com/bricke/Qt-AES),
 Individual thanks [bricke](https://github.com/bricke) for implementing the AES encryption class.
 
 #### AES Levels
-The class supports all AES key lenghts
+The class supports all AES key lengths
 
 * AES_128
 * AES_192
@@ -82,7 +82,7 @@ By default the padding method is `ISO`, however, the class supports:
  * cd yourRepo
  * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
  * git submodule update --init --recursive
- * Add to the list of libraries for the Qt-Secret assembly. For an example you can create Main.Pro in which connect Qt-Secret and your project.pro files as subprojects.
+ * Add to the list of libraries for the Qt-Secret assembly. For example, you can create Main.Pro in which connect Qt-Secret and your project.pro files as subprojects.
  
  ### For cmake projects
  
@@ -93,7 +93,7 @@ By default the padding method is `ISO`, however, the class supports:
   ``` cmake
     add_subdirectory(Qt-Secret)
   ```
- * Rebuild yuor project
+ * Rebuild your project
 
  
  **Main.pro:**
@@ -109,14 +109,14 @@ SUBDIRS += \
   >> include($$PWD/../Qt-Secret/src/Qt-Secret.pri)
  * Rebuild yuor project
 
-## for other build system
+## for other build systems
  
  * cd yourRepo
  * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
  * git submodule update --init --recursive
  * Add the rule for build Qt-Secret
  * Add INCLUDEPATH and LIBS for your build system 
- * Rebuild yuor project
+ * Rebuild your project
 
 
 #### Detailed instructions of include in QtCreator see [here](Doc/QtCreator.md).
