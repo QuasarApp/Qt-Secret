@@ -20,7 +20,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_definitions(-DPATRONUM_LIBRARY)
+add_definitions(-DQt_SECRET_LIBRARY)
 
 find_package(Qt5 COMPONENTS Core Test REQUIRED)
 
