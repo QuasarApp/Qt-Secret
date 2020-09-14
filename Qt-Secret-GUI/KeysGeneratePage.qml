@@ -9,7 +9,7 @@ Item {
     Connections {
 
         target: appCore
-        onQmlShowKeys: {
+        function onQmlShowKeys(pubKey, privKey) {
             publicKeyRow.setText(pubKey)
             privateKeyRow.setText(privKey)
         }
