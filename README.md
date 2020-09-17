@@ -84,18 +84,6 @@ By default the padding method is `ISO`, however, the class supports:
  * git submodule update --init --recursive
  * Add to the list of libraries for the Qt-Secret assembly. For example, you can create Main.Pro in which connect Qt-Secret and your project.pro files as subprojects.
  
- ### For cmake projects
- 
- * cd yourRepo
- * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
- * git submodule update --init --recursive
- * Include in your CMakeLists.txt file the main CMakeLists.txt file of Qt-Secret library
-  ``` cmake
-    add_subdirectory(Qt-Secret)
-  ```
- * Rebuild your project
-
- 
  **Main.pro:**
 ``` qmake
 TEMPLATE = subdirs
@@ -106,8 +94,22 @@ SUBDIRS += \
            MyProject
 ```
  * Include in your MyProject.pro file the pri file of Qt-Secret library
-  >> include($$PWD/../Qt-Secret/src/Qt-Secret.pri)
- * Rebuild yuor project
+ ``` qmake
+ include($$PWD/../Qt-Secret/src/Qt-Secret.pri)
+ ```
+ * Rebuild your project
+
+ ### For cmake projects
+ 
+ * cd yourRepo
+ * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
+ * git submodule update --init --recursive
+ * Include in your CMakeLists.txt file the main CMakeLists.txt file of Qt-Secret library
+  ``` cmake
+    add_subdirectory(Qt-Secret)
+    target_link_libraries(MyBinary PUBLIC Qt-Secret)
+  ```
+ * Rebuild your project
 
 ## for other build systems
  
