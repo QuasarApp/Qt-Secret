@@ -111,7 +111,7 @@ SUBDIRS += \
   ```
  * Rebuild your project
 
-## for other build systems
+## For other build systems
  
  * cd yourRepo
  * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
