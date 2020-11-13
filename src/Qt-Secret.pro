@@ -23,7 +23,7 @@ CONFIG(release, debug|release): {
 
 include($$PWD/mini-gmp/GMP.pri)
 
-VERSION = 1.3.0
+VERSION = 1.3.1
 
 HEADERS += Qt-AES/qaesencryption.h \
            qtsecret_global.h \
