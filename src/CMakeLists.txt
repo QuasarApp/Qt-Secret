@@ -49,4 +49,4 @@ include(mini-gmp/CMake/QuasarAppCITargets.cmake)
 initTests()
 addTests("AES_TEST" "${CURRENT_PROJECT}AES_TEST")
 
-setVersion(1 3 0)
+setVersion(1 3 1)
