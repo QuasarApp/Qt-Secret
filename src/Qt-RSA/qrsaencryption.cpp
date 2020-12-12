@@ -376,14 +376,14 @@ QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &pri
 
     QByteArray signature = encode(hash, privKey, BlockSize::OneByte);
 
-    rawData.append(SIGN_MARKER + signature.toHex() + SIGN_MARKER);
+    rawData.append(QString(SIGN_MARKER + signature.toHex() + SIGN_MARKER).toLatin1());
 
     return rawData;
 }
 bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey) {
 
     // start position of SIGN_MARKER in rawData
-    auto signStartPos = rawData.lastIndexOf(SIGN_MARKER, rawData.length() - signMarkerLength - 1);
+    auto signStartPos = rawData.lastIndexOf(QString(SIGN_MARKER).toLatin1(), rawData.length() - signMarkerLength - 1);
 
     // length of signature in rawData
     auto signLength   = rawData.length() - signStartPos - signMarkerLength * 2;

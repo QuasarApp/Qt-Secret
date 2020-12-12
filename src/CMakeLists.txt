@@ -22,7 +22,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DQt_SECRET_LIBRARY)
 
-find_package(Qt5 COMPONENTS Core Test REQUIRED)
+find_package(Qt5 COMPONENTS Core REQUIRED)
 
 file(GLOB SOURCE_CPP
     "Qt-AES/qaesencryption.cpp"
@@ -33,20 +33,10 @@ file(GLOB SOURCE_CPP
 add_library(${CURRENT_PROJECT} SHARED ${SOURCE_CPP})
 target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt5::Core QtBigint)
 target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-AES")
+target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-AES/aesni")
+
 target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-RSA")
 
-file(GLOB SOURCE_CPP_AES
-    "Qt-AES/main.cpp"
-    "Qt-AES/unit_test/*.cpp"
-
-)
-
-add_executable("${CURRENT_PROJECT}AES_TEST" ${SOURCE_CPP_AES})
-target_link_libraries("${CURRENT_PROJECT}AES_TEST" PUBLIC Qt5::Core Qt5::Test ${CURRENT_PROJECT} QtBigint)
-target_include_directories("${CURRENT_PROJECT}AES_TEST" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-AES/unit_test")
-
 include(mini-gmp/CMake/QuasarAppCITargets.cmake)
-initTests()
-addTests("AES_TEST" "${CURRENT_PROJECT}AES_TEST")
 
 setVersion(1 3 1)

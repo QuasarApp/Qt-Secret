@@ -17,16 +17,31 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(Qt5 COMPONENTS Core Test REQUIRED)
 
+# RSA TESTS
 file(GLOB SOURCE_CPP
     "*.cpp"
 )
 
-add_executable(${CURRENT_PROJECT} ${SOURCE_CPP})
-target_link_libraries(${CURRENT_PROJECT} PRIVATE Qt-Secret)
-target_include_directories(${CURRENT_PROJECT} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable("${CURRENT_PROJECT}_RSA" ${SOURCE_CPP})
+target_link_libraries("${CURRENT_PROJECT}_RSA" PRIVATE Qt-Secret)
+target_include_directories("${CURRENT_PROJECT}_RSA" PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+# AES TESTS
+file(GLOB SOURCE_CPP_AES
+    "../src/Qt-AES/main.cpp"
+    "../src/Qt-AES/unit_test/*.cpp"
+    "../src/Qt-AES/res.qrc"
+
+)
+
+add_executable("${CURRENT_PROJECT}_AES" ${SOURCE_CPP_AES})
+target_link_libraries("${CURRENT_PROJECT}_AES" PUBLIC Qt5::Core Qt5::Test Qt-Secret)
+target_include_directories("${CURRENT_PROJECT}_AES" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../src/Qt-AES/unit_test")
+
 
 include(../src/mini-gmp/CMake/QuasarAppCITargets.cmake)
 initTests()
-addTests("Qt-Secret" ${CURRENT_PROJECT})
+addTests("Qt-SecretRSA" "${CURRENT_PROJECT}_RSA")
+addTests("Qt-SecretAES" "${CURRENT_PROJECT}_AES")
