@@ -13,6 +13,9 @@ if(TARGET ${PROJECT_NAME})
 endif()
 
 include(src/mini-gmp/CMake/ccache.cmake)
+include(src/mini-gmp/CMake/QuasarAppCITargets.cmake)
+initAll()
+
 # Add sub directories
 add_subdirectory(src)
 add_subdirectory(tests)
@@ -23,9 +26,6 @@ IF(NOT DEFINED WITHOUT_GUI)
 else()
     message("The GUI Example is disabled")
 endif()
-
-include(src/mini-gmp/CMake/QuasarAppCITargets.cmake)
-initAll()
 
 addDoc("Qt-Secret" ${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf)
 
