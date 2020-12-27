@@ -22,7 +22,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DQt_SECRET_LIBRARY)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
 
 file(GLOB SOURCE_CPP
     "Qt-AES/qaesencryption.cpp"
@@ -31,7 +33,7 @@ file(GLOB SOURCE_CPP
 )
 
 add_library(${CURRENT_PROJECT} SHARED ${SOURCE_CPP})
-target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt5::Core QtBigint)
+target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt::Core QtBigint)
 target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-AES")
 target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-AES/aesni")
 
