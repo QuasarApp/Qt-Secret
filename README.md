@@ -99,7 +99,7 @@ SUBDIRS += \
  ```
  * Rebuild your project
 
- ### For cmake projects
+### For cmake projects
  
  * cd yourRepo
  * git submodule add https://github.com/QuasarApp/Qt-Secret.git # add the repository of Qt-Secret into your repo like submodule
@@ -110,6 +110,16 @@ SUBDIRS += \
     target_link_libraries(MyBinary PUBLIC Qt-Secret)
   ```
  * Rebuild your project
+ 
+#### Note
+
+By Default QtBigInt makes as a static library. If you want to create a shared library just add the BUILD_SHARED_LIBS into your main CMakeLists.txt file. Example :
+
+```cmake
+set(BUILD_SHARED_LIBS ON)
+add_subdirectory(Qt-Secret)
+target_link_libraries(MyBinary PUBLIC Qt-Secret)
+```
 
 ## For other build systems
  

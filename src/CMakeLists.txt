@@ -32,7 +32,7 @@ file(GLOB SOURCE_CPP
     "*.cpp"
 )
 
-add_library(${CURRENT_PROJECT} SHARED ${SOURCE_CPP})
+add_library(${CURRENT_PROJECT} ${SOURCE_CPP})
 target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt::Core QtBigint)
 target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-AES")
 target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-AES/aesni")
