@@ -28,7 +28,7 @@ public:
     typedef QCryptographicHash::Algorithm HashAlgorithm;
 
     /**
-     * @brief The Rsa enum Determines the size of the secret and public keys expanents (bits).
+     * @brief The Rsa enum Determines the size of the secret and public keys exponents (bits).
 To ensure reliable protection, it is recommended to use an exponent size of at least 2048 bits.
      */
     enum Rsa {
@@ -59,16 +59,16 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
 
     /**
      * @brief QRSAEncryption
-     * @param rsa - the Rsa size of class.
+     * @param rsa The Rsa size of class.
      */
     QRSAEncryption(Rsa rsa = Rsa::RSA_2048);
 
 // static methods
 
     /**
-     * @brief generatePairKey - generate RSA pair keys
-     * @param pubKey - return value of pablic key
-     * @param privKey - return value of private key
+     * @brief generatePairKey Generate RSA pair keys.
+     * @param pubKey Return value of pablic key.
+     * @param privKey Return value of private key.
      * @warning  The keys will not be the same if you generate RSA keys of different sizes.
      * @return true if all good.
      */
@@ -76,10 +76,10 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
                                 QRSAEncryption::Rsa rsa);
 
     /**
-     * @brief generatePairKey - generate RSA pair keys
-     * @param pubKey - return value of pablic key
-     * @param privKey - return value of private key
-     * @param genesis - random bytes of arbitrary size.
+     * @brief generatePairKey Generate RSA pair keys.
+     * @param pubKey Return value of public key.
+     * @param privKey Return value of private key.
+     * @param genesis random bytes of arbitrary size.
      *  This option allows you to generate a key pair that is attached to a given set of bytes.
      *  Example if you set the value to 0xFF, then you will always get the same key pair attached to this value.
      *  This can be convenient if you have some kind of super key by which you want to generate a pair of RSA keys.
@@ -92,7 +92,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
                                 QRSAEncryption::Rsa rsa);
 
     /**
-     * @brief encode - static implementation of encode
+     * @brief encode Static implementation of encode.
      * @param rawData
      * @param pubKey
      * @param rsa
@@ -103,7 +103,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
                               Rsa rsa, BlockSize blockSizeMode = BlockSize::Auto);
 
     /**
-     * @brief decode static implementation of decode
+     * @brief decode Static implementation of decode.
      * @param rawData
      * @param privKey
      * @param rsa
@@ -114,7 +114,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
                               Rsa rsa, BlockSize blockSizeMode = BlockSize::Auto);
 
     /**
-     * @brief signMessage - static implementation of signMessage
+     * @brief signMessage Static implementation of signMessage.
      * @param rawData
      * @param privKey
      * @param rsa
@@ -124,7 +124,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
                                    Rsa rsa);
 
     /**
-     * @brief checkSignMessage static implementation of checkSignMessage
+     * @brief checkSignMessage Static implementation of checkSignMessage.
      * @param rawData
      * @param pubKey
      * @param rsa
@@ -135,27 +135,27 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
 
     /**
      * @brief isValidRsaKey Сhecks byte array. If the array is the PCA key, it will return true, in the practical case of false.
-     * @param key - the validation key
-     * @return true if key is RSA
+     * @param key The validation key.
+     * @return true If key is RSA.
      */
     static bool isValidRsaKey(const QByteArray& key);
 
     /**
-     * @brief getKeyBytesSize Return keySize of bits
-     * @param rsa - the rsa key
-     * @return return size of key
+     * @brief getKeyBytesSize Return keySize of bits.
+     * @param rsa The rsa key.
+     * @return return size of key.
      */
     static unsigned int getKeyBytesSize(QRSAEncryption::Rsa rsa);
 
     /**
-     * @brief getKeyRsaType - return the key RSA type.
-     * @param key - public or private RSA key.
+     * @brief getKeyRsaType Return the key RSA type.
+     * @param key Public or private RSA key.
      * @return QRSAEncryption::Rsa
      */
     static QRSAEncryption::Rsa getKeyRsaType(const QByteArray& key);
 
     /**
-     * @brief save - save key into file.
+     * @brief save Save key into file.
      * @param file
      * @param key
      * @return true if all good.
@@ -163,7 +163,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
     static bool save(const QString& file, const QByteArray &key);
 
     /**
-     * @brief load - read key from file
+     * @brief load Read key from file.
      * @param file
      * @return Key if all good. If key read fail return empty array.
      */
@@ -172,10 +172,10 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
 // non-static methods
 
     /**
-     * @brief generatePairKey - generate RSA pair keys
-     * @param pubKey - return value of pablic key
-     * @param privKey - return value of private key
-     * @param genesis - random bytes of arbitrary size.
+     * @brief generatePairKey Generate RSA pair keys.
+     * @param pubKey Return value of public key.
+     * @param privKey Return value of private key.
+     * @param genesis Random bytes of arbitrary size.
      *  This option allows you to generate a key pair that is attached to a given set of bytes.
      *  Example if you set the value to 0xFF, then you will always get the same key pair attached to this value.
      *  This can be convenient if you have some kind of super key by which you want to generate a pair of RSA keys.
@@ -186,38 +186,38 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
     bool generatePairKey(QByteArray &pubKey, QByteArray &privKey, const QByteArray& genesis = {}) const;
 
     /**
-     * @brief encode - encode rawData
-     * @param rawData - data for encode
-     * @param pubKey - public key. Public key size must be equals size of RSA class.
-     * @param blockSizeMode - block size. See BlockSize
+     * @brief encode Encode rawData.
+     * @param rawData Data for encode.
+     * @param pubKey Public key. Public key size must be equals size of RSA class.
+     * @param blockSizeMode Block size. See BlockSize.
      * @return The encoded data.
      */
     QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
                       BlockSize blockSizeMode = BlockSize::Auto) const;
 
     /**
-     * @brief decode - decode raw encoded data.
+     * @brief decode Decode raw encoded data.
      * it is important that the data is decrypted and encrypted by the same class, or in the case of static methods with the same parameters
-     * @param rawData - ecoded data.
-     * @param privKey - private RSA key
-     * @param blockSizeMode - block size mode see BlockSize
-     * @return decoded data
+     * @param rawData Ecoded data.
+     * @param privKey Private RSA key.
+     * @param blockSizeMode Block size mode see BlockSize.
+     * @return decoded data.
      */
     QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,
                       BlockSize blockSizeMode = BlockSize::Auto) const;
 
     /**
      * @brief signMessage
-     * @param rawData - the raw data for signature
-     * @param privKey - the private key
+     * @param rawData The raw data for signature.
+     * @param privKey The private key.
      * @return the signed message.
      */
     QByteArray signMessage(QByteArray rawData, const QByteArray &privKey);
 
     /**
-     * @brief checkSignMessage - verify signed raw data with a public key.
-     * @param rawData - the raw data for verification
-     * @param pubKey - the public key
+     * @brief checkSignMessage Verify signed raw data with a public key.
+     * @param rawData The raw data for verification.
+     * @param pubKey The public key.
      * @return true if data sigend.
      */
     bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey);
