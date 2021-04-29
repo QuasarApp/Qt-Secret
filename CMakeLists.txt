@@ -17,20 +17,29 @@ include(src/mini-gmp/CMake/Version.cmake)
 
 if (NOT DEFINED QTSECRET_TESTS)
     set(QTSECRET_TESTS ON)
-    set(QTSECRET_GUI ON)
 
     if (DEFINED TARGET_PLATFORM_TOOLCHAIN)
         if (${TARGET_PLATFORM_TOOLCHAIN} STREQUAL "wasm32")
             set(QTSECRET_TESTS OFF)
-            set(QTSECRET_GUI OFF)
-
         endif()
     endif()
 
     if (ANDROID)
         set(QTSECRET_TESTS OFF)
-        set(QTSECRET_GUI OFF)
+    endif()
+endif()
 
+if (NOT DEFINED QTSECRET_GUI)
+    set(QTSECRET_GUI ON)
+
+    if (DEFINED TARGET_PLATFORM_TOOLCHAIN)
+        if (${TARGET_PLATFORM_TOOLCHAIN} STREQUAL "wasm32")
+            set(QTSECRET_GUI OFF)
+        endif()
+    endif()
+
+    if (ANDROID)
+        set(QTSECRET_GUI OFF)
     endif()
 endif()
 
@@ -45,7 +54,7 @@ if (QTSECRET_TESTS)
     add_subdirectory(tests)
 endif()
 
-IF(DEFINED QTSECRET_GUI)
+IF(QTSECRET_GUI)
     message("The GUI Example is enabled")
     add_subdirectory(Qt-Secret-GUI)
 else()
