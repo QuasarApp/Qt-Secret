@@ -8,12 +8,6 @@
 cmake_minimum_required(VERSION 3.10)
 set(CURRENT_PROJECT ${PROJECT_NAME})
 
-add_subdirectory(mini-gmp)
-
-include(mini-gmp/CMake/ProjectOut.cmake)
-include(mini-gmp/CMake/Version.cmake)
-
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -23,9 +17,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions(-DQt_SECRET_LIBRARY)
 
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
-
 file(GLOB SOURCE_CPP
     "Qt-AES/qaesencryption.cpp"
     "Qt-RSA/*.cpp"
@@ -33,12 +24,10 @@ file(GLOB SOURCE_CPP
 )
 
 add_library(${CURRENT_PROJECT} ${SOURCE_CPP})
-target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt::Core QtBigint)
+target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt${QT_VERSION_MAJOR}::Core QtBigint)
 target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-AES")
 target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-AES/aesni")
 
 target_include_directories(${CURRENT_PROJECT} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Qt-RSA")
-
-include(mini-gmp/CMake/QuasarAppCITargets.cmake)
 
 setVersion(1 3 1)

@@ -12,20 +12,47 @@ if(TARGET ${PROJECT_NAME})
   return()
 endif()
 
-include(src/mini-gmp/CMake/ccache.cmake)
-include(src/mini-gmp/CMake/QuasarAppCITargets.cmake)
-initAll()
+include(src/mini-gmp/CMake/QuasarApp.cmake)
+include(src/mini-gmp/CMake/Version.cmake)
+
+if (NOT DEFINED QTSECRET_TESTS)
+    set(QTSECRET_TESTS ON)
+    set(QTSECRET_GUI ON)
+
+    if (DEFINED TARGET_PLATFORM_TOOLCHAIN)
+        if (${TARGET_PLATFORM_TOOLCHAIN} STREQUAL "wasm32")
+            set(QTSECRET_TESTS OFF)
+            set(QTSECRET_GUI OFF)
+
+        endif()
+    endif()
+
+    if (ANDROID)
+        set(QTSECRET_TESTS OFF)
+        set(QTSECRET_GUI OFF)
+
+    endif()
+endif()
 
 # Add sub directories
-add_subdirectory(src)
-add_subdirectory(tests)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
 
-IF(NOT DEFINED WITHOUT_GUI)
+# Add sub directories
+add_subdirectory(src/mini-gmp)
+add_subdirectory(src)
+if (QTSECRET_TESTS)
+    add_subdirectory(tests)
+endif()
+
+IF(DEFINED QTSECRET_GUI)
     message("The GUI Example is enabled")
     add_subdirectory(Qt-Secret-GUI)
 else()
     message("The GUI Example is disabled")
 endif()
+
+initAll()
 
 addDoc("Qt-Secret" ${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf)
 
