@@ -5,8 +5,8 @@
 # of this license document, but changing it is not allowed.
 #
 
-unix:exec = $$PWD/src/mini-gmp/tests/build/release/QtBigIntTests,$$PWD/tests/build/release/Qt-SecretTest,$$PWD/src/Qt-AES/build/release/QAESEncryption
-win32:exec = $$PWD/src/mini-gmp/tests/build/release/QtBigIntTests.exe,$$PWD/src/Qt-AES/build/release/QAESEncryption.exe,$$PWD/tests/build/release/Qt-SecretTest.exe
+unix:exec = $$PWD/src/mini-gmp/tests/build/release/QtBigIntTests,$$PWD/tests/build/release/Qt-SecretTest
+win32:exec = $$PWD/src/mini-gmp/tests/build/release/QtBigIntTests.exe,$$PWD/tests/build/release/Qt-SecretTest.exe
 
 QT_DIR = $$[QT_HOST_BINS]
 
