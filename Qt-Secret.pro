@@ -11,7 +11,6 @@ CONFIG += ordered
 SUBDIRS += \
            minigmp \
            src \
-           qaesencryption \
            Qt-Secret-GUI
 
 contains(DEFINES, WITHOUT_GUI): {
@@ -31,6 +30,5 @@ lessThan (QT_MINOR_VERSION, 12) {
 minigmp.file = src/mini-gmp/GMP.pro
 src.file = src/Qt-Secret.pro
 tests.file = tests/Qt-SecretTest.pro
-qaesencryption.file = src/Qt-AES/qaesencryption.pro
 
 

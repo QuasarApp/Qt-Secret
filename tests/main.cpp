@@ -12,6 +12,8 @@
 #include <cmath>
 #include <time.h>
 #include <iostream>
+#include <QCryptographicHash>
+#include "qaesencryption.h"
 
 //const int testSize = 20;
 static const QMap<QRSAEncryption::Rsa, int > testSize = {
@@ -213,6 +215,33 @@ bool testEncryptAndDecryptExample() {
     return decodeMessage == msg;
 }
 
+bool testEncryptAndDecryptAESExample() {
+
+    print("Begin test AES alghoritms");
+
+    QAESEncryption encryption(QAESEncryption::AES_256, QAESEncryption::CBC);
+
+    QString inputStr("The Advanced Encryption Standard (AES), also known by its original name Rijndael "
+                     "is a specification for the encryption of electronic data established by the U.S. "
+                    "National Institute of Standards and Technology (NIST) in 2001");
+    QString key("your-string-key");
+    QString iv("your-IV-vector");
+
+    QByteArray hashKey = QCryptographicHash::hash(key.toLocal8Bit(), QCryptographicHash::Sha256);
+    QByteArray hashIV = QCryptographicHash::hash(iv.toLocal8Bit(), QCryptographicHash::Md5);
+
+    QByteArray encodeText = encryption.encode(inputStr.toLocal8Bit(), hashKey, hashIV);
+    QByteArray decodeText = encryption.decode(encodeText, hashKey, hashIV);
+
+    QString decodedString = QString(encryption.removePadding(decodeText));
+
+    if (decodedString != inputStr)
+        return false;
+
+    print("AES test finished successful");
+    return true;
+}
+
 int main() {
 
     if (!testGetKeyRsaType()) {
@@ -224,6 +253,10 @@ int main() {
     }
 
     if (!testEncryptAndDecryptExample()) {
+        return 1;
+    }
+
+    if (!testEncryptAndDecryptAESExample()) {
         return 1;
     }
 
