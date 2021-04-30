@@ -5,8 +5,8 @@
 # of this license document, but changing it is not allowed.
 #
 
-unix:exec = $$PWD/src/mini-gmp/tests/build/release/QtBigIntTests,$$PWD/tests/build/release/Qt-SecretTest
-win32:exec = $$PWD/src/mini-gmp/tests/build/release/QtBigIntTests.exe,$$PWD/tests/build/release/Qt-SecretTest.exe
+unix:exec = $$PWD/tests/build/release/Qt-SecretTest
+win32:exec = $$PWD/tests/build/release/Qt-SecretTest.exe
 
 QT_DIR = $$[QT_HOST_BINS]
 
@@ -25,17 +25,13 @@ contains(QMAKE_HOST.os, Linux):{
 
 unix:!android:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.sh
 win32:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.exe
-unix:!android:testGMP.commands = $$PWD/deployTests/QtBigIntTests.sh
-win32:testGMP.commands =$$PWD/deployTests/QtBigIntTests.exe
+
 
 test.depends += deployTest
 test.depends += testRSA
-
-test.depends += testGMP
 
 
 QMAKE_EXTRA_TARGETS += \
     deployTest \
     testRSA \
-    testGMP \
     test
