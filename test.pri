@@ -25,21 +25,17 @@ contains(QMAKE_HOST.os, Linux):{
 
 unix:!android:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.sh
 win32:testRSA.commands = $$PWD/deployTests/Qt-SecretTest.exe
-unix:!android:testAES.commands = $$PWD/deployTests/QAESEncryption.sh
-win32:testAES.commands = $$PWD/deployTests/QAESEncryption.exe
 unix:!android:testGMP.commands = $$PWD/deployTests/QtBigIntTests.sh
 win32:testGMP.commands =$$PWD/deployTests/QtBigIntTests.exe
 
 test.depends += deployTest
 test.depends += testRSA
-test.depends += testAES
 
 test.depends += testGMP
 
 
 QMAKE_EXTRA_TARGETS += \
     deployTest \
-    testAES \
     testRSA \
     testGMP \
     test
