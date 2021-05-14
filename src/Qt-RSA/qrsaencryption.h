@@ -69,6 +69,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @brief generatePairKey Generate RSA pair keys.
      * @param pubKey Return value of pablic key.
      * @param privKey Return value of private key.
+     * @param rsa Encryption key length. See more information in ::QRSAEncryption::
      * @warning  The keys will not be the same if you generate RSA keys of different sizes.
      * @return true if all good.
      */
@@ -80,6 +81,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @param pubKey Return value of public key.
      * @param privKey Return value of private key.
      * @param genesis random bytes of arbitrary size.
+     * @param rsa Encryption key length.
      *  This option allows you to generate a key pair that is attached to a given set of bytes.
      *  Example if you set the value to 0xFF, then you will always get the same key pair attached to this value.
      *  This can be convenient if you have some kind of super key by which you want to generate a pair of RSA keys.
@@ -93,42 +95,46 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
 
     /**
      * @brief encode Static implementation of encode.
-     * @param rawData
-     * @param pubKey
-     * @param rsa
-     * @param blockSizeMode
-     * @return
+     * @param rawData Encode rawData.
+     * @param pubKey Public key. Public key size must be equals size of RSA class.
+     * @param rsa Encryption key length.
+     * @param blockSizeMode Block size. See the BlockSize enum class.
+     * @return The encoded data.
+     * @note This is wrapper for a static method.
      */
     static QByteArray encode(const QByteArray &rawData, const QByteArray &pubKey,
                               Rsa rsa, BlockSize blockSizeMode = BlockSize::Auto);
 
     /**
      * @brief decode Static implementation of decode.
-     * @param rawData
-     * @param privKey
-     * @param rsa
-     * @param blockSizeMode
-     * @return
+     * @param rawData Ecoded data.
+     * @param privKey Private RSA key.
+     * @param rsa Encryption key length.
+     * @param blockSizeMode Block size mode see the BlockSize enum class.
+     * @return Decoded data.
+     * @note This is wrapper for a static method.
      */
     static QByteArray decode(const QByteArray &rawData, const QByteArray &privKey,
                               Rsa rsa, BlockSize blockSizeMode = BlockSize::Auto);
 
     /**
      * @brief signMessage Static implementation of signMessage.
-     * @param rawData
-     * @param privKey
-     * @param rsa
-     * @return
+     * @param rawData The raw data for signature.
+     * @param privKey The private key.
+     * @param rsa Encryption key length.
+     * @return The signed message.
+     * @note This is wrapper for a static method.
      */
     static QByteArray signMessage(QByteArray rawData, const QByteArray &privKey,
                                    Rsa rsa);
 
     /**
      * @brief checkSignMessage Static implementation of checkSignMessage.
-     * @param rawData
-     * @param pubKey
-     * @param rsa
-     * @return
+     * @param rawData The raw data for verification.
+     * @param pubKey The public key.
+     * @param rsa Encryption key length.
+     * @return True if data sigend.
+     * @note This is wrapper for a static method.
      */
     static bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
                                   Rsa rsa);
