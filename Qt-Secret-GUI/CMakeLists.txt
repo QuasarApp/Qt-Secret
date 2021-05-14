@@ -9,9 +9,6 @@ cmake_minimum_required(VERSION 3.10)
 set(CURRENT_PROJECT "${PROJECT_NAME}-GUI")
 
 
-include(../src/mini-gmp/CMake/ProjectOut.cmake)
-
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -27,5 +24,5 @@ file(GLOB SOURCE_CPP
 )
 
 add_executable(${CURRENT_PROJECT} ${SOURCE_CPP})
-target_link_libraries(${CURRENT_PROJECT} PRIVATE Qt::Quick Qt-Secret)
+target_link_libraries(${CURRENT_PROJECT} PRIVATE Qt${QT_VERSION_MAJOR}::Quick Qt-Secret)
 target_include_directories(${CURRENT_PROJECT} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

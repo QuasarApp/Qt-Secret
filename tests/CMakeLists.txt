@@ -9,7 +9,6 @@ cmake_minimum_required(VERSION 3.10)
 
 set(CURRENT_PROJECT ${PROJECT_NAME}Test)
 
-include(../src/mini-gmp/CMake/ProjectOut.cmake)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -38,11 +37,9 @@ file(GLOB SOURCE_CPP_AES
 )
 
 add_executable("${CURRENT_PROJECT}_AES" ${SOURCE_CPP_AES})
-target_link_libraries("${CURRENT_PROJECT}_AES" PUBLIC Qt::Core Qt::Test Qt-Secret)
+target_link_libraries("${CURRENT_PROJECT}_AES" PUBLIC Qt${QT_VERSION_MAJOR}::Test Qt-Secret)
 target_include_directories("${CURRENT_PROJECT}_AES" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../src/Qt-AES/unit_test")
 
 
-include(../src/mini-gmp/CMake/QuasarAppCITargets.cmake)
-initTests()
 addTests("Qt-SecretRSA" "${CURRENT_PROJECT}_RSA")
 addTests("Qt-SecretAES" "${CURRENT_PROJECT}_AES")
