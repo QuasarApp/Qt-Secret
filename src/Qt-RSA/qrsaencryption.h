@@ -98,7 +98,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @param rawData Encode rawData.
      * @param pubKey Public key. Public key size must be equals size of RSA class.
      * @param rsa Encryption key length.
-     * @param blockSizeMode Block size. See BlockSize.
+     * @param blockSizeMode Block size. See the BlockSize enum class.
      * @return The encoded data.
      * @note This is wrapper for a static method.
      */
