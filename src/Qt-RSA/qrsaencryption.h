@@ -110,7 +110,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @param rawData Ecoded data.
      * @param privKey Private RSA key.
      * @param rsa Encryption key length.
-     * @param blockSizeMode Block size mode see BlockSize.
+     * @param blockSizeMode Block size mode see the BlockSize enum class.
      * @return Decoded data.
      * @note This is wrapper for a static method.
      */
