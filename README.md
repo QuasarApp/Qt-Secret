@@ -25,7 +25,7 @@ The current implementation supports the following key sizes:
 * Signature and verification of the message signature.
 
 ### AES
-Aes implementation was borrowed from [bricke](https://github.com/bricke/Qt-AES), because it fulfills the goals of this library.
+AES implementation was borrowed from [bricke](https://github.com/bricke/Qt-AES), because it fulfills the goals of this library.
 
 Individual thanks [bricke](https://github.com/bricke) for implementing the AES encryption class.
 
@@ -113,7 +113,7 @@ SUBDIRS += \
  
 #### Note
 
-By Default QtBigInt makes as a static library. If you want to create a shared library just add the BUILD_SHARED_LIBS into your main CMakeLists.txt file. Example :
+By Default Qt-Secret makes as a static library. If you want to create a shared library just add the BUILD_SHARED_LIBS into your main CMakeLists.txt file. Example :
 
 ```cmake
 set(BUILD_SHARED_LIBS ON)
@@ -166,8 +166,6 @@ int main() {
         qInfo() << "Success!";
     }
 }
-
-
 ```
 
 ### Signature and verification of the message signature.
@@ -199,7 +197,6 @@ int main() {
         qInfo() <<"success!";
     }
 }
-
 ```
 
 ## AES
@@ -259,7 +256,4 @@ QByteArray encrypted = QAESEncryption::Crypt(QAESEncryption::AES_256, QAESEncryp
 //...
 // Removal of Padding via Static function
 QString decodedString = QString(QAESEncryption::RemovePadding(decodeText));
-
 ```
-
- 
