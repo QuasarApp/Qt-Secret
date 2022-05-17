@@ -20,4 +20,6 @@ contains(DEFINES, WITHOUT_GUI): {
 minigmp.file = src/mini-gmp/GMP.pro
 src.file = src/Qt-Secret.pro
 
-
+# fix configurate project
+QMAKE_EXTRA_TARGETS += \
+    test
