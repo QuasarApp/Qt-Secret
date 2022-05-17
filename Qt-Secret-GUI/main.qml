@@ -7,7 +7,7 @@ import QtQuick.Controls.Material 2.12
 import Qt.labs.settings 1.0
 import "modules/"
 
-Window {
+ApplicationWindow {
     id: window
     visible: true
     width: 800
