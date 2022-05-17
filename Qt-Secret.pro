@@ -17,18 +17,7 @@ contains(DEFINES, WITHOUT_GUI): {
     SUBDIRS -= Qt-Secret-GUI
 }
 
-
-lessThan (QT_MINOR_VERSION, 12) {
-    message(disable tests!)
-} else {
-    include($$PWD/test.pri)
-    message(enabled tests!)
-    SUBDIRS += tests
-
-}
-
 minigmp.file = src/mini-gmp/GMP.pro
 src.file = src/Qt-Secret.pro
-tests.file = tests/Qt-SecretTest.pro
 
 
