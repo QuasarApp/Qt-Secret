@@ -53,7 +53,8 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
         /// Fast but not stable. (using by default)
         Auto = 0,
         /// Stable but slow. (using for sig and check sig messages)
-        OneByte = 1
+        OneByte = 1,
+        Auto2 = 2
     };
 
 
@@ -231,6 +232,9 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @return true if data sigend.
      */
     bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey, const BlockSize blockSizeMode = BlockSize::OneByte);
+
+    QByteArray signMessageJava(QByteArray rawData, const QByteArray &privKey, const BlockSize blockSizeMode = BlockSize::OneByte);
+    bool checkSignMessageJava(const QByteArray &message, const QByteArray &rawData, const QByteArray &pubKey, const BlockSize blockSizeMode = BlockSize::OneByte);
 
     /**
      * @brief getRsa

@@ -316,6 +316,8 @@ QByteArray QRSAEncryption::encode(const QByteArray &rawData, const QByteArray &p
 
     if (blockSizeMode == BlockSize::Auto) {
         blockSizeIn = getBlockSize(m);
+    } else if (blockSizeMode == BlockSize::Auto2) {
+        blockSizeIn = getBlockSize(m) + 1;
     }
 
     if (!blockSizeIn) {
@@ -358,6 +360,8 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
     short blockSizeOut = 1; // BlockSize::OneByte
     if (blockSizeMode == BlockSize::Auto) {
         blockSizeOut = getBlockSize(m);
+    } else if (blockSizeMode == BlockSize::Auto2) {
+        blockSizeOut = getBlockSize(m) + 1;
     }
 
     QByteArray res;
@@ -398,6 +402,41 @@ bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArra
 
     // if recievedHash == hashAlgorithm(recived message), then signed message is valid
     return recievedHash == QCryptographicHash::hash(message, HashAlgorithm::Sha256);
+}
+
+QByteArray QRSAEncryption::signMessageJava(QByteArray rawData, const QByteArray &privKey, const BlockSize blockSizeMode) {
+    QByteArray hash = QCryptographicHash::hash(rawData, HashAlgorithm::Sha256);
+
+    // ISO Object Identifier
+    QString digestOIDHexString ="3031300d060960864801650304020105000420";
+    QByteArray digestOID = QByteArray::fromHex(digestOIDHexString.toUtf8());
+    qDebug() << "digestOID: " << QString(digestOID.toHex());
+
+    // Padded
+    QString paddedHexString ="0001ffffffffffffffffffff00";
+    QByteArray padded = QByteArray::fromHex(paddedHexString.toUtf8());
+    qDebug() << "padded: " << QString(padded.toHex());
+
+    digestOID.append(hash);
+    padded.append(digestOID);
+    qDebug() << "encode: " << QString(padded.toHex());
+
+    QByteArray signature = encode(padded, privKey, blockSizeMode);
+    qDebug() << "signature: " << QString(signature.toHex());
+
+    //rawData.append(QString(SIGN_MARKER + signature.toHex() + SIGN_MARKER).toLatin1());
+
+    return signature;
+}
+bool QRSAEncryption::checkSignMessageJava(const QByteArray &message, const QByteArray &rawData, const QByteArray &pubKey, const BlockSize blockSizeMode) {
+    // start position of SIGN_MARKER in rawData
+    auto signStartPos = 19+ 13;
+
+    // hash, that was decrypt from recieved signature
+    QByteArray recievedHash = decode(rawData, pubKey, blockSizeMode);
+
+    // if recievedHash == hashAlgorithm(recived message), then signed message is valid
+    return recievedHash.mid(signStartPos) == QCryptographicHash::hash(message, HashAlgorithm::Sha256);
 }
 
 bool QRSAEncryption::save(const QString &file, const QByteArray& key) {
