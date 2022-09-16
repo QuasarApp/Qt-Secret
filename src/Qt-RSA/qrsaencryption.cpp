@@ -232,14 +232,14 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
     return QRSAEncryption(rsa).decode(rawData, privKey, blockSizeMode);
 }
 
-QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey, Rsa rsa) {
+QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey, Rsa rsa, const BlockSize blockSizeMode) {
 
-    return QRSAEncryption(rsa).signMessage(rawData, privKey);
+    return QRSAEncryption(rsa).signMessage(rawData, privKey, blockSizeMode);
 }
 
-bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey, Rsa rsa) {
+bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey, Rsa rsa, const BlockSize blockSizeMode) {
 
-    return QRSAEncryption(rsa).checkSignMessage(rawData, pubKey);
+    return QRSAEncryption(rsa).checkSignMessage(rawData, pubKey, blockSizeMode);
 }
 
 // --- end of static methods ---
@@ -371,17 +371,17 @@ QByteArray QRSAEncryption::decode(const QByteArray &rawData, const QByteArray &p
     return res;
 
 }
-QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey) {
+QByteArray QRSAEncryption::signMessage(QByteArray rawData, const QByteArray &privKey, const BlockSize blockSizeMode) {
 
     QByteArray hash = QCryptographicHash::hash(rawData, HashAlgorithm::Sha256);
 
-    QByteArray signature = encode(hash, privKey, BlockSize::OneByte);
+    QByteArray signature = encode(hash, privKey, blockSizeMode);
 
     rawData.append(QString(SIGN_MARKER + signature.toHex() + SIGN_MARKER).toLatin1());
 
     return rawData;
 }
-bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey) {
+bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey, const BlockSize blockSizeMode) {
 
     // start position of SIGN_MARKER in rawData
     auto signStartPos = rawData.lastIndexOf(QString(SIGN_MARKER).toLatin1(), rawData.length() - signMarkerLength - 1);
@@ -394,7 +394,7 @@ bool QRSAEncryption::checkSignMessage(const QByteArray &rawData, const QByteArra
 
     // hash, that was decrypt from recieved signature
     QByteArray recievedHash = decode(QByteArray::fromHex(rawData.mid(signStartPos + signMarkerLength, signLength)),
-                                     pubKey, BlockSize::OneByte);
+                                     pubKey, blockSizeMode);
 
     // if recievedHash == hashAlgorithm(recived message), then signed message is valid
     return recievedHash == QCryptographicHash::hash(message, HashAlgorithm::Sha256);

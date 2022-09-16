@@ -122,22 +122,24 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @param rawData The raw data for signature.
      * @param privKey The private key.
      * @param rsa Encryption key length.
+     * @param blockSizeMode blocksize
      * @return The signed message.
      * @note This is wrapper for a static method.
      */
     static QByteArray signMessage(QByteArray rawData, const QByteArray &privKey,
-                                   Rsa rsa);
+                                   Rsa rsa, const BlockSize blockSizeMode = BlockSize::OneByte);
 
     /**
      * @brief checkSignMessage Static implementation of checkSignMessage.
      * @param rawData The raw data for verification.
      * @param pubKey The public key.
      * @param rsa Encryption key length.
+     * @param blockSizeMode blocksize
      * @return True if data sigend.
      * @note This is wrapper for a static method.
      */
     static bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey,
-                                  Rsa rsa);
+                                  Rsa rsa, const BlockSize blockSizeMode = BlockSize::OneByte);
 
     /**
      * @brief isValidRsaKey Сhecks byte array. If the array is the PCA key, it will return true, in the practical case of false.
@@ -174,7 +176,6 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @return Key if all good. If key read fail return empty array.
      */
     static QByteArray load(const QString& file);
-
     static QByteArray loadBinary(const QString &file);
 // non-static methods
 
@@ -217,17 +218,19 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      * @brief signMessage
      * @param rawData The raw data for signature.
      * @param privKey The private key.
+     * @param blockSizeMode block Size.
      * @return the signed message.
      */
-    QByteArray signMessage(QByteArray rawData, const QByteArray &privKey);
+    QByteArray signMessage(QByteArray rawData, const QByteArray &privKey, const BlockSize blockSizeMode = BlockSize::OneByte);
 
     /**
      * @brief checkSignMessage Verify signed raw data with a public key.
      * @param rawData The raw data for verification.
      * @param pubKey The public key.
+     * @param blockSizeMode block Size.
      * @return true if data sigend.
      */
-    bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey);
+    bool checkSignMessage(const QByteArray &rawData, const QByteArray &pubKey, const BlockSize blockSizeMode = BlockSize::OneByte);
 
     /**
      * @brief getRsa
