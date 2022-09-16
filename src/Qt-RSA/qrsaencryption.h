@@ -175,6 +175,7 @@ To ensure reliable protection, it is recommended to use an exponent size of at l
      */
     static QByteArray load(const QString& file);
 
+    static QByteArray loadBinary(const QString &file);
 // non-static methods
 
     /**

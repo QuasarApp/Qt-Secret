@@ -12,6 +12,7 @@
 #include <ctime>
 #include <chrono>
 #include <QTextStream>
+#include <QDataStream>
 
 #define KEY_GEN_LIMIT 10
 
@@ -426,6 +427,26 @@ QByteArray QRSAEncryption::load(const QString &file) {
 
         keyFile.close();
         return QByteArray::fromBase64(base64DataKey);
+    }
+
+    return {};
+}
+
+
+QByteArray QRSAEncryption::loadBinary(const QString &file) {
+    QFile keyFile(file);
+
+    if (keyFile.open(QIODevice::ReadOnly)) {
+#if 0
+        QDataStream stream(&keyFile);
+
+        QByteArray base64DataKey;
+        stream >> base64DataKey;
+#else
+        QByteArray base64DataKey = keyFile.readAll();
+#endif
+        keyFile.close();
+        return base64DataKey;
     }
 
     return {};
