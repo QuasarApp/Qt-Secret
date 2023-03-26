@@ -1,5 +1,8 @@
 # ![Qt-Secret Logo](res/png/Qt-Secret_Banner_web.png)
 
+# Note 
+The OpenSSL library is better for security and performance, so we implemented a Qt wrapper library to make it easier to use. See the [EasySSL](https://github.com/QuasarApp/easyssl) library.
+
 Fast encryption library supporting RSA and AES algorithms.
 
 # Futures 
